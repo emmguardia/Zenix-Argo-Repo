@@ -7,7 +7,7 @@ ENV NPM_CONFIG_UPDATE_NOTIFIER=false
 # Mise à jour des paquets Alpine (correctifs sécurité)
 RUN apk update && apk upgrade --no-cache
 
-RUN addgroup -g 1000 appuser && adduser -D -u 1000 -G appuser appuser
+RUN addgroup -g 10000 appuser && adduser -D -u 10000 -G appuser appuser
 
 WORKDIR /app
 
@@ -23,7 +23,7 @@ RUN if [ -f package-lock.json ]; then npm ci --omit=dev --no-audit --no-fund --l
 COPY server.js ./
 COPY lib/ ./lib/
 
-RUN mkdir -p /app/secrets && chown -R appuser:appuser /app
+RUN mkdir -p /app/secrets && chown -R 10000:10000 /app
 
 VOLUME ["/app/secrets"]
 
