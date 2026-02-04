@@ -11,9 +11,11 @@ RUN addgroup -g 10000 appuser && adduser -D -u 10000 -G appuser appuser
 
 WORKDIR /app
 
-RUN npm install -g npm@latest > /dev/null 2>&1 \
-    && npm install -g tar@7.5.7 \
-    && (cd /usr/local/lib/node_modules/npm && npm install tar@7.5.7) 2>/dev/null || true
+# Corriger CVE-2026-24842 (tar): forcer 7.5.7 partout, sans installer npm@latest (évite cache et faux positifs secrets)
+RUN npm install -g tar@7.5.7 \
+    && rm -rf /usr/local/lib/node_modules/npm/node_modules/tar \
+    && (cd /usr/local/lib/node_modules/npm && npm install tar@7.5.7 --no-package-lock) \
+    && npm cache clean --force
 
 RUN echo "update-notifier=false" > .npmrc && echo "loglevel=error" >> .npmrc
 
