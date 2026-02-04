@@ -46,7 +46,6 @@ jobs:
         run: |
           Set-Location Backend
           npm audit --audit-level=high
-        continue-on-error: true
 
       - name: Backend – test
         shell: powershell
@@ -65,7 +64,6 @@ jobs:
         run: |
           Set-Location Frontend
           npm audit --audit-level=high
-        continue-on-error: true
 
       - name: Frontend – lint
         shell: powershell
@@ -261,4 +259,8 @@ jobs:
           } else {
             git commit -m "chore(manifests): pin images to digest $tag [skip ci]"
             git push
+            if ($LASTEXITCODE -ne 0) {
+              Write-Error "git push a échoué. Vérifier: permissions GITHUB_TOKEN (contents: write), branch protection, règles push."
+              exit 1
+            }
           }
