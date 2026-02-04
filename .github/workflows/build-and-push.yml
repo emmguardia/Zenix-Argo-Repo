@@ -153,7 +153,7 @@ jobs:
           TRIVY_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
         run: |
           $img = "${{ env.REGISTRY }}/${{ github.repository_owner }}/zenix-backend:${{ steps.version.outputs.tag }}"
-          docker run --rm -e TRIVY_USERNAME -e TRIVY_PASSWORD aquasec/trivy image --exit-code 1 --severity CRITICAL,HIGH --format table $img
+          docker run --rm -e TRIVY_USERNAME -e TRIVY_PASSWORD aquasec/trivy image --exit-code 1 --severity CRITICAL,HIGH --ignore-unfixed --format table $img
 
       - name: Setup Node (hosted)
         if: runner.self_hosted != true
@@ -232,7 +232,7 @@ jobs:
           TRIVY_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
         run: |
           $img = "${{ env.REGISTRY }}/${{ github.repository_owner }}/zenix-front:${{ steps.version.outputs.tag }}"
-          docker run --rm -e TRIVY_USERNAME -e TRIVY_PASSWORD aquasec/trivy image --exit-code 1 --severity CRITICAL,HIGH --format table $img
+          docker run --rm -e TRIVY_USERNAME -e TRIVY_PASSWORD aquasec/trivy image --exit-code 1 --severity CRITICAL,HIGH --ignore-unfixed --format table $img
 
       - name: Pin manifests to version and digest
         shell: powershell

@@ -1,5 +1,8 @@
 FROM nginx:alpine
 
+# Mise à jour des paquets Alpine (correctifs sécurité)
+RUN apk update && apk upgrade --no-cache
+
 WORKDIR /usr/share/nginx/html
 
 # 1) Contenu de Public (images, robots, etc.) en premier

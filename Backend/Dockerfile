@@ -1,11 +1,13 @@
-FROM node:20-slim
+FROM node:20-alpine
 
 ENV NODE_ENV=production
 ENV NPM_CONFIG_LOGLEVEL=error
 ENV NPM_CONFIG_UPDATE_NOTIFIER=false
-ENV DEBIAN_FRONTEND=noninteractive
 
-RUN groupadd -r appuser 2>/dev/null || true && useradd -r -g appuser -u 1000 appuser 2>/dev/null || true
+# Mise à jour des paquets Alpine (correctifs sécurité)
+RUN apk update && apk upgrade --no-cache
+
+RUN addgroup -g 1000 appuser && adduser -D -u 1000 -G appuser appuser
 
 WORKDIR /app
 
@@ -21,11 +23,11 @@ RUN if [ -f package-lock.json ]; then npm ci --omit=dev --no-audit --no-fund --l
 COPY server.js ./
 COPY lib/ ./lib/
 
-RUN mkdir -p /app/secrets && chown -R 1000:1000 /app 2>/dev/null || true
+RUN mkdir -p /app/secrets && chown -R appuser:appuser /app
 
 VOLUME ["/app/secrets"]
 
-USER 1000
+USER appuser
 
 EXPOSE 3000
 
