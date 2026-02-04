@@ -184,7 +184,11 @@ jobs:
         shell: powershell
         run: |
           $haveUrl = $false
-          $secret = kubectl get secret zenix-backend-secrets -n zenix -o json 2>$null
+          $secret = $null
+          try {
+            $secret = kubectl get secret zenix-backend-secrets -n zenix -o json 2>$null
+            if ($LASTEXITCODE -ne 0) { $secret = $null }
+          } catch { $secret = $null }
           if ($secret) {
             $j = $secret | ConvertFrom-Json
             if ($j.data.'vite-recaptcha-site-key') {
@@ -198,6 +202,8 @@ jobs:
             }
           }
           if (-not $haveUrl) { "VITE_BACKEND_URL=/api" | Out-File -FilePath $env:GITHUB_ENV -Append }
+          Write-Host "Cluster reachable: $($secret -ne $null); VITE_BACKEND_URL set or defaulted"
+          exit 0
 
       - name: Install and build frontend
         shell: powershell
