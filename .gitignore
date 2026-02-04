@@ -5,10 +5,9 @@
 .env
 .env.*
 !.env.example
-
-# Logs (générés localement ou exportés)
 Logs/
 Logs Git Action/
-
-# Secrets en clair (variante minuscule)
 charts/zenix/secrets/*-secrets.yaml
+charts/zenix/secrets/zenix-secrets.yaml
+sealed-output.yaml
+pub-cert.pem
