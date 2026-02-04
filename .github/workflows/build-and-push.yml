@@ -239,7 +239,7 @@ jobs:
           $img = "${{ env.REGISTRY }}/${{ github.repository_owner }}/zenix-front:${{ steps.version.outputs.tag }}"
           docker run --rm -e TRIVY_USERNAME -e TRIVY_PASSWORD aquasec/trivy image --exit-code 1 --severity CRITICAL,HIGH --ignore-unfixed --format table $img
 
-      - name: Pin manifests to version and digest
+      - name: Pin Helm values to image digest
         shell: powershell
         run: |
           $tag = "${{ steps.version.outputs.tag }}"
@@ -249,16 +249,19 @@ jobs:
           $reg = "${{ env.REGISTRY }}"
           $backendImage = if ($digestBackend) { "${reg}/${owner}/zenix-backend@${digestBackend}" } else { "${reg}/${owner}/zenix-backend:${tag}" }
           $frontendImage = if ($digestFrontend) { "${reg}/${owner}/zenix-front@${digestFrontend}" } else { "${reg}/${owner}/zenix-front:${tag}" }
-          (Get-Content Manifests/Zenix-Backend.yaml -Raw) -replace 'image:\s*[^\r\n]*zenix-backend[^\r\n]*', "image: $backendImage" | Set-Content Manifests/Zenix-Backend.yaml
-          (Get-Content Manifests/Zenix-Frontend.yaml -Raw) -replace 'image:\s*[^\r\n]*zenix-front[^\r\n]*', "image: $frontendImage" | Set-Content Manifests/Zenix-Frontend.yaml
+          $valuesPath = "charts/zenix/values.yaml"
+          $content = Get-Content $valuesPath -Raw
+          $content = $content -replace '  image: ghcr\.io/[^\r\n]+zenix-backend[^\r\n]*', "  image: $backendImage"
+          $content = $content -replace '  image: ghcr\.io/[^\r\n]+zenix-front[^\r\n]*', "  image: $frontendImage"
+          Set-Content $valuesPath -Value $content -NoNewline
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add version.txt Manifests/Zenix-Backend.yaml Manifests/Zenix-Frontend.yaml
+          git add version.txt $valuesPath
           git diff --staged --quiet
           if ($LASTEXITCODE -eq 0) {
-            Write-Host "Manifests and version already up to date, skip commit"
+            Write-Host "Helm values and version already up to date, skip commit"
           } else {
-            git commit -m "chore(manifests): pin images to digest $tag [skip ci]"
+            git commit -m "chore(helm): pin images to digest $tag [skip ci]"
             git push
             if ($LASTEXITCODE -ne 0) {
               Write-Error "git push a échoué. Vérifier: permissions GITHUB_TOKEN (contents: write), branch protection, règles push."

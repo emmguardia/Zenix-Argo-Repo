@@ -1,0 +1,10 @@
+apiVersion: v2
+name: zenix
+description: Chart Zenix - Frontend (nginx) + Backend (Node)
+type: application
+version: 1.0.0
+appVersion: "1.0.0"
+keywords:
+  - zenix
+  - web
+maintainers: []

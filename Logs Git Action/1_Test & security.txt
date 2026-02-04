@@ -1,262 +1,230 @@
-﻿2026-02-04T11:56:23.2475642Z Current runner version: '2.331.0'
-2026-02-04T11:56:23.2481146Z Runner name: 'NANOPC'
-2026-02-04T11:56:23.2482161Z Runner group name: 'Default'
-2026-02-04T11:56:23.2482694Z Machine name: 'NANOPC'
-2026-02-04T11:56:23.2484674Z ##[group]GITHUB_TOKEN Permissions
-2026-02-04T11:56:23.2486338Z Actions: read
-2026-02-04T11:56:23.2486602Z Contents: read
-2026-02-04T11:56:23.2486852Z Metadata: read
-2026-02-04T11:56:23.2487121Z ##[endgroup]
-2026-02-04T11:56:23.2488455Z Secret source: Actions
-2026-02-04T11:56:23.2488800Z Prepare workflow directory
-2026-02-04T11:56:23.2885974Z Prepare all required actions
-2026-02-04T11:56:23.2918647Z Getting action download info
-2026-02-04T11:56:23.8768221Z Download action repository 'actions/checkout@v4' (SHA:34e114876b0b11c390a56381ad16ebd13914f8d5)
-2026-02-04T11:56:25.1875019Z Complete job name: Test & security
-2026-02-04T11:56:25.3003265Z ##[group]Run actions/checkout@v4
-2026-02-04T11:56:25.3004903Z with:
-2026-02-04T11:56:25.3005400Z   repository: emmguardia/Zenix-Argo-Repo
-2026-02-04T11:56:25.3006345Z   token: ***
-2026-02-04T11:56:25.3006760Z   ssh-strict: true
-2026-02-04T11:56:25.3007234Z   ssh-user: git
-2026-02-04T11:56:25.3007693Z   persist-credentials: true
-2026-02-04T11:56:25.3008247Z   clean: true
-2026-02-04T11:56:25.3008704Z   sparse-checkout-cone-mode: true
-2026-02-04T11:56:25.3009300Z   fetch-depth: 1
-2026-02-04T11:56:25.3009726Z   fetch-tags: false
-2026-02-04T11:56:25.3010205Z   show-progress: true
-2026-02-04T11:56:25.3010621Z   lfs: false
-2026-02-04T11:56:25.3011238Z   submodules: false
-2026-02-04T11:56:25.3011765Z   set-safe-directory: true
-2026-02-04T11:56:25.3012599Z env:
-2026-02-04T11:56:25.3013016Z   REGISTRY: ghcr.io
-2026-02-04T11:56:25.3013477Z ##[endgroup]
-2026-02-04T11:56:25.9548910Z Syncing repository: emmguardia/Zenix-Argo-Repo
-2026-02-04T11:56:25.9553039Z ##[group]Getting Git version info
-2026-02-04T11:56:25.9555340Z Working directory is 'C:\Users\enzom\actions-runner\_work\Zenix-Argo-Repo\Zenix-Argo-Repo'
-2026-02-04T11:56:25.9581030Z [command]"C:\Program Files\Git\cmd\git.exe" version
-2026-02-04T11:56:25.9656371Z git version 2.52.0.windows.1
-2026-02-04T11:56:25.9728031Z ##[endgroup]
-2026-02-04T11:56:25.9745940Z Copying 'C:\Users\enzom\.gitconfig' to 'C:\Users\enzom\actions-runner\_work\_temp\cd8b35cc-8f07-4178-b6a9-99d2ec7e1dd1\.gitconfig'
-2026-02-04T11:56:25.9803428Z Temporarily overriding HOME='C:\Users\enzom\actions-runner\_work\_temp\cd8b35cc-8f07-4178-b6a9-99d2ec7e1dd1' before making global git config changes
-2026-02-04T11:56:25.9811658Z Adding repository directory to the temporary git global config as a safe directory
-2026-02-04T11:56:25.9841494Z [command]"C:\Program Files\Git\cmd\git.exe" config --global --add safe.directory C:\Users\enzom\actions-runner\_work\Zenix-Argo-Repo\Zenix-Argo-Repo
-2026-02-04T11:56:26.1263893Z [command]"C:\Program Files\Git\cmd\git.exe" config --local --get remote.origin.url
-2026-02-04T11:56:26.2147337Z https://github.com/emmguardia/Zenix-Argo-Repo
-2026-02-04T11:56:26.2399714Z ##[group]Removing previously created refs, to avoid conflicts
-2026-02-04T11:56:26.2507048Z [command]"C:\Program Files\Git\cmd\git.exe" rev-parse --symbolic-full-name --verify --quiet HEAD
-2026-02-04T11:56:26.2934525Z refs/heads/main
-2026-02-04T11:56:26.3203562Z [command]"C:\Program Files\Git\cmd\git.exe" checkout --detach
-2026-02-04T11:56:26.4512491Z HEAD is now at d75fbd4 Reglage de bugs
-2026-02-04T11:56:26.5943413Z ##[endgroup]
-2026-02-04T11:56:26.5946875Z [command]"C:\Program Files\Git\cmd\git.exe" submodule status
-2026-02-04T11:56:27.6456512Z ##[group]Cleaning the repository
-2026-02-04T11:56:27.6463574Z [command]"C:\Program Files\Git\cmd\git.exe" clean -ffdx
-2026-02-04T11:56:27.9072711Z Removing Backend/node_modules/
-2026-02-04T11:56:27.9152988Z [command]"C:\Program Files\Git\cmd\git.exe" reset --hard HEAD
-2026-02-04T11:56:28.0004825Z HEAD is now at d75fbd4 Reglage de bugs
-2026-02-04T11:56:28.0044349Z ##[endgroup]
-2026-02-04T11:56:28.0049829Z ##[group]Disabling automatic garbage collection
-2026-02-04T11:56:28.0059668Z [command]"C:\Program Files\Git\cmd\git.exe" config --local gc.auto 0
-2026-02-04T11:56:28.0550116Z ##[endgroup]
-2026-02-04T11:56:28.0552212Z ##[group]Setting up auth
-2026-02-04T11:56:28.0565085Z [command]"C:\Program Files\Git\cmd\git.exe" config --local --name-only --get-regexp core\.sshCommand
-2026-02-04T11:56:28.1184254Z [command]"C:\Program Files\Git\cmd\git.exe" submodule foreach --recursive "sh -c \"git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :\""
-2026-02-04T11:56:29.1937458Z [command]"C:\Program Files\Git\cmd\git.exe" config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
-2026-02-04T11:56:29.2921577Z [command]"C:\Program Files\Git\cmd\git.exe" submodule foreach --recursive "sh -c \"git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :\""
-2026-02-04T11:56:30.5108826Z [command]"C:\Program Files\Git\cmd\git.exe" config --local --name-only --get-regexp ^includeIf\.gitdir:
-2026-02-04T11:56:30.5916243Z [command]"C:\Program Files\Git\cmd\git.exe" submodule foreach --recursive "git config --local --show-origin --name-only --get-regexp remote.origin.url"
-2026-02-04T11:56:31.7458347Z [command]"C:\Program Files\Git\cmd\git.exe" config --local http.https://github.com/.extraheader "AUTHORIZATION: basic ***"
-2026-02-04T11:56:31.8523043Z ##[endgroup]
-2026-02-04T11:56:31.8546516Z ##[group]Fetching the repository
-2026-02-04T11:56:31.8617682Z [command]"C:\Program Files\Git\cmd\git.exe" -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +f531c83a7ec48a5f8013281e069daf0ecc999f18:refs/remotes/origin/main
-2026-02-04T11:56:32.7423213Z From https://github.com/emmguardia/Zenix-Argo-Repo
-2026-02-04T11:56:32.7437054Z  + d75fbd4...f531c83 f531c83a7ec48a5f8013281e069daf0ecc999f18 -> origin/main  (forced update)
-2026-02-04T11:56:32.8075749Z ##[endgroup]
-2026-02-04T11:56:32.8103928Z ##[group]Determining the checkout info
-2026-02-04T11:56:32.8121702Z ##[endgroup]
-2026-02-04T11:56:32.8151695Z [command]"C:\Program Files\Git\cmd\git.exe" sparse-checkout disable
-2026-02-04T11:56:32.9240749Z [command]"C:\Program Files\Git\cmd\git.exe" config --local --unset-all extensions.worktreeConfig
-2026-02-04T11:56:33.0377202Z ##[group]Checking out the ref
-2026-02-04T11:56:33.0387771Z [command]"C:\Program Files\Git\cmd\git.exe" checkout --progress --force -B main refs/remotes/origin/main
-2026-02-04T11:56:33.1556156Z branch 'main' set up to track 'origin/main'.
-2026-02-04T11:56:33.1563028Z Your branch is up to date with 'origin/main'.
-2026-02-04T11:56:33.1572004Z Previous HEAD position was d75fbd4 Reglage de bugs
-2026-02-04T11:56:33.1588846Z Switched to and reset branch 'main'
-2026-02-04T11:56:33.1723354Z ##[endgroup]
-2026-02-04T11:56:33.2855795Z [command]"C:\Program Files\Git\cmd\git.exe" log -1 --format=%H
-2026-02-04T11:56:33.3706593Z f531c83a7ec48a5f8013281e069daf0ecc999f18
-2026-02-04T11:56:33.6679882Z ##[group]Run $v = node --version
-2026-02-04T11:56:33.6680619Z [36;1m$v = node --version[0m
-2026-02-04T11:56:33.6680963Z [36;1mWrite-Host "Node $v"[0m
-2026-02-04T11:56:33.6766885Z [36;1mif (-not ($v -match '^v(\d+)\.')) { Write-Error "Node version inconnue: $v" }[0m
-2026-02-04T11:56:33.6769765Z [36;1mif ([int]$Matches[1] -lt 20) { Write-Error "Node 20 ou plus requis (tu as $v). Installe https://nodejs.org" }[0m
-2026-02-04T11:56:33.6959322Z shell: C:\WINDOWS\System32\WindowsPowerShell\v1.0\powershell.EXE -command ". '{0}'"
-2026-02-04T11:56:33.6961076Z env:
-2026-02-04T11:56:33.6961835Z   REGISTRY: ghcr.io
-2026-02-04T11:56:33.6962621Z ##[endgroup]
-2026-02-04T11:56:34.2377329Z Node v24.13.0
-2026-02-04T11:56:34.3930189Z ##[group]Run Set-Location Backend
-2026-02-04T11:56:34.3931919Z [36;1mSet-Location Backend[0m
-2026-02-04T11:56:34.3932806Z [36;1mnpm ci[0m
-2026-02-04T11:56:34.4063507Z shell: C:\WINDOWS\System32\WindowsPowerShell\v1.0\powershell.EXE -command ". '{0}'"
-2026-02-04T11:56:34.4072526Z env:
-2026-02-04T11:56:34.4073086Z   REGISTRY: ghcr.io
-2026-02-04T11:56:34.4073647Z ##[endgroup]
-2026-02-04T11:56:37.3840482Z 
-2026-02-04T11:56:37.3841334Z added 81 packages, and audited 82 packages in 2s
-2026-02-04T11:56:37.3841976Z 
-2026-02-04T11:56:37.3842322Z 24 packages are looking for funding
-2026-02-04T11:56:37.3843768Z   run `npm fund` for details
-2026-02-04T11:56:37.3864415Z 
-2026-02-04T11:56:37.3865739Z found 0 vulnerabilities
-2026-02-04T11:56:37.5253029Z ##[group]Run Set-Location Backend
-2026-02-04T11:56:37.5254194Z [36;1mSet-Location Backend[0m
-2026-02-04T11:56:37.5254840Z [36;1mnpm audit --audit-level=high[0m
-2026-02-04T11:56:37.5384753Z shell: C:\WINDOWS\System32\WindowsPowerShell\v1.0\powershell.EXE -command ". '{0}'"
-2026-02-04T11:56:37.5385806Z env:
-2026-02-04T11:56:37.5386190Z   REGISTRY: ghcr.io
-2026-02-04T11:56:37.5386639Z ##[endgroup]
-2026-02-04T11:56:39.2270526Z found 0 vulnerabilities
-2026-02-04T11:56:39.3129156Z ##[group]Run Set-Location Backend
-2026-02-04T11:56:39.3130546Z [36;1mSet-Location Backend[0m
-2026-02-04T11:56:39.3131165Z [36;1mnpm test[0m
-2026-02-04T11:56:39.3184676Z shell: C:\WINDOWS\System32\WindowsPowerShell\v1.0\powershell.EXE -command ". '{0}'"
-2026-02-04T11:56:39.3185165Z env:
-2026-02-04T11:56:39.3185338Z   REGISTRY: ghcr.io
-2026-02-04T11:56:39.3185536Z ##[endgroup]
-2026-02-04T11:56:40.0625454Z 
-2026-02-04T11:56:40.0638282Z > zenix-backend@1.0.0 test
-2026-02-04T11:56:40.0639075Z > node --test test/validation.test.js
-2026-02-04T11:56:40.0665535Z 
-2026-02-04T11:56:40.3177285Z ▶ validation
-2026-02-04T11:56:40.3177655Z   ▶ isValidEmail
-2026-02-04T11:56:40.3178023Z     ✔ accepte un email valide (1.1091ms)
-2026-02-04T11:56:40.3180608Z     ✔ refuse email invalide (0.1514ms)
-2026-02-04T11:56:40.3181598Z   ✔ isValidEmail (3.5885ms)
-2026-02-04T11:56:40.3182048Z   ▶ getProjectLabel
-2026-02-04T11:56:40.3182682Z     ✔ retourne le libellé pour une clé connue (0.2297ms)
-2026-02-04T11:56:40.3183326Z     ✔ retourne la clé si inconnue (0.124ms)
-2026-02-04T11:56:40.3183796Z   ✔ getProjectLabel (0.51ms)
-2026-02-04T11:56:40.3184157Z   ▶ getTimelineLabel
-2026-02-04T11:56:40.3185065Z     ✔ retourne le libellé pour une clé connue (0.1576ms)
-2026-02-04T11:56:40.3186356Z     ✔ retourne la clé si inconnue (0.1655ms)
-2026-02-04T11:56:40.3186904Z   ✔ getTimelineLabel (0.5699ms)
-2026-02-04T11:56:40.3195503Z   ▶ constants
-2026-02-04T11:56:40.3196820Z     ✔ projectLabels et timelineLabels sont non vides (0.1269ms)
-2026-02-04T11:56:40.3197798Z   ✔ constants (0.2993ms)
-2026-02-04T11:56:40.3198466Z ✔ validation (5.7604ms)
-2026-02-04T11:56:40.3332600Z ℹ tests 7
-2026-02-04T11:56:40.3332922Z ℹ suites 5
-2026-02-04T11:56:40.3333200Z ℹ pass 7
-2026-02-04T11:56:40.3333439Z ℹ fail 0
-2026-02-04T11:56:40.3333683Z ℹ cancelled 0
-2026-02-04T11:56:40.3333954Z ℹ skipped 0
-2026-02-04T11:56:40.3334201Z ℹ todo 0
-2026-02-04T11:56:40.3334449Z ℹ duration_ms 126.5494
-2026-02-04T11:56:40.4823069Z ##[group]Run Set-Location Frontend
-2026-02-04T11:56:40.4824216Z [36;1mSet-Location Frontend[0m
-2026-02-04T11:56:40.4825065Z [36;1mif (Test-Path package-lock.json) { npm ci } else { npm install }[0m
-2026-02-04T11:56:40.4943834Z shell: C:\WINDOWS\System32\WindowsPowerShell\v1.0\powershell.EXE -command ". '{0}'"
-2026-02-04T11:56:40.4945550Z env:
-2026-02-04T11:56:40.4945914Z   REGISTRY: ghcr.io
-2026-02-04T11:56:40.4946296Z ##[endgroup]
-2026-02-04T11:56:45.2350986Z npm warn deprecated whatwg-encoding@3.1.1: Use @exodus/bytes instead for a more spec-conformant and faster implementation
-2026-02-04T11:57:13.1402895Z 
-2026-02-04T11:57:13.1403774Z added 374 packages, and audited 375 packages in 32s
-2026-02-04T11:57:13.1404583Z 
-2026-02-04T11:57:13.1407357Z 94 packages are looking for funding
-2026-02-04T11:57:13.1410921Z   run `npm fund` for details
-2026-02-04T11:57:13.1866150Z 
-2026-02-04T11:57:13.1869338Z 5 moderate severity vulnerabilities
-2026-02-04T11:57:13.1875546Z 
-2026-02-04T11:57:13.1888689Z To address all issues (including breaking changes), run:
-2026-02-04T11:57:13.1894903Z   npm audit fix --force
-2026-02-04T11:57:13.1896320Z 
-2026-02-04T11:57:13.1896882Z Run `npm audit` for details.
-2026-02-04T11:57:13.4019781Z ##[group]Run Set-Location Frontend
-2026-02-04T11:57:13.4020516Z [36;1mSet-Location Frontend[0m
-2026-02-04T11:57:13.4020961Z [36;1mnpm audit --audit-level=high[0m
-2026-02-04T11:57:13.4122387Z shell: C:\WINDOWS\System32\WindowsPowerShell\v1.0\powershell.EXE -command ". '{0}'"
-2026-02-04T11:57:13.4123134Z env:
-2026-02-04T11:57:13.4123435Z   REGISTRY: ghcr.io
-2026-02-04T11:57:13.4123741Z ##[endgroup]
-2026-02-04T11:57:18.4075106Z # npm audit report
-2026-02-04T11:57:18.4075757Z 
-2026-02-04T11:57:18.4076392Z esbuild  <=0.24.2
-2026-02-04T11:57:18.4077101Z Severity: moderate
-2026-02-04T11:57:18.4079189Z esbuild enables any website to send any requests to the development server and read the response - https://github.com/advisories/GHSA-67mh-4wv8-2f99
-2026-02-04T11:57:18.4082068Z fix available via `npm audit fix --force`
-2026-02-04T11:57:18.4084117Z Will install vitest@4.0.18, which is a breaking change
-2026-02-04T11:57:18.4308940Z node_modules/vite-node/node_modules/esbuild
-2026-02-04T11:57:18.4310056Z node_modules/vitest/node_modules/esbuild
-2026-02-04T11:57:18.4310918Z   vite  0.11.0 - 6.1.6
-2026-02-04T11:57:18.4311437Z   Depends on vulnerable versions of esbuild
-2026-02-04T11:57:18.4312100Z   node_modules/vite-node/node_modules/vite
-2026-02-04T11:57:18.4312744Z   node_modules/vitest/node_modules/vite
-2026-02-04T11:57:18.4313343Z     @vitest/mocker  <=3.0.0-beta.4
-2026-02-04T11:57:18.4313943Z     Depends on vulnerable versions of vite
-2026-02-04T11:57:18.4314617Z     node_modules/vitest/node_modules/@vitest/mocker
-2026-02-04T11:57:18.4315418Z       vitest  0.0.1 - 0.0.12 || 0.0.29 - 0.0.122 || 0.3.3 - 3.0.0-beta.4
-2026-02-04T11:57:18.4316269Z       Depends on vulnerable versions of @vitest/mocker
-2026-02-04T11:57:18.4316968Z       Depends on vulnerable versions of vite
-2026-02-04T11:57:18.4317658Z       Depends on vulnerable versions of vite-node
-2026-02-04T11:57:18.4318353Z       node_modules/vitest
-2026-02-04T11:57:18.4318843Z     vite-node  <=2.2.0-beta.2
-2026-02-04T11:57:18.4319388Z     Depends on vulnerable versions of vite
-2026-02-04T11:57:18.4319978Z     node_modules/vite-node
-2026-02-04T11:57:18.4320290Z 
-2026-02-04T11:57:18.4320482Z 5 moderate severity vulnerabilities
-2026-02-04T11:57:18.4320864Z 
-2026-02-04T11:57:18.4321164Z To address all issues (including breaking changes), run:
-2026-02-04T11:57:18.4321818Z   npm audit fix --force
-2026-02-04T11:57:18.5861924Z ##[group]Run Set-Location Frontend
-2026-02-04T11:57:18.5863002Z [36;1mSet-Location Frontend[0m
-2026-02-04T11:57:18.5863518Z [36;1mnpm run lint[0m
-2026-02-04T11:57:18.6009477Z shell: C:\WINDOWS\System32\WindowsPowerShell\v1.0\powershell.EXE -command ". '{0}'"
-2026-02-04T11:57:18.6010459Z env:
-2026-02-04T11:57:18.6010819Z   REGISTRY: ghcr.io
-2026-02-04T11:57:18.6011287Z ##[endgroup]
-2026-02-04T11:57:20.1706698Z 
-2026-02-04T11:57:20.1707384Z > vite-react-typescript-starter@0.0.0 lint
-2026-02-04T11:57:20.1708108Z > eslint .
-2026-02-04T11:57:20.1708338Z 
-2026-02-04T11:57:32.3442396Z ##[group]Run Set-Location Frontend
-2026-02-04T11:57:32.3443653Z [36;1mSet-Location Frontend[0m
-2026-02-04T11:57:32.3444078Z [36;1mnpm run test[0m
-2026-02-04T11:57:32.3565872Z shell: C:\WINDOWS\System32\WindowsPowerShell\v1.0\powershell.EXE -command ". '{0}'"
-2026-02-04T11:57:32.3566500Z env:
-2026-02-04T11:57:32.3566729Z   REGISTRY: ghcr.io
-2026-02-04T11:57:32.3567140Z ##[endgroup]
-2026-02-04T11:57:33.7112724Z 
-2026-02-04T11:57:33.7203333Z > vite-react-typescript-starter@0.0.0 test
-2026-02-04T11:57:33.7264746Z > vitest run
-2026-02-04T11:57:33.7310017Z 
-2026-02-04T11:57:35.0815672Z 
-2026-02-04T11:57:35.0817105Z [1m[7m[36m RUN [39m[27m[22m [36mv2.1.9 [39m[90mC:/Users/enzom/actions-runner/_work/Zenix-Argo-Repo/Zenix-Argo-Repo/Frontend[39m
-2026-02-04T11:57:35.0818075Z 
-2026-02-04T11:57:41.0156746Z  [32m✓[39m src/config/seoConfig.test.ts [2m([22m[2m2 tests[22m[2m)[22m[90m 25[2mms[22m[39m
-2026-02-04T11:57:41.1238011Z 
-2026-02-04T11:57:41.1271872Z [2m Test Files [22m [1m[32m1 passed[39m[22m[90m (1)[39m
-2026-02-04T11:57:41.1303732Z [2m      Tests [22m [1m[32m2 passed[39m[22m[90m (2)[39m
-2026-02-04T11:57:41.1317317Z [2m   Start at [22m 12:57:35
-2026-02-04T11:57:41.1348931Z [2m   Duration [22m 6.04s[2m (transform 247ms, setup 0ms, collect 224ms, tests 25ms, environment 3.35s, prepare 1.16s)[22m
-2026-02-04T11:57:41.1419264Z 
-2026-02-04T11:57:41.5586208Z Post job cleanup.
-2026-02-04T11:57:41.9287110Z [command]"C:\Program Files\Git\cmd\git.exe" version
-2026-02-04T11:57:42.0159821Z git version 2.52.0.windows.1
-2026-02-04T11:57:42.0414264Z Copying 'C:\Users\enzom\.gitconfig' to 'C:\Users\enzom\actions-runner\_work\_temp\674a5aa5-ba7a-4a29-9ee4-881f976bc267\.gitconfig'
-2026-02-04T11:57:42.0473796Z Temporarily overriding HOME='C:\Users\enzom\actions-runner\_work\_temp\674a5aa5-ba7a-4a29-9ee4-881f976bc267' before making global git config changes
-2026-02-04T11:57:42.0517927Z Adding repository directory to the temporary git global config as a safe directory
-2026-02-04T11:57:42.0562118Z [command]"C:\Program Files\Git\cmd\git.exe" config --global --add safe.directory C:\Users\enzom\actions-runner\_work\Zenix-Argo-Repo\Zenix-Argo-Repo
-2026-02-04T11:57:42.1629107Z [command]"C:\Program Files\Git\cmd\git.exe" config --local --name-only --get-regexp core\.sshCommand
-2026-02-04T11:57:42.2699790Z [command]"C:\Program Files\Git\cmd\git.exe" submodule foreach --recursive "sh -c \"git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :\""
-2026-02-04T11:57:43.6961678Z [command]"C:\Program Files\Git\cmd\git.exe" config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
-2026-02-04T11:57:43.7686957Z http.https://github.com/.extraheader
-2026-02-04T11:57:43.7792628Z [command]"C:\Program Files\Git\cmd\git.exe" config --local --unset-all http.https://github.com/.extraheader
-2026-02-04T11:57:43.8628642Z [command]"C:\Program Files\Git\cmd\git.exe" submodule foreach --recursive "sh -c \"git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :\""
-2026-02-04T11:57:45.1828523Z [command]"C:\Program Files\Git\cmd\git.exe" config --local --name-only --get-regexp ^includeIf\.gitdir:
-2026-02-04T11:57:45.2565362Z [command]"C:\Program Files\Git\cmd\git.exe" submodule foreach --recursive "git config --local --show-origin --name-only --get-regexp remote.origin.url"
-2026-02-04T11:57:46.3655837Z Uploading runner diagnostic logs
-2026-02-04T11:57:46.5581111Z Completed runner diagnostic log upload
-2026-02-04T11:57:46.5581980Z Cleaning up orphan processes
+﻿2026-02-04T14:02:54.0535136Z Current runner version: '2.331.0'
+2026-02-04T14:02:54.0541854Z Runner name: 'NANOPC'
+2026-02-04T14:02:54.0542266Z Runner group name: 'Default'
+2026-02-04T14:02:54.0542810Z Machine name: 'NANOPC'
+2026-02-04T14:02:54.0545328Z ##[group]GITHUB_TOKEN Permissions
+2026-02-04T14:02:54.0547420Z Actions: read
+2026-02-04T14:02:54.0547695Z Contents: read
+2026-02-04T14:02:54.0547966Z Metadata: read
+2026-02-04T14:02:54.0548251Z ##[endgroup]
+2026-02-04T14:02:54.0550266Z Secret source: Actions
+2026-02-04T14:02:54.0550630Z Prepare workflow directory
+2026-02-04T14:02:54.2269735Z Prepare all required actions
+2026-02-04T14:02:54.2310816Z Getting action download info
+2026-02-04T14:02:54.7931149Z Download action repository 'actions/checkout@v4' (SHA:34e114876b0b11c390a56381ad16ebd13914f8d5)
+2026-02-04T14:02:56.2290966Z Complete job name: Test & security
+2026-02-04T14:02:56.3512274Z ##[group]Run actions/checkout@v4
+2026-02-04T14:02:56.3513526Z with:
+2026-02-04T14:02:56.3514024Z   repository: emmguardia/Zenix-Argo-Repo
+2026-02-04T14:02:56.3515036Z   token: ***
+2026-02-04T14:02:56.3515486Z   ssh-strict: true
+2026-02-04T14:02:56.3515936Z   ssh-user: git
+2026-02-04T14:02:56.3516405Z   persist-credentials: true
+2026-02-04T14:02:56.3516937Z   clean: true
+2026-02-04T14:02:56.3517440Z   sparse-checkout-cone-mode: true
+2026-02-04T14:02:56.3518059Z   fetch-depth: 1
+2026-02-04T14:02:56.3518537Z   fetch-tags: false
+2026-02-04T14:02:56.3519034Z   show-progress: true
+2026-02-04T14:02:56.3519545Z   lfs: false
+2026-02-04T14:02:56.3519969Z   submodules: false
+2026-02-04T14:02:56.3520633Z   set-safe-directory: true
+2026-02-04T14:02:56.3521436Z env:
+2026-02-04T14:02:56.3521832Z   REGISTRY: ghcr.io
+2026-02-04T14:02:56.3522256Z ##[endgroup]
+2026-02-04T14:02:59.1546393Z Syncing repository: emmguardia/Zenix-Argo-Repo
+2026-02-04T14:02:59.1551496Z ##[group]Getting Git version info
+2026-02-04T14:02:59.1553059Z Working directory is 'C:\Users\enzom\actions-runner\_work\Zenix-Argo-Repo\Zenix-Argo-Repo'
+2026-02-04T14:02:59.1858166Z [command]"C:\Program Files\Git\cmd\git.exe" version
+2026-02-04T14:02:59.2512949Z git version 2.52.0.windows.1
+2026-02-04T14:02:59.2614470Z ##[endgroup]
+2026-02-04T14:02:59.2664066Z Copying 'C:\Users\enzom\.gitconfig' to 'C:\Users\enzom\actions-runner\_work\_temp\3b72bddc-b628-4c47-a33f-f5c2803a1041\.gitconfig'
+2026-02-04T14:02:59.2713637Z Temporarily overriding HOME='C:\Users\enzom\actions-runner\_work\_temp\3b72bddc-b628-4c47-a33f-f5c2803a1041' before making global git config changes
+2026-02-04T14:02:59.2715998Z Adding repository directory to the temporary git global config as a safe directory
+2026-02-04T14:02:59.2737479Z [command]"C:\Program Files\Git\cmd\git.exe" config --global --add safe.directory C:\Users\enzom\actions-runner\_work\Zenix-Argo-Repo\Zenix-Argo-Repo
+2026-02-04T14:02:59.3478368Z [command]"C:\Program Files\Git\cmd\git.exe" config --local --get remote.origin.url
+2026-02-04T14:02:59.4131838Z https://github.com/emmguardia/Zenix-Argo-Repo
+2026-02-04T14:02:59.4240080Z ##[group]Removing previously created refs, to avoid conflicts
+2026-02-04T14:02:59.4255696Z [command]"C:\Program Files\Git\cmd\git.exe" rev-parse --symbolic-full-name --verify --quiet HEAD
+2026-02-04T14:02:59.4824835Z refs/heads/main
+2026-02-04T14:02:59.4906040Z [command]"C:\Program Files\Git\cmd\git.exe" checkout --detach
+2026-02-04T14:02:59.5874142Z HEAD is now at 868244a chore(manifests): pin images to digest v1.0.5 [skip ci]
+2026-02-04T14:02:59.7360107Z ##[endgroup]
+2026-02-04T14:02:59.7368669Z [command]"C:\Program Files\Git\cmd\git.exe" submodule status
+2026-02-04T14:03:01.7024797Z ##[group]Cleaning the repository
+2026-02-04T14:03:01.7080538Z [command]"C:\Program Files\Git\cmd\git.exe" clean -ffdx
+2026-02-04T14:03:07.8970479Z Removing Frontend/dist/
+2026-02-04T14:03:07.8971154Z Removing Frontend/node_modules/
+2026-02-04T14:03:07.9078236Z [command]"C:\Program Files\Git\cmd\git.exe" reset --hard HEAD
+2026-02-04T14:03:08.8140003Z HEAD is now at 868244a chore(manifests): pin images to digest v1.0.5 [skip ci]
+2026-02-04T14:03:08.8276468Z ##[endgroup]
+2026-02-04T14:03:08.8277907Z ##[group]Disabling automatic garbage collection
+2026-02-04T14:03:08.8284447Z [command]"C:\Program Files\Git\cmd\git.exe" config --local gc.auto 0
+2026-02-04T14:03:08.8774018Z ##[endgroup]
+2026-02-04T14:03:08.8774789Z ##[group]Setting up auth
+2026-02-04T14:03:08.8791431Z [command]"C:\Program Files\Git\cmd\git.exe" config --local --name-only --get-regexp core\.sshCommand
+2026-02-04T14:03:08.9175561Z [command]"C:\Program Files\Git\cmd\git.exe" submodule foreach --recursive "sh -c \"git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :\""
+2026-02-04T14:03:09.6620909Z [command]"C:\Program Files\Git\cmd\git.exe" config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-02-04T14:03:09.7027001Z [command]"C:\Program Files\Git\cmd\git.exe" submodule foreach --recursive "sh -c \"git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :\""
+2026-02-04T14:03:10.5656239Z [command]"C:\Program Files\Git\cmd\git.exe" config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-02-04T14:03:10.6185727Z [command]"C:\Program Files\Git\cmd\git.exe" submodule foreach --recursive "git config --local --show-origin --name-only --get-regexp remote.origin.url"
+2026-02-04T14:03:11.5101964Z [command]"C:\Program Files\Git\cmd\git.exe" config --local http.https://github.com/.extraheader "AUTHORIZATION: basic ***"
+2026-02-04T14:03:11.6012482Z ##[endgroup]
+2026-02-04T14:03:11.6014041Z ##[group]Fetching the repository
+2026-02-04T14:03:11.6063626Z [command]"C:\Program Files\Git\cmd\git.exe" -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +11ddb8c11f3e5501d68b494f24da6b708c46e8b1:refs/remotes/origin/main
+2026-02-04T14:03:12.7807396Z From https://github.com/emmguardia/Zenix-Argo-Repo
+2026-02-04T14:03:12.7808094Z  + 868244a...11ddb8c 11ddb8c11f3e5501d68b494f24da6b708c46e8b1 -> origin/main  (forced update)
+2026-02-04T14:03:12.8072177Z ##[endgroup]
+2026-02-04T14:03:12.8072717Z ##[group]Determining the checkout info
+2026-02-04T14:03:12.8074100Z ##[endgroup]
+2026-02-04T14:03:12.8087296Z [command]"C:\Program Files\Git\cmd\git.exe" sparse-checkout disable
+2026-02-04T14:03:12.8578063Z [command]"C:\Program Files\Git\cmd\git.exe" config --local --unset-all extensions.worktreeConfig
+2026-02-04T14:03:12.8957301Z ##[group]Checking out the ref
+2026-02-04T14:03:12.8969605Z [command]"C:\Program Files\Git\cmd\git.exe" checkout --progress --force -B main refs/remotes/origin/main
+2026-02-04T14:03:12.9524651Z branch 'main' set up to track 'origin/main'.
+2026-02-04T14:03:12.9525098Z Your branch is up to date with 'origin/main'.
+2026-02-04T14:03:12.9526387Z Previous HEAD position was 868244a chore(manifests): pin images to digest v1.0.5 [skip ci]
+2026-02-04T14:03:12.9526916Z Switched to and reset branch 'main'
+2026-02-04T14:03:12.9571944Z ##[endgroup]
+2026-02-04T14:03:13.0041080Z [command]"C:\Program Files\Git\cmd\git.exe" log -1 --format=%H
+2026-02-04T14:03:13.0501108Z 11ddb8c11f3e5501d68b494f24da6b708c46e8b1
+2026-02-04T14:03:13.2064642Z ##[group]Run $v = node --version
+2026-02-04T14:03:13.2065546Z [36;1m$v = node --version[0m
+2026-02-04T14:03:13.2066023Z [36;1mWrite-Host "Node $v"[0m
+2026-02-04T14:03:13.2066761Z [36;1mif (-not ($v -match '^v(\d+)\.')) { Write-Error "Node version inconnue: $v" }[0m
+2026-02-04T14:03:13.2068082Z [36;1mif ([int]$Matches[1] -lt 20) { Write-Error "Node 20 ou plus requis (tu as $v). Installe https://nodejs.org" }[0m
+2026-02-04T14:03:13.2132568Z shell: C:\WINDOWS\System32\WindowsPowerShell\v1.0\powershell.EXE -command ". '{0}'"
+2026-02-04T14:03:13.2135507Z env:
+2026-02-04T14:03:13.2135736Z   REGISTRY: ghcr.io
+2026-02-04T14:03:13.2135966Z ##[endgroup]
+2026-02-04T14:03:13.6944055Z Node v24.13.0
+2026-02-04T14:03:13.8252291Z ##[group]Run Set-Location Backend
+2026-02-04T14:03:13.8253543Z [36;1mSet-Location Backend[0m
+2026-02-04T14:03:13.8265724Z [36;1mnpm ci[0m
+2026-02-04T14:03:13.8350634Z shell: C:\WINDOWS\System32\WindowsPowerShell\v1.0\powershell.EXE -command ". '{0}'"
+2026-02-04T14:03:13.8351156Z env:
+2026-02-04T14:03:13.8351366Z   REGISTRY: ghcr.io
+2026-02-04T14:03:13.8351578Z ##[endgroup]
+2026-02-04T14:03:15.9653325Z 
+2026-02-04T14:03:15.9655359Z added 81 packages, and audited 82 packages in 1s
+2026-02-04T14:03:15.9656361Z 
+2026-02-04T14:03:15.9656518Z 24 packages are looking for funding
+2026-02-04T14:03:15.9657013Z   run `npm fund` for details
+2026-02-04T14:03:15.9666063Z 
+2026-02-04T14:03:15.9666335Z found 0 vulnerabilities
+2026-02-04T14:03:16.1187467Z ##[group]Run Set-Location Backend
+2026-02-04T14:03:16.1188568Z [36;1mSet-Location Backend[0m
+2026-02-04T14:03:16.1189255Z [36;1mnpm audit --audit-level=moderate[0m
+2026-02-04T14:03:16.1270102Z shell: C:\WINDOWS\System32\WindowsPowerShell\v1.0\powershell.EXE -command ". '{0}'"
+2026-02-04T14:03:16.1270632Z env:
+2026-02-04T14:03:16.1270886Z   REGISTRY: ghcr.io
+2026-02-04T14:03:16.1271107Z ##[endgroup]
+2026-02-04T14:03:17.8849325Z found 0 vulnerabilities
+2026-02-04T14:03:17.9778749Z ##[group]Run Set-Location Backend
+2026-02-04T14:03:17.9779432Z [36;1mSet-Location Backend[0m
+2026-02-04T14:03:17.9779759Z [36;1mnpm test[0m
+2026-02-04T14:03:17.9819531Z shell: C:\WINDOWS\System32\WindowsPowerShell\v1.0\powershell.EXE -command ". '{0}'"
+2026-02-04T14:03:17.9820004Z env:
+2026-02-04T14:03:17.9820178Z   REGISTRY: ghcr.io
+2026-02-04T14:03:17.9820374Z ##[endgroup]
+2026-02-04T14:03:18.7800834Z 
+2026-02-04T14:03:18.7802591Z > zenix-backend@1.0.0 test
+2026-02-04T14:03:18.7804016Z > node --test test/validation.test.js
+2026-02-04T14:03:18.7804971Z 
+2026-02-04T14:03:19.0247033Z ▶ validation
+2026-02-04T14:03:19.0248975Z   ▶ isValidEmail
+2026-02-04T14:03:19.0249772Z     ✔ accepte un email valide (1.5073ms)
+2026-02-04T14:03:19.0265054Z     ✔ refuse email invalide (0.389ms)
+2026-02-04T14:03:19.0267761Z   ✔ isValidEmail (4.3356ms)
+2026-02-04T14:03:19.0277113Z   ▶ getProjectLabel
+2026-02-04T14:03:19.0281062Z     ✔ retourne le libellé pour une clé connue (0.2994ms)
+2026-02-04T14:03:19.0284082Z     ✔ retourne la clé si inconnue (0.1607ms)
+2026-02-04T14:03:19.0288806Z   ✔ getProjectLabel (0.7815ms)
+2026-02-04T14:03:19.0296521Z   ▶ getTimelineLabel
+2026-02-04T14:03:19.0297242Z     ✔ retourne le libellé pour une clé connue (0.2779ms)
+2026-02-04T14:03:19.0298471Z     ✔ retourne la clé si inconnue (0.2181ms)
+2026-02-04T14:03:19.0301091Z   ✔ getTimelineLabel (0.8622ms)
+2026-02-04T14:03:19.0306991Z   ▶ constants
+2026-02-04T14:03:19.0308607Z     ✔ projectLabels et timelineLabels sont non vides (0.1459ms)
+2026-02-04T14:03:19.0313125Z   ✔ constants (0.3148ms)
+2026-02-04T14:03:19.0315736Z ✔ validation (7.1321ms)
+2026-02-04T14:03:19.0471486Z ℹ tests 7
+2026-02-04T14:03:19.0474103Z ℹ suites 5
+2026-02-04T14:03:19.0484240Z ℹ pass 7
+2026-02-04T14:03:19.0485674Z ℹ fail 0
+2026-02-04T14:03:19.0489044Z ℹ cancelled 0
+2026-02-04T14:03:19.0490295Z ℹ skipped 0
+2026-02-04T14:03:19.0494979Z ℹ todo 0
+2026-02-04T14:03:19.0497315Z ℹ duration_ms 146.7493
+2026-02-04T14:03:19.1865535Z ##[group]Run Set-Location Frontend
+2026-02-04T14:03:19.1866113Z [36;1mSet-Location Frontend[0m
+2026-02-04T14:03:19.1866555Z [36;1mif (Test-Path package-lock.json) { npm ci } else { npm install }[0m
+2026-02-04T14:03:19.1984935Z shell: C:\WINDOWS\System32\WindowsPowerShell\v1.0\powershell.EXE -command ". '{0}'"
+2026-02-04T14:03:19.1985467Z env:
+2026-02-04T14:03:19.1985664Z   REGISTRY: ghcr.io
+2026-02-04T14:03:19.1985886Z ##[endgroup]
+2026-02-04T14:03:23.3228064Z npm warn deprecated whatwg-encoding@3.1.1: Use @exodus/bytes instead for a more spec-conformant and faster implementation
+2026-02-04T14:03:47.2977425Z 
+2026-02-04T14:03:47.2977916Z added 370 packages, and audited 371 packages in 27s
+2026-02-04T14:03:47.2980786Z 
+2026-02-04T14:03:47.2981287Z 94 packages are looking for funding
+2026-02-04T14:03:47.2981598Z   run `npm fund` for details
+2026-02-04T14:03:47.2994877Z 
+2026-02-04T14:03:47.2997033Z found 0 vulnerabilities
+2026-02-04T14:03:47.4091219Z ##[group]Run Set-Location Frontend
+2026-02-04T14:03:47.4091905Z [36;1mSet-Location Frontend[0m
+2026-02-04T14:03:47.4092351Z [36;1mnpm audit --audit-level=moderate[0m
+2026-02-04T14:03:47.4139951Z shell: C:\WINDOWS\System32\WindowsPowerShell\v1.0\powershell.EXE -command ". '{0}'"
+2026-02-04T14:03:47.4140632Z env:
+2026-02-04T14:03:47.4140905Z   REGISTRY: ghcr.io
+2026-02-04T14:03:47.4141192Z ##[endgroup]
+2026-02-04T14:03:49.2053082Z found 0 vulnerabilities
+2026-02-04T14:03:49.2672499Z ##[group]Run Set-Location Frontend
+2026-02-04T14:03:49.2673006Z [36;1mSet-Location Frontend[0m
+2026-02-04T14:03:49.2673251Z [36;1mnpm run lint[0m
+2026-02-04T14:03:49.2701872Z shell: C:\WINDOWS\System32\WindowsPowerShell\v1.0\powershell.EXE -command ". '{0}'"
+2026-02-04T14:03:49.2702312Z env:
+2026-02-04T14:03:49.2702477Z   REGISTRY: ghcr.io
+2026-02-04T14:03:49.2702674Z ##[endgroup]
+2026-02-04T14:03:50.0241227Z 
+2026-02-04T14:03:50.0242608Z > vite-react-typescript-starter@0.0.0 lint
+2026-02-04T14:03:50.0244362Z > eslint .
+2026-02-04T14:03:50.0244955Z 
+2026-02-04T14:03:55.8709337Z ##[group]Run Set-Location Frontend
+2026-02-04T14:03:55.8710026Z [36;1mSet-Location Frontend[0m
+2026-02-04T14:03:55.8710401Z [36;1mnpm run test[0m
+2026-02-04T14:03:55.8772371Z shell: C:\WINDOWS\System32\WindowsPowerShell\v1.0\powershell.EXE -command ". '{0}'"
+2026-02-04T14:03:55.8773257Z env:
+2026-02-04T14:03:55.8773589Z   REGISTRY: ghcr.io
+2026-02-04T14:03:55.8773957Z ##[endgroup]
+2026-02-04T14:03:56.7560533Z 
+2026-02-04T14:03:56.7561709Z > vite-react-typescript-starter@0.0.0 test
+2026-02-04T14:03:56.7563135Z > vitest run
+2026-02-04T14:03:56.7563622Z 
+2026-02-04T14:03:57.5650207Z 
+2026-02-04T14:03:57.5667202Z [1m[7m[36m RUN [39m[27m[22m [36mv2.1.9 [39m[90mC:/Users/enzom/actions-runner/_work/Zenix-Argo-Repo/Zenix-Argo-Repo/Frontend[39m
+2026-02-04T14:03:57.5677003Z 
+2026-02-04T14:04:00.5923526Z  [32m✓[39m src/config/seoConfig.test.ts [2m([22m[2m2 tests[22m[2m)[22m[90m 2[2mms[22m[39m
+2026-02-04T14:04:00.6438350Z 
+2026-02-04T14:04:00.6466786Z [2m Test Files [22m [1m[32m1 passed[39m[22m[90m (1)[39m
+2026-02-04T14:04:00.6480769Z [2m      Tests [22m [1m[32m2 passed[39m[22m[90m (2)[39m
+2026-02-04T14:04:00.6562977Z [2m   Start at [22m 15:03:57
+2026-02-04T14:04:00.6575116Z [2m   Duration [22m 3.08s[2m (transform 117ms, setup 0ms, collect 117ms, tests 2ms, environment 1.46s, prepare 683ms)[22m
+2026-02-04T14:04:00.6592750Z 
+2026-02-04T14:04:00.8441222Z Post job cleanup.
+2026-02-04T14:04:01.0395222Z [command]"C:\Program Files\Git\cmd\git.exe" version
+2026-02-04T14:04:01.1035134Z git version 2.52.0.windows.1
+2026-02-04T14:04:01.1161188Z Copying 'C:\Users\enzom\.gitconfig' to 'C:\Users\enzom\actions-runner\_work\_temp\0e74af09-905c-4f2d-a2d2-1faf3f5b1964\.gitconfig'
+2026-02-04T14:04:01.1215964Z Temporarily overriding HOME='C:\Users\enzom\actions-runner\_work\_temp\0e74af09-905c-4f2d-a2d2-1faf3f5b1964' before making global git config changes
+2026-02-04T14:04:01.1223042Z Adding repository directory to the temporary git global config as a safe directory
+2026-02-04T14:04:01.1234282Z [command]"C:\Program Files\Git\cmd\git.exe" config --global --add safe.directory C:\Users\enzom\actions-runner\_work\Zenix-Argo-Repo\Zenix-Argo-Repo
+2026-02-04T14:04:01.2016046Z [command]"C:\Program Files\Git\cmd\git.exe" config --local --name-only --get-regexp core\.sshCommand
+2026-02-04T14:04:01.2769330Z [command]"C:\Program Files\Git\cmd\git.exe" submodule foreach --recursive "sh -c \"git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :\""
+2026-02-04T14:04:02.5549538Z [command]"C:\Program Files\Git\cmd\git.exe" config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-02-04T14:04:02.6230946Z http.https://github.com/.extraheader
+2026-02-04T14:04:02.6309451Z [command]"C:\Program Files\Git\cmd\git.exe" config --local --unset-all http.https://github.com/.extraheader
+2026-02-04T14:04:02.7087485Z [command]"C:\Program Files\Git\cmd\git.exe" submodule foreach --recursive "sh -c \"git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :\""
+2026-02-04T14:04:03.8533688Z [command]"C:\Program Files\Git\cmd\git.exe" config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-02-04T14:04:03.9094939Z [command]"C:\Program Files\Git\cmd\git.exe" submodule foreach --recursive "git config --local --show-origin --name-only --get-regexp remote.origin.url"
+2026-02-04T14:04:04.8959308Z Uploading runner diagnostic logs
+2026-02-04T14:04:05.0627379Z Completed runner diagnostic log upload
+2026-02-04T14:04:05.0628036Z Cleaning up orphan processes
