@@ -1,0 +1,116 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: zenix-backend
+  namespace: zenix
+  labels:
+    app.kubernetes.io/part-of: Zenix
+spec:
+  type: ClusterIP
+  selector:
+    app: zenix-backend
+  ports:
+  - protocol: TCP
+    port: 3000
+    targetPort: 3000
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: zenix-backend
+  namespace: zenix
+  labels:
+    app.kubernetes.io/part-of: Zenix
+spec:
+  replicas: 1
+  revisionHistoryLimit: 2
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  selector:
+    matchLabels:
+      app: zenix-backend
+  template:
+    metadata:
+      labels:
+        app: zenix-backend
+    spec:
+      imagePullSecrets:
+        - name: ghcr-secret
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        fsGroup: 1000
+      containers:
+      - name: zenix-backend
+        image: ghcr.io/emmguardia/zenix-backend:v1.0.2
+        imagePullPolicy: IfNotPresent
+        securityContext:
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: false
+          capabilities:
+            drop:
+            - ALL
+        ports:
+        - containerPort: 3000
+        env:
+        - name: PORT
+          value: "3000"
+        - name: NODE_ENV
+          value: "production"
+        - name: JWT_PRIVATE_KEY_PATH
+          value: "/app/secrets/jwt_private_key.pem"
+        - name: EMAIL_SERVICE_URL
+          value: "http://email-service.email-service.svc.cluster.local:8080"
+        - name: ADMIN_EMAIL
+          valueFrom:
+            secretKeyRef:
+              name: zenix-backend-secrets
+              key: admin-email
+        - name: ALLOWED_ORIGINS
+          value: "https://www.zenixweb.fr,http://localhost:5173"
+        resources:
+          requests:
+            cpu: "100m"
+            memory: "256Mi"
+          limits:
+            cpu: "500m"
+            memory: "512Mi"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 3000
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 3000
+          initialDelaySeconds: 10
+          periodSeconds: 5
+          timeoutSeconds: 3
+          failureThreshold: 3
+        volumeMounts:
+        - name: secrets
+          mountPath: /app/secrets
+          readOnly: true
+      volumes:
+      - name: secrets
+        secret:
+          secretName: zenix-backend-secrets
+          items:
+          - key: jwt-private-key
+            path: jwt_private_key.pem
+          - key: jwt-public-key
+            path: jwt_public_key.pem
+
+
+
+
+
+
+

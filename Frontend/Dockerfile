@@ -1,0 +1,16 @@
+FROM nginx:alpine
+
+WORKDIR /usr/share/nginx/html
+
+# 1) Contenu de Public (images, robots, etc.) en premier
+COPY Public/ ./
+# 2) dist/ par-dessus (index.html, assets/)
+COPY dist/ ./
+# Vérification : au moins une image doit exister
+RUN test -f ./images/Logo.png || (echo "ERREUR: images/Logo.png manquant" && exit 1)
+
+COPY nginx/default.conf /etc/nginx/conf.d/default.conf
+
+EXPOSE 80
+
+CMD ["nginx", "-g", "daemon off;"]

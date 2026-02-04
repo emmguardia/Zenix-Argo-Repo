@@ -1,0 +1,232 @@
+name: Build and push to GHCR
+
+on:
+  push:
+    branches:
+      - main
+      - master
+  workflow_dispatch:
+
+env:
+  REGISTRY: ghcr.io
+
+concurrency:
+  group: build-and-push
+  cancel-in-progress: true
+
+jobs:
+  test:
+    name: Test & security
+    runs-on: [self-hosted, Windows, X64]
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      actions: read
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Verify Node
+        shell: powershell
+        run: |
+          $v = node --version
+          Write-Host "Node $v"
+          if (-not ($v -match '^v(\d+)\.')) { Write-Error "Node version inconnue: $v" }
+          if ([int]$Matches[1] -lt 20) { Write-Error "Node 20 ou plus requis (tu as $v). Installe https://nodejs.org" }
+
+      - name: Backend – install
+        shell: powershell
+        run: |
+          Set-Location Backend
+          npm ci
+
+      - name: Backend – audit (high/critical)
+        shell: powershell
+        run: |
+          Set-Location Backend
+          npm audit --audit-level=high
+        continue-on-error: true
+
+      - name: Backend – test
+        shell: powershell
+        run: |
+          Set-Location Backend
+          npm test
+
+      - name: Frontend – install
+        shell: powershell
+        run: |
+          Set-Location Frontend
+          if (Test-Path package-lock.json) { npm ci } else { npm install }
+
+      - name: Frontend – audit (high/critical)
+        shell: powershell
+        run: |
+          Set-Location Frontend
+          npm audit --audit-level=high
+        continue-on-error: true
+
+      - name: Frontend – lint
+        shell: powershell
+        run: |
+          Set-Location Frontend
+          npm run lint
+
+      - name: Frontend – test
+        shell: powershell
+        run: |
+          Set-Location Frontend
+          npm run test
+
+  build-and-push:
+    name: Build and push
+    needs: test
+    runs-on: [self-hosted, Windows, X64]
+    timeout-minutes: 20
+    permissions:
+      contents: write
+      packages: write
+
+    steps:
+      - name: Runner started
+        shell: powershell
+        run: Write-Host "Runner OK - $((Get-Date).ToUniversalTime().ToString('HH:mm:ss')) UTC"
+
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Bump version
+        id: version
+        shell: powershell
+        run: |
+          $path = "version.txt"
+          $content = (Get-Content $path -Raw).Trim()
+          if (-not ($content -match '^(\d+)\.(\d+)\.(\d+)$')) { Write-Error "version.txt invalide: $content (attendu X.Y.Z)" }
+          $major = [int]$Matches[1]
+          $minor = [int]$Matches[2]
+          $patch = [int]$Matches[3]
+          if ($patch -lt 9) { $patch++ } else { $patch = 0; $minor++ }
+          $newVersion = "${major}.${minor}.${patch}"
+          Set-Content $path -Value $newVersion -NoNewline
+          $tag = "v$newVersion"
+          "VERSION_TAG=$tag" | Out-File -FilePath $env:GITHUB_ENV -Append
+          echo "tag=$tag" >> $env:GITHUB_OUTPUT
+          echo "version=$newVersion" >> $env:GITHUB_OUTPUT
+          Write-Host "Version: $tag"
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract metadata (backend)
+        id: meta-backend
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ github.repository_owner }}/zenix-backend
+          tags: |
+            type=raw,value=${{ steps.version.outputs.tag }}
+
+      - name: Build and push backend
+        uses: docker/build-push-action@v5
+        with:
+          context: ./Backend
+          push: true
+          tags: ${{ steps.meta-backend.outputs.tags }}
+          labels: ${{ steps.meta-backend.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Setup Node (hosted)
+        if: runner.self_hosted != true
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+          cache-dependency-path: Frontend/package-lock.json
+
+      - name: Verify Node (self-hosted)
+        if: runner.self_hosted == true
+        shell: powershell
+        run: |
+          $v = node --version
+          Write-Host "Node $v"
+          if (-not ($v -match '^v(\d+)\.')) { Write-Error "Node version inconnue: $v" }
+          if ([int]$Matches[1] -lt 20) { Write-Error "Node 20 ou plus requis (tu as $v). Installe https://nodejs.org" }
+
+      - name: Cache npm (self-hosted)
+        if: runner.self_hosted == true
+        uses: actions/cache@v4
+        with:
+          path: Frontend/node_modules
+          key: npm-${{ runner.os }}-${{ hashFiles('Frontend/package-lock.json') }}
+          restore-keys: npm-${{ runner.os }}-
+
+      - name: Get build env from cluster (Sealed Secret)
+        shell: powershell
+        run: |
+          $haveUrl = $false
+          $secret = kubectl get secret zenix-backend-secrets -n zenix -o json 2>$null
+          if ($secret) {
+            $j = $secret | ConvertFrom-Json
+            if ($j.data.'vite-recaptcha-site-key') {
+              $key = [System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String($j.data.'vite-recaptcha-site-key'))
+              "VITE_RECAPTCHA_SITE_KEY=$key" | Out-File -FilePath $env:GITHUB_ENV -Append
+            }
+            if ($j.data.'vite-backend-url') {
+              $url = [System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String($j.data.'vite-backend-url'))
+              "VITE_BACKEND_URL=$url" | Out-File -FilePath $env:GITHUB_ENV -Append
+              $haveUrl = $true
+            }
+          }
+          if (-not $haveUrl) { "VITE_BACKEND_URL=/api" | Out-File -FilePath $env:GITHUB_ENV -Append }
+
+      - name: Install and build frontend
+        shell: powershell
+        run: |
+          Set-Location Frontend
+          if (Test-Path package-lock.json) { npm ci } else { npm install }
+          npm run build
+
+      - name: Extract metadata (frontend)
+        id: meta-frontend
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ github.repository_owner }}/zenix-front
+          tags: |
+            type=raw,value=${{ steps.version.outputs.tag }}
+
+      - name: Build and push frontend
+        uses: docker/build-push-action@v5
+        with:
+          context: ./Frontend
+          push: true
+          tags: ${{ steps.meta-frontend.outputs.tags }}
+          labels: ${{ steps.meta-frontend.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Pin manifests to version
+        shell: powershell
+        run: |
+          $tag = "${{ steps.version.outputs.tag }}"
+          (Get-Content Manifests/Zenix-Backend.yaml -Raw) -replace 'zenix-backend:[a-zA-Z0-9.]+', "zenix-backend:$tag" | Set-Content Manifests/Zenix-Backend.yaml
+          (Get-Content Manifests/Zenix-Frontend.yaml -Raw) -replace 'zenix-front:[a-zA-Z0-9.]+', "zenix-front:$tag" | Set-Content Manifests/Zenix-Frontend.yaml
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add version.txt Manifests/Zenix-Backend.yaml Manifests/Zenix-Frontend.yaml
+          git diff --staged --quiet
+          if ($LASTEXITCODE -eq 0) {
+            Write-Host "Manifests and version already up to date, skip commit"
+          } else {
+            git commit -m "chore(manifests): pin image tags to $tag [skip ci]"
+            git push
+          }
