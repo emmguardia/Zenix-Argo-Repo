@@ -41,11 +41,11 @@ jobs:
           Set-Location Backend
           npm ci
 
-      - name: Backend – audit (high/critical)
+      - name: Backend – audit (moderate+)
         shell: powershell
         run: |
           Set-Location Backend
-          npm audit --audit-level=high
+          npm audit --audit-level=moderate
 
       - name: Backend – test
         shell: powershell
@@ -59,11 +59,11 @@ jobs:
           Set-Location Frontend
           if (Test-Path package-lock.json) { npm ci } else { npm install }
 
-      - name: Frontend – audit (high/critical)
+      - name: Frontend – audit (moderate+)
         shell: powershell
         run: |
           Set-Location Frontend
-          npm audit --audit-level=high
+          npm audit --audit-level=moderate
 
       - name: Frontend – lint
         shell: powershell
@@ -170,8 +170,9 @@ jobs:
           if (-not ($v -match '^v(\d+)\.')) { Write-Error "Node version inconnue: $v" }
           if ([int]$Matches[1] -lt 20) { Write-Error "Node 20 ou plus requis (tu as $v). Installe https://nodejs.org" }
 
-      - name: Cache npm (self-hosted)
-        if: runner.self_hosted == true
+      # Désactivé sur Windows self-hosted: la sauvegarde du cache échoue (tar/gzip manquant)
+      - name: Cache npm (self-hosted Linux only)
+        if: runner.self_hosted == true && runner.os != 'Windows'
         uses: actions/cache@v4
         with:
           path: Frontend/node_modules
