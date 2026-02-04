@@ -136,6 +136,7 @@ jobs:
             type=raw,value=${{ steps.version.outputs.tag }}
 
       - name: Build and push backend
+        id: build-backend
         uses: docker/build-push-action@v5
         with:
           context: ./Backend
@@ -144,6 +145,15 @@ jobs:
           labels: ${{ steps.meta-backend.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+
+      - name: Trivy scan (backend)
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: '${{ env.REGISTRY }}/${{ github.repository_owner }}/zenix-backend:${{ steps.version.outputs.tag }}'
+          format: 'table'
+          severity: 'CRITICAL,HIGH'
+          exit-code: '1'
+        continue-on-error: false
 
       - name: Setup Node (hosted)
         if: runner.self_hosted != true
@@ -205,6 +215,7 @@ jobs:
             type=raw,value=${{ steps.version.outputs.tag }}
 
       - name: Build and push frontend
+        id: build-frontend
         uses: docker/build-push-action@v5
         with:
           context: ./Frontend
@@ -214,12 +225,27 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
-      - name: Pin manifests to version
+      - name: Trivy scan (frontend)
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: '${{ env.REGISTRY }}/${{ github.repository_owner }}/zenix-front:${{ steps.version.outputs.tag }}'
+          format: 'table'
+          severity: 'CRITICAL,HIGH'
+          exit-code: '1'
+        continue-on-error: false
+
+      - name: Pin manifests to version and digest
         shell: powershell
         run: |
           $tag = "${{ steps.version.outputs.tag }}"
-          (Get-Content Manifests/Zenix-Backend.yaml -Raw) -replace 'zenix-backend:[a-zA-Z0-9.]+', "zenix-backend:$tag" | Set-Content Manifests/Zenix-Backend.yaml
-          (Get-Content Manifests/Zenix-Frontend.yaml -Raw) -replace 'zenix-front:[a-zA-Z0-9.]+', "zenix-front:$tag" | Set-Content Manifests/Zenix-Frontend.yaml
+          $digestBackend = "${{ steps.build-backend.outputs.digest }}"
+          $digestFrontend = "${{ steps.build-frontend.outputs.digest }}"
+          $owner = "${{ github.repository_owner }}"
+          $reg = "${{ env.REGISTRY }}"
+          $backendImage = if ($digestBackend) { "${reg}/${owner}/zenix-backend@${digestBackend}" } else { "${reg}/${owner}/zenix-backend:${tag}" }
+          $frontendImage = if ($digestFrontend) { "${reg}/${owner}/zenix-front@${digestFrontend}" } else { "${reg}/${owner}/zenix-front:${tag}" }
+          (Get-Content Manifests/Zenix-Backend.yaml -Raw) -replace 'image:\s*[^\r\n]*zenix-backend[^\r\n]*', "image: $backendImage" | Set-Content Manifests/Zenix-Backend.yaml
+          (Get-Content Manifests/Zenix-Frontend.yaml -Raw) -replace 'image:\s*[^\r\n]*zenix-front[^\r\n]*', "image: $frontendImage" | Set-Content Manifests/Zenix-Frontend.yaml
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add version.txt Manifests/Zenix-Backend.yaml Manifests/Zenix-Frontend.yaml
@@ -227,6 +253,6 @@ jobs:
           if ($LASTEXITCODE -eq 0) {
             Write-Host "Manifests and version already up to date, skip commit"
           } else {
-            git commit -m "chore(manifests): pin image tags to $tag [skip ci]"
+            git commit -m "chore(manifests): pin images to digest $tag [skip ci]"
             git push
           }
