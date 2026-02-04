@@ -45,7 +45,7 @@ spec:
         fsGroup: 1000
       containers:
       - name: zenix-backend
-        image: ghcr.io/emmguardia/zenix-backend@sha256:a0ef10c889b7d94136eb58315ebd54bbc1b2d69148ecfc0c1dbcaa05bc0ef748
+        image: ghcr.io/emmguardia/zenix-backend@sha256:939bcf23d8a62642bd8424566c259b7ccba61f411e5dee7b85ce15dd50bb0f4e
         imagePullPolicy: IfNotPresent
         securityContext:
           allowPrivilegeEscalation: false
@@ -107,6 +107,7 @@ spec:
             path: jwt_private_key.pem
           - key: jwt-public-key
             path: jwt_public_key.pem
+
 
 
 

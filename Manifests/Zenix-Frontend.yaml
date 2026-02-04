@@ -41,7 +41,7 @@ spec:
         - name: ghcr-secret
       containers:
       - name: nginx
-        image: ghcr.io/emmguardia/zenix-front@sha256:888e76f9cf5bdb9e4dae323de37816db1ecb5dafdfa932f311dd56a5d219405f
+        image: ghcr.io/emmguardia/zenix-front@sha256:4e7709cfd8f7efe03d02ec51a64e5e65870a0f7efe1143abe49e0ea17469dc5d
         imagePullPolicy: Always
         ports:
         - containerPort: 80
@@ -68,6 +68,7 @@ spec:
           periodSeconds: 10
           timeoutSeconds: 3
           failureThreshold: 3
+
 
 
 
