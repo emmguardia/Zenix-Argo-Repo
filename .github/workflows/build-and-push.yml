@@ -147,13 +147,13 @@ jobs:
           cache-to: type=gha,mode=max
 
       - name: Trivy scan (backend)
-        uses: aquasecurity/trivy-action@master
-        with:
-          image-ref: '${{ env.REGISTRY }}/${{ github.repository_owner }}/zenix-backend:${{ steps.version.outputs.tag }}'
-          format: 'table'
-          severity: 'CRITICAL,HIGH'
-          exit-code: '1'
-        continue-on-error: false
+        shell: powershell
+        env:
+          TRIVY_USERNAME: ${{ github.actor }}
+          TRIVY_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          $img = "${{ env.REGISTRY }}/${{ github.repository_owner }}/zenix-backend:${{ steps.version.outputs.tag }}"
+          docker run --rm -e TRIVY_USERNAME -e TRIVY_PASSWORD aquasec/trivy image --exit-code 1 --severity CRITICAL,HIGH --format table $img
 
       - name: Setup Node (hosted)
         if: runner.self_hosted != true
@@ -226,13 +226,13 @@ jobs:
           cache-to: type=gha,mode=max
 
       - name: Trivy scan (frontend)
-        uses: aquasecurity/trivy-action@master
-        with:
-          image-ref: '${{ env.REGISTRY }}/${{ github.repository_owner }}/zenix-front:${{ steps.version.outputs.tag }}'
-          format: 'table'
-          severity: 'CRITICAL,HIGH'
-          exit-code: '1'
-        continue-on-error: false
+        shell: powershell
+        env:
+          TRIVY_USERNAME: ${{ github.actor }}
+          TRIVY_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          $img = "${{ env.REGISTRY }}/${{ github.repository_owner }}/zenix-front:${{ steps.version.outputs.tag }}"
+          docker run --rm -e TRIVY_USERNAME -e TRIVY_PASSWORD aquasec/trivy image --exit-code 1 --severity CRITICAL,HIGH --format table $img
 
       - name: Pin manifests to version and digest
         shell: powershell
