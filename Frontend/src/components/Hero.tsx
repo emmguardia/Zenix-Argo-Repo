@@ -16,7 +16,7 @@ const Hero = () => {
     return () => cancelAnimationFrame(id);
   }, []);
   const goToServices = () => {
-    navigate('/services');
+    navigate('/nos-services');
   };
   return (
     <section className="relative min-h-screen flex items-center bg-gradient-to-br from-slate-900 via-slate-800 to-blue-900 overflow-hidden pt-20 md:min-h-[80vh] lg:min-h-screen hero-compact">
@@ -50,7 +50,7 @@ const Hero = () => {
                 Faire un Devis Gratuit
               </button>
               <button
-                onClick={() => { trackEvent('cta_click', { id: 'hero_quote' }); navigate('/services'); }}
+                onClick={() => { trackEvent('cta_click', { id: 'hero_quote' }); navigate('/nos-services'); }}
                 className="bg-white/10 hover:bg-white/20 backdrop-blur-sm text-white font-semibold py-3 px-8 rounded-full transition-all border border-white/20 active:scale-95"
               >
                 Découvrir Mes Services

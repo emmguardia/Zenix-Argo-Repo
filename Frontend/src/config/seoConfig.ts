@@ -11,12 +11,6 @@ export const seoConfig = {
     keywords: "landing page, configuration landing page, design landing page, conversion, devis gratuit, Lyon, Zenix Web",
     url: "https://www.zenixweb.fr/landing",
   },
-  services: {
-    title: "Services de Développement Web | Création, Hébergement, SEO | Zenix",
-    description: "Découvrez nos services de développement web : création de sites, hébergement, mises à jour, modification, design UI/UX et optimisation SEO à Lyon.",
-    keywords: "services développement web, création site web, hébergement, maintenance site web, design UI/UX, SEO, Lyon, France",
-    url: "https://www.zenixweb.fr/services",
-  },
   contact: {
     title: "Contact | Devis Gratuit | Développeur Web Lyon | Zenix Web",
     description: "Contactez Enzo Monnet Mata pour un devis gratuit. Développeur web spécialisé en landing pages et sites modernes à Lyon. Réponse rapide garantie.",

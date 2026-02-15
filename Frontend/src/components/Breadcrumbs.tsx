@@ -23,7 +23,6 @@ const Breadcrumbs: React.FC = () => {
   const getSegmentName = (segment: string): string => {
     const segmentNames: { [key: string]: string } = {
       'landing': 'Landing Page',
-      'services': 'Services',
       'hebergement': 'Hébergement',
       'site-vitrine': 'Site Vitrine',
       'site-ecommerce': 'Site E-commerce',

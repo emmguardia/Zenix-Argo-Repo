@@ -1,5 +1,5 @@
 import { Suspense, lazy } from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import SEO from './components/SEO';
 import { seoConfig } from './config/seoConfig';
 import { organizationSchema, websiteSchema, serviceSchema, hostingServiceSchema, vitrineServiceSchema, ecommerceServiceSchema } from './utils/structuredData';
@@ -8,7 +8,6 @@ const Hero = lazy(() => import('./components/Hero'));
 const AboutMe = lazy(() => import('./components/AboutMe'));
 const Portfolio = lazy(() => import('./components/Portfolio'));
 const CompanyInfo = lazy(() => import('./components/CompanyInfo'));
-const Services = lazy(() => import('./components/Services'));
 const LandingExplanation = lazy(() => import('./components/LandingExplanation'));
 const PreDevisQuestions = lazy(() => import('./components/PreDevisQuestions'));
 const ContactPageComponent = lazy(() => import('./components/ContactPage'));
@@ -57,22 +56,6 @@ const LandingPage = () => (
     <Footer />
   </>
 );
-const ServicesPage = () => (
-  <>
-    <SEO
-      title={seoConfig.services.title}
-      description={seoConfig.services.description}
-      keywords={seoConfig.services.keywords}
-      url={seoConfig.services.url}
-      structuredData={serviceSchema}
-    />
-    <Header />
-    <main>
-      <Services />
-    </main>
-    <Footer />
-  </>
-);
 const ContactPage = () => (
   <>
     <SEO
@@ -96,7 +79,7 @@ function App() {
           <Routes>
               <Route path="/" element={<HomePage />} />
               <Route path="/landing" element={<LandingPage />} />
-              <Route path="/services" element={<ServicesPage />} />
+              <Route path="/services" element={<Navigate to="/nos-services" replace />} />
               <Route path="/contact" element={<ContactPage />} />
               <Route path="/confirmation" element={
                 <>
