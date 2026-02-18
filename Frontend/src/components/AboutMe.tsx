@@ -46,8 +46,11 @@ const AboutMe = () => {
           <div className="bg-gradient-to-br from-slate-100 to-slate-200 rounded-2xl p-8 text-center">
             <div className="w-32 h-32 rounded-full mx-auto mb-6 overflow-hidden border-4 border-white shadow-lg">
               <img 
-                src="/images/profile-photo.jpg" 
+                src="/images/profile-photo.webp" 
                 alt="Enzo Monnet Mata"
+                width={128}
+                height={128}
+                loading="lazy"
                 className="w-full h-full object-cover"
                 onError={(e) => {
                   e.currentTarget.style.display = 'none';

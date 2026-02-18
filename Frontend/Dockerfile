@@ -10,7 +10,7 @@ COPY Public/ ./
 # 2) dist/ par-dessus (index.html, assets/)
 COPY dist/ ./
 # Vérification : au moins une image doit exister
-RUN test -f ./images/Logo.png || (echo "ERREUR: images/Logo.png manquant" && exit 1)
+RUN test -f ./images/Logo.webp || (echo "ERREUR: images/Logo.webp manquant" && exit 1)
 
 COPY nginx/default.conf /etc/nginx/conf.d/default.conf
 

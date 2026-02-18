@@ -14,7 +14,7 @@ const Footer = () => {
         <div className="grid md:grid-cols-3 gap-8">
           <div>
             <div className="flex items-center mb-6">
-              <img src="/images/Logo.png" alt="Zenix Logo" className="h-32 w-auto" />
+              <img src="/images/Logo.webp" alt="Zenix Logo" width={320} height={128} loading="lazy" className="h-32 w-auto" />
             </div>
             <p className="text-slate-400 mb-4">
               Développeur web freelance spécialisé dans la création de sites web modernes et performants.
@@ -24,19 +24,21 @@ const Footer = () => {
                 href="https://www.linkedin.com/in/enzo-monnet-mata-3a1888378/" 
                 target="_blank" 
                 rel="noopener noreferrer"
+                aria-label="Profil LinkedIn d'Enzo Monnet Mata"
                 className="text-slate-400 hover:text-white transition-colors"
                 onClick={() => trackEvent('social_click', { platform: 'linkedin', location: 'footer' })}
               >
-                <Linkedin className="w-5 h-5" />
+                <Linkedin className="w-5 h-5" aria-hidden="true" />
               </a>
               <a 
                 href="https://www.instagram.com/zenix_web/" 
                 target="_blank" 
                 rel="noopener noreferrer"
+                aria-label="Profil Instagram Zenix Web"
                 className="text-slate-400 hover:text-white transition-colors"
                 onClick={() => trackEvent('social_click', { platform: 'instagram', location: 'footer' })}
               >
-                <Instagram className="w-5 h-5" />
+                <Instagram className="w-5 h-5" aria-hidden="true" />
               </a>
             </div>
           </div>

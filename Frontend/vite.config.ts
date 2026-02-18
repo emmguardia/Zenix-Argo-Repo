@@ -1,8 +1,27 @@
 /// <reference types="vitest/config" />
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
+
+/** Plugin pour charger le CSS en async et éviter le blocage du rendu (LCP) */
+function cssAsyncPlugin() {
+  return {
+    name: 'css-async',
+    transformIndexHtml: {
+      order: 'post', // Après l'injection des assets par Vite
+      handler(html: string) {
+        return html.replace(
+          /<link rel="stylesheet"([^>]*)href="(\/assets\/[^"]+\.css)"([^>]*)>/g,
+          (_, before, href, after) =>
+            `<link rel="stylesheet"${before}href="${href}"${after} media="print" onload="this.media='all'">` +
+            `<noscript><link rel="stylesheet" href="${href}"></noscript>`
+        );
+      },
+    },
+  };
+}
+
 export default defineConfig({
-  plugins: [react()],
+  plugins: [react(), cssAsyncPlugin()],
   publicDir: 'Public',
   test: {
     environment: 'jsdom',

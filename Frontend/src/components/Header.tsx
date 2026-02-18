@@ -53,7 +53,7 @@ const Header = () => {
         <div className="flex justify-between items-center">
           <div className="flex items-center">
             <Link to="/">
-              <img src="/images/Logo.png" alt="Zenix Logo" className="h-20 w-auto" />
+              <img src="/images/Logo.webp" alt="Zenix Logo" width={200} height={80} className="h-20 w-auto" fetchPriority="high" />
             </Link>
           </div>
           {}

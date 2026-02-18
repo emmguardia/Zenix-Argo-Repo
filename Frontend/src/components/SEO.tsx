@@ -15,7 +15,7 @@ const SEO: React.FC<SEOProps> = ({
   title = "Zenix | Services de Développement Web Expert",
   description = "Services professionnels de développement web incluant la création de sites, l'hébergement, les mises à jour et la modification de sites web. Obtenez un site web beau et fonctionnel pour votre entreprise.",
   keywords = "développement web, création site web, landing page, hébergement web, SEO, design web, Lyon, France, Enzo Monnet Mata",
-  image = "https://www.zenixweb.fr/images/Logo.png",
+  image = "https://www.zenixweb.fr/images/Logo.webp",
   url = "https://www.zenixweb.fr",
   type = "website",
   structuredData,

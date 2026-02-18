@@ -14,7 +14,7 @@ const Portfolio = () => {
     {
       title: "Site E-commerce de Toilettage",
       description: "Plateforme d'e-commerce complète et responsive, offrant une gestion intégrale des produits et des commandes, ainsi qu'une solution de paiement en ligne sécurisée.",
-      image: "/images/domainedesrevesbleus.png",
+      image: "/images/domainedesrevesbleus.webp",
       technologies: ["React", "MongoDB", "TailwindCSS", "Node.js", "K3s", "Vite","Python"],
       category: "Site E-commerce",
       url: "https://domainedesrevesbleus.eu/"
@@ -22,7 +22,7 @@ const Portfolio = () => {
     {
       title: "Site Vitrine Portfolio",
       description: "Portfolio personnel entièrement réalisé sur mesure pour présenter mes projets, compétences et expériences professionnelles.",
-      image: "/images/portfolio-zenix.png",
+      image: "/images/portfolio-zenix.webp",
       technologies: ["Node.js", "MariaDB", "K3s", "Vite","PHP","MySQL"],
       category: "Site Vitrine",
       url: "https://portfolio.zenixweb.fr/"
@@ -30,7 +30,7 @@ const Portfolio = () => {
     {
       title: "Site de Vente de Collier, Laisse et Harnais pour Chien",
       description: "Boutique en ligne complète pour la vente de produits spécialisés. Intègre un système de catalogue, un panier d'achat sécurisé et une interface d'administration pour la gestion des stocks.",
-      image: "/images/vente-produits-chien.png",
+      image: "/images/vente-produits-chien.webp",
       technologies: ["React", "MongoDB", "TailwindCSS", "Node.js", "K3s", "Vite"],
       category: "Site E-commerce",
       url: "https://clos-de-la-reine.zenixweb.fr/"
@@ -38,7 +38,7 @@ const Portfolio = () => {
     {
       title: "Site pour une Association de Cuisine",
       description: "Site institutionnel pour l'association, la présentation des membres et une section dédiée au partage de recettes.",
-      image: "/images/portfolio-zenix.png",
+      image: "/images/portfolio-zenix.webp",
       technologies: ["Node.js", "TailwindCSS", "K3s", "Vite","React"],
       category: "Site Vitrine",
       url: "#"
@@ -46,7 +46,7 @@ const Portfolio = () => {
     {
       title: "Blog de Cybersécurité",
       description: "Blog de cybersécurité pour partager mes connaissances et mes expériences en cybersécurité.",
-      image: "/images/blog-cybersécurité.png",
+      image: "/images/blog-cybersécurité.webp",
       technologies: ["Node.js", "TailwindCSS", "K3s", "Vite","React"],
       category: "Blog",
       url: "https://blog-cyber.zenixweb.fr/"
@@ -87,6 +87,9 @@ const Portfolio = () => {
                 <img 
                   src={project.image} 
                   alt={project.title}
+                  width={400}
+                  height={300}
+                  loading="lazy"
                   className="w-full h-full object-cover"
                   onError={(e) => {
                     e.currentTarget.style.display = 'none';

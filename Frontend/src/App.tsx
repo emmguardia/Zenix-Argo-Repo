@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import SEO from './components/SEO';
 import { seoConfig } from './config/seoConfig';
 import { organizationSchema, websiteSchema, serviceSchema, hostingServiceSchema, vitrineServiceSchema, ecommerceServiceSchema } from './utils/structuredData';
-const Header = lazy(() => import('./components/Header'));
+import Header from './components/Header';
 const Hero = lazy(() => import('./components/Hero'));
 const AboutMe = lazy(() => import('./components/AboutMe'));
 const Portfolio = lazy(() => import('./components/Portfolio'));

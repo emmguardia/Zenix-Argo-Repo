@@ -4,7 +4,7 @@ export const organizationSchema = {
   "name": "Zenix Web",
   "alternateName": "Zenix",
   "url": "https://www.zenixweb.fr",
-  "logo": "https://www.zenixweb.fr/images/Logo.png",
+  "logo": "https://www.zenixweb.fr/images/Logo.webp",
   "description": "Services professionnels de développement web incluant la création de sites, l'hébergement, les mises à jour et la modification de sites web.",
   "foundingDate": "2024",
   "founder": {
@@ -48,7 +48,7 @@ export const personSchema = {
     "addressLocality": "Lyon",
     "addressCountry": "FR"
   },
-  "image": "https://www.zenixweb.fr/images/profile-photo.jpg",
+  "image": "https://www.zenixweb.fr/images/profile-photo.webp",
   "url": "https://www.zenixweb.fr",
   "knowsAbout": [
     "Développement Web",

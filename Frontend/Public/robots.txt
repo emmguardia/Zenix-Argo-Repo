@@ -7,22 +7,3 @@ Sitemap: https://www.zenixweb.fr/sitemap.xml
 # Disallow admin or private areas (if any)
 # Disallow: /admin/
 # Disallow: /private/
-
-# Allow all search engines to crawl the site
-Crawl-delay: 1
-
-# Host directive (optional but recommended)
-Host: www.zenixweb.fr
-
-# Specific rules for different bots
-User-agent: Googlebot
-Allow: /
-Crawl-delay: 1
-
-User-agent: Bingbot
-Allow: /
-Crawl-delay: 1
-
-User-agent: Slurp
-Allow: /
-Crawl-delay: 2
