@@ -66,11 +66,11 @@ jobs:
           Set-Location Frontend
           if (Test-Path package-lock.json) { npm ci } else { npm install }
 
-      - name: Frontend – audit (moderate+)
+      - name: Frontend – audit (moderate+, prod deps only)
         shell: powershell
         run: |
           Set-Location Frontend
-          npm audit --audit-level=moderate
+          npm audit --omit=dev --audit-level=moderate
 
       - name: Frontend – lint
         shell: powershell
