@@ -12,6 +12,6 @@
     "jsonwebtoken": "^9.0.2"
   },
   "overrides": {
-    "tar": ">=7.5.7"
+    "tar": ">=7.5.8"
   }
 }

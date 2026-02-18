@@ -11,8 +11,8 @@ RUN addgroup -g 10000 appuser && adduser -D -u 10000 -G appuser appuser
 
 WORKDIR /app
 
-# Corriger CVE-2026-24842 (tar): forcer 7.5.7 partout (copie du global vers npm, pas de npm install dans npm/)
-RUN npm install -g tar@7.5.7 \
+# Corriger CVE-2026-26960 (tar): forcer 7.5.8 partout (copie du global vers npm)
+RUN npm install -g tar@7.5.8 \
     && NPM_TAR="/usr/local/lib/node_modules/npm/node_modules/tar" \
     && rm -rf "$NPM_TAR" \
     && mkdir -p "$(dirname "$NPM_TAR")" \
