@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { Check, Server, Shield, Zap, BarChart, ArrowRight } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { trackEvent } from '../utils/analytics';
 
 interface PricingCardProps {
   name: string;
@@ -13,13 +14,6 @@ interface PricingCardProps {
 
 const PricingCard = ({ name, price, description, features, highlight = false, delayValue }: PricingCardProps) => {
   const navigate = useNavigate();
-  const trackEvent = (eventName: string, params?: Record<string, unknown>) => {
-    try {
-      if (typeof window !== 'undefined' && typeof window.gtag === 'function') {
-        window.gtag('event', eventName, params || {});
-      }
-    } catch { /* gtag not available */ }
-  };
 
   return (
     <div 
@@ -47,7 +41,7 @@ const PricingCard = ({ name, price, description, features, highlight = false, de
       </ul>
       <button
         onClick={() => {
-          trackEvent('hosting_plan_click', { plan: name });
+          trackEvent('contact_click', { source: 'hosting', cta: 'choisir_plan', plan: name });
           navigate('/contact');
         }}
         className={`w-full py-3 px-6 rounded-lg font-semibold transition-all mt-auto ${
@@ -64,14 +58,6 @@ const PricingCard = ({ name, price, description, features, highlight = false, de
 };
 
 const Hosting = () => {
-  const trackEvent = (eventName: string, params?: Record<string, unknown>) => {
-    try {
-      if (typeof window !== 'undefined' && typeof window.gtag === 'function') {
-        window.gtag('event', eventName, params || {});
-      }
-    } catch { /* gtag not available */ }
-  };
-
   const sectionRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
@@ -247,7 +233,7 @@ const Hosting = () => {
         <div className="text-center mt-12">
           <button
             onClick={() => {
-              trackEvent('cta_click', { id: 'hosting_contact' });
+              trackEvent('contact_click', { source: 'hosting', cta: 'me_contacter' });
               window.location.href = '/contact';
             }}
             className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-8 rounded-full transition-all shadow-lg hover:shadow-blue-500/20 active:scale-95"

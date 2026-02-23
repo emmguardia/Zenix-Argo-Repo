@@ -1,15 +1,12 @@
 import { CheckCircle, ArrowRight } from 'lucide-react';
 import { useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import SEO from '../components/SEO';
 import { seoConfig } from '../config/seoConfig';
+import { trackEvent } from '../utils/analytics';
 const Confirmation = () => {
   useEffect(() => {
-    try {
-      const w = window as unknown as { gtag?: (...args: unknown[]) => void };
-      if (w.gtag) {
-        w.gtag('event', 'ads_conversion_Demande_de_devis_1', {});
-      }
-    } catch { /* gtag not available */ }
+    trackEvent('conversion', { type: 'contact_form_success', page: 'confirmation' });
   }, []);
   return (
     <>
@@ -54,13 +51,14 @@ const Confirmation = () => {
             </ul>
           </div>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <a 
-              href="/"
+            <Link 
+              to="/"
+              onClick={() => trackEvent('nav_click', { destination: '/', source: 'confirmation', cta: 'retour_accueil' })}
               className="inline-flex items-center justify-center px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors"
             >
               Retour à l'accueil
               <ArrowRight className="w-5 h-5 ml-2" />
-            </a>
+            </Link>
           </div>
         </div>
       </div>

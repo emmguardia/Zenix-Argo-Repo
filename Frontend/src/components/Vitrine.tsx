@@ -1,15 +1,9 @@
 import React, { useEffect, useRef } from 'react';
 import { Check, Globe, Search, Shield, Zap, ArrowRight, Code, Palette } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { trackEvent } from '../utils/analytics';
 
 const Vitrine = () => {
-  const trackEvent = (eventName: string, params?: Record<string, unknown>) => {
-    try {
-      if (typeof window !== 'undefined' && typeof window.gtag === 'function') {
-        window.gtag('event', eventName, params || {});
-      }
-    } catch { /* gtag not available */ }
-  };
 
   const sectionRef = useRef<HTMLElement>(null);
   const navigate = useNavigate();
@@ -154,7 +148,7 @@ const Vitrine = () => {
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <button
               onClick={() => {
-                trackEvent('cta_click', { id: 'vitrine_contact' });
+                trackEvent('contact_click', { source: 'vitrine', cta: 'me_contacter' });
                 navigate('/contact');
               }}
               className="bg-white text-blue-600 hover:bg-blue-50 font-semibold py-3 px-8 rounded-full transition-all shadow-lg hover:shadow-white/20 active:scale-95 inline-flex items-center justify-center"
@@ -164,7 +158,7 @@ const Vitrine = () => {
             </button>
             <button
               onClick={() => {
-                trackEvent('cta_click', { id: 'vitrine_portfolio' });
+                trackEvent('nav_click', { destination: '/', source: 'vitrine', cta: 'portfolio' });
                 navigate('/#portfolio');
               }}
               className="bg-white/10 backdrop-blur-sm text-white hover:bg-white/20 font-semibold py-3 px-8 rounded-full transition-all border border-white/20 active:scale-95"

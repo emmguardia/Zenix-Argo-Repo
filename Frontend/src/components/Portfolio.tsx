@@ -1,13 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { ExternalLink, Eye, Code2, X, } from 'lucide-react';
+import { trackEvent } from '../utils/analytics';
 const Portfolio = () => {
-  const trackEvent = (eventName: string, params?: Record<string, unknown>) => {
-    try {
-      if (typeof window !== 'undefined' && typeof window.gtag === 'function') {
-        window.gtag('event', eventName, params || {});
-      }
-    } catch { /* gtag not available */ }
-  };
   const sectionRef = useRef<HTMLElement>(null);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const projects = [

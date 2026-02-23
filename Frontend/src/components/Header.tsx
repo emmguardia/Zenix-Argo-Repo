@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback, memo } from 'react';
 import { Menu, X } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
+import { trackEvent } from '../utils/analytics';
 const NavigationLink = memo(({ link, onNavigate }: { link: { name: string; path: string }, onNavigate: (path: string) => void }) => (
   <button
     onClick={() => onNavigate(link.path)}
@@ -10,13 +11,6 @@ const NavigationLink = memo(({ link, onNavigate }: { link: { name: string; path:
   </button>
 ));
 const Header = () => {
-  const trackEvent = (eventName: string, params?: Record<string, unknown>) => {
-    try {
-      if (typeof window !== 'undefined' && typeof window.gtag === 'function') {
-        window.gtag('event', eventName, params || {});
-      }
-    } catch { /* gtag not available */ }
-  };
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const handleScroll = useCallback(() => {
@@ -59,13 +53,13 @@ const Header = () => {
           {}
           <nav className="hidden md:flex space-x-8">
             {navigation.map((link) => (
-              <NavigationLink key={link.path} link={link} onNavigate={(p: string) => { trackEvent('nav_click', { destination: p }); goTo(p); }} />
+              <NavigationLink key={link.path} link={link} onNavigate={(p: string) => { trackEvent('nav_click', { destination: p, location: 'header' }); goTo(p); }} />
             ))}
           </nav>
           {}
           <div className="hidden md:block">
             <button
-              onClick={() => { trackEvent('cta_click', { id: 'header_contact', location: 'header' }); goTo('/contact'); }}
+              onClick={() => { trackEvent('contact_click', { source: 'header', cta: 'me_contacter' }); goTo('/contact'); }}
               className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-5 rounded-full transition-all shadow-md hover:shadow-lg active:scale-95"
             >
               Me Contacter
@@ -94,7 +88,7 @@ const Header = () => {
                 </button>
               ))}
               <button
-                onClick={() => { trackEvent('cta_click', { id: 'header_contact', location: 'mobile_menu' }); goTo('/contact'); }}
+                onClick={() => { trackEvent('contact_click', { source: 'header', cta: 'me_contacter', device: 'mobile' }); goTo('/contact'); }}
                 className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-5 rounded-lg transition-all active:scale-95 mt-2"
               >
                 Me Contacter

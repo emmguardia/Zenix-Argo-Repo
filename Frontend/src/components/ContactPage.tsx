@@ -1,16 +1,25 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Mail, MapPin, Calendar, User, GraduationCap, Shield } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import SEO from './SEO';
 import { consultationSchema, organizationSchema, personSchema } from '../utils/structuredData';
+import { trackEvent } from '../utils/analytics';
 const ContactPage = () => {
-  const trackEvent = (eventName: string, params?: Record<string, unknown>) => {
-    try {
-      if (typeof window !== 'undefined' && typeof window.gtag === 'function') {
-        window.gtag('event', eventName, params || {});
+  const formStartTracked = useRef(false);
+  const formRef = useRef<HTMLFormElement>(null);
+
+  useEffect(() => {
+    const form = formRef.current;
+    if (!form) return;
+    const onFormInteraction = () => {
+      if (!formStartTracked.current) {
+        formStartTracked.current = true;
+        trackEvent('form_start', { page: 'contact', action: 'devis' });
       }
-    } catch { /* gtag not available */ }
-  };
+    };
+    form.addEventListener('focusin', onFormInteraction);
+    return () => form.removeEventListener('focusin', onFormInteraction);
+  }, []);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -125,11 +134,11 @@ const ContactPage = () => {
         throw new Error(errorMessage);
       }
       trackEvent('contact_form_submitted', {
-        form_location: 'contact_page',
-        project_type: formData.project || '(not set)',
-        timeline: formData.timeline || '(not set)',
-        budget_entered: Boolean(formData.budget),
-        value: Number(formData.budget || 0)
+        page: 'contact',
+        project_type: formData.project || 'non_renseigne',
+        timeline: formData.timeline || 'non_renseigne',
+        budget_entered: String(!!formData.budget),
+        budget_value: String(formData.budget || 0)
       });
       setFormData({
         name: '',
@@ -147,8 +156,8 @@ const ContactPage = () => {
       setError(errorMessage);
       console.error('Erreur lors de l\'envoi:', err);
       trackEvent('contact_form_error', {
-        form_location: 'contact_page',
-        error: errorMessage
+        page: 'contact',
+        error: errorMessage.substring(0, 100)
       });
     } finally {
       setIsSubmitting(false);
@@ -251,7 +260,7 @@ const ContactPage = () => {
               <div className="space-y-3">
                 <div className="flex items-center">
                   <Mail className="w-5 h-5 text-blue-600 mr-3" />
-                  <a href="mailto:contact@zenixweb.fr" className="text-slate-600 hover:text-blue-600" onClick={() => trackEvent('contact_click', { method: 'email', location: 'contact_info' })}>
+                  <a href="mailto:contact@zenixweb.fr" className="text-slate-600 hover:text-blue-600" onClick={() => trackEvent('contact_click', { source: 'contact_page', method: 'email' })}>
                     contact@zenixweb.fr
                   </a>
                 </div>
@@ -262,7 +271,7 @@ const ContactPage = () => {
           <div className="bg-white rounded-xl shadow-lg p-8">
             <h3 className="text-2xl font-bold text-slate-800 mb-2">Formulaire de contact</h3>
             <p className="text-slate-600 mb-6">Quelques questions pour mieux comprendre votre projet</p>
-            <form onSubmit={handleSubmit} className="space-y-6">
+            <form ref={formRef} onSubmit={handleSubmit} className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <label htmlFor="name" className="block text-sm font-medium text-slate-700 mb-1">
@@ -413,6 +422,7 @@ const ContactPage = () => {
               <button
                 type="submit"
                 disabled={isSubmitting}
+                onClick={() => trackEvent('form_submit_click', { page: 'contact' })}
                 className={`w-full py-3 px-6 bg-blue-600 text-white rounded-lg font-semibold transition-all ${
                   isSubmitting 
                     ? 'opacity-50 cursor-not-allowed' 

@@ -1,15 +1,9 @@
 import React, { useEffect, useRef } from 'react';
 import { Check, ShoppingCart, Shield, CreditCard, Search, BarChart, Package, ArrowRight, Lock, TrendingUp } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { trackEvent } from '../utils/analytics';
 
 const Ecommerce = () => {
-  const trackEvent = (eventName: string, params?: Record<string, unknown>) => {
-    try {
-      if (typeof window !== 'undefined' && typeof window.gtag === 'function') {
-        window.gtag('event', eventName, params || {});
-      }
-    } catch { /* gtag not available */ }
-  };
 
   const sectionRef = useRef<HTMLElement>(null);
   const navigate = useNavigate();
@@ -186,7 +180,7 @@ const Ecommerce = () => {
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <button
               onClick={() => {
-                trackEvent('cta_click', { id: 'ecommerce_contact' });
+                trackEvent('contact_click', { source: 'ecommerce', cta: 'me_contacter' });
                 navigate('/contact');
               }}
               className="bg-white text-violet-600 hover:bg-violet-50 font-semibold py-3 px-8 rounded-full transition-all shadow-lg hover:shadow-white/20 active:scale-95 inline-flex items-center justify-center"
@@ -196,7 +190,7 @@ const Ecommerce = () => {
             </button>
             <button
               onClick={() => {
-                trackEvent('cta_click', { id: 'ecommerce_portfolio' });
+                trackEvent('nav_click', { destination: '/', source: 'ecommerce', cta: 'portfolio' });
                 navigate('/#portfolio');
               }}
               className="bg-white/10 backdrop-blur-sm text-white hover:bg-white/20 font-semibold py-3 px-8 rounded-full transition-all border border-white/20 active:scale-95"

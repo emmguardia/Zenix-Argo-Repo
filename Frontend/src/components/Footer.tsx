@@ -1,13 +1,7 @@
 import { MapPin, Mail, Linkedin, Instagram } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { trackEvent } from '../utils/analytics';
 const Footer = () => {
-  const trackEvent = (eventName: string, params?: Record<string, unknown>) => {
-    try {
-      if (typeof window !== 'undefined' && typeof window.gtag === 'function') {
-        window.gtag('event', eventName, params || {});
-      }
-    } catch { /* gtag not available */ }
-  };
   return (
     <footer className="bg-slate-900 text-white py-12">
       <div className="container mx-auto px-6">
@@ -47,7 +41,7 @@ const Footer = () => {
             <div className="space-y-3">
               <p className="flex items-center text-slate-400">
                 <Mail className="w-5 h-5 mr-2" />
-                <a href="mailto:contact@zenixweb.fr" className="text-slate-400 hover:text-white transition-colors" onClick={() => trackEvent('contact_click', { method: 'email', location: 'footer' })}>
+                <a href="mailto:contact@zenixweb.fr" className="text-slate-400 hover:text-white transition-colors" onClick={() => trackEvent('contact_click', { source: 'footer', method: 'email' })}>
                   contact@zenixweb.fr
                 </a>
               </p>
@@ -60,11 +54,11 @@ const Footer = () => {
           <div>
             <h3 className="text-xl font-bold mb-4">Services</h3>
             <ul className="space-y-2 text-slate-400">
-              <li><Link to="/nos-services" className="hover:text-white transition-colors">Nos Services</Link></li>
-              <li><Link to="/site-vitrine" className="hover:text-white transition-colors">Site Vitrine</Link></li>
-              <li><Link to="/site-ecommerce" className="hover:text-white transition-colors">Site E-commerce</Link></li>
-              <li><Link to="/landing" className="hover:text-white transition-colors">Landing Page</Link></li>
-              <li><Link to="/hebergement" className="hover:text-white transition-colors">Hébergement</Link></li>
+              <li><Link to="/nos-services" className="hover:text-white transition-colors" onClick={() => trackEvent('footer_link_click', { destination: '/nos-services', page: 'nos_services' })}>Nos Services</Link></li>
+              <li><Link to="/site-vitrine" className="hover:text-white transition-colors" onClick={() => trackEvent('footer_link_click', { destination: '/site-vitrine', page: 'site_vitrine' })}>Site Vitrine</Link></li>
+              <li><Link to="/site-ecommerce" className="hover:text-white transition-colors" onClick={() => trackEvent('footer_link_click', { destination: '/site-ecommerce', page: 'site_ecommerce' })}>Site E-commerce</Link></li>
+              <li><Link to="/landing" className="hover:text-white transition-colors" onClick={() => trackEvent('footer_link_click', { destination: '/landing', page: 'landing' })}>Landing Page</Link></li>
+              <li><Link to="/hebergement" className="hover:text-white transition-colors" onClick={() => trackEvent('footer_link_click', { destination: '/hebergement', page: 'hebergement' })}>Hébergement</Link></li>
             </ul>
           </div>
         </div>

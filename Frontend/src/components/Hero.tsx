@@ -1,14 +1,8 @@
 import { useEffect, useState } from 'react';
 import { ChevronDown, Code, Layout, Rocket } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { trackEvent } from '../utils/analytics';
 const Hero = () => {
-  const trackEvent = (eventName: string, params?: Record<string, unknown>) => {
-    try {
-      if (typeof window !== 'undefined' && typeof window.gtag === 'function') {
-        window.gtag('event', eventName, params || {});
-      }
-    } catch { /* gtag not available */ }
-  };
   const [fadeIn, setFadeIn] = useState(false);
   const navigate = useNavigate();
   useEffect(() => {
@@ -44,13 +38,13 @@ const Hero = () => {
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
               <button
-                onClick={() => { trackEvent('cta_click', { id: 'hero_configure_landing' }); navigate('/contact'); }}
+                onClick={() => { trackEvent('contact_click', { source: 'hero', cta: 'devis_gratuit' }); navigate('/contact'); }}
                 className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-8 rounded-full transition-all shadow-lg hover:shadow-blue-500/20 active:scale-95"
               >
                 Faire un Devis Gratuit
               </button>
               <button
-                onClick={() => { trackEvent('cta_click', { id: 'hero_quote' }); navigate('/nos-services'); }}
+                onClick={() => { trackEvent('nav_click', { destination: '/nos-services', source: 'hero', cta: 'decouvrir_services' }); navigate('/nos-services'); }}
                 className="bg-white/10 hover:bg-white/20 backdrop-blur-sm text-white font-semibold py-3 px-8 rounded-full transition-all border border-white/20 active:scale-95"
               >
                 Découvrir Mes Services
@@ -97,7 +91,7 @@ const Hero = () => {
           </div>
         </div>
         <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 text-white animate-bounce hidden sm:block">
-          <button onClick={() => { trackEvent('cta_click', { id: 'hero_discover_services' }); goToServices(); }} className="flex flex-col items-center group">
+          <button onClick={() => { trackEvent('nav_click', { destination: '/nos-services', source: 'hero', cta: 'decouvrir_services_bas' }); goToServices(); }} className="flex flex-col items-center group">
             <span className="text-sm font-medium mb-2 group-hover:text-blue-400 transition-colors">Découvrez mes services</span>
             <ChevronDown className="w-6 h-6 group-hover:text-blue-400 transition-colors" />
           </button>

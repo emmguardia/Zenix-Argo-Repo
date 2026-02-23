@@ -1,7 +1,8 @@
-import { Suspense, lazy } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { Suspense, lazy, useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import SEO from './components/SEO';
 import { seoConfig } from './config/seoConfig';
+import { trackEvent } from './utils/analytics';
 import { organizationSchema, websiteSchema, serviceSchema, hostingServiceSchema, vitrineServiceSchema, ecommerceServiceSchema } from './utils/structuredData';
 import Header from './components/Header';
 const Hero = lazy(() => import('./components/Hero'));
@@ -17,6 +18,18 @@ const LegalMentions = lazy(() => import('./components/LegalMentions'));
 const PrivacyPolicy = lazy(() => import('./components/PrivacyPolicy'));
 const TermsOfService = lazy(() => import('./components/TermsOfService'));
 const Hosting = lazy(() => import('./components/Hosting'));
+
+const PageViewTracker = () => {
+  const location = useLocation();
+  useEffect(() => {
+    if (location.pathname === '/contact') {
+      trackEvent('page_view', { page: 'contact', intent: 'devis' });
+    } else if (location.pathname === '/confirmation') {
+      trackEvent('page_view', { page: 'confirmation', conversion: 'success' });
+    }
+  }, [location.pathname]);
+  return null;
+};
 const Vitrine = lazy(() => import('./components/Vitrine'));
 const Ecommerce = lazy(() => import('./components/Ecommerce'));
 const TypesDeSites = lazy(() => import('./components/TypesDeSites'));
@@ -74,6 +87,7 @@ const ContactPage = () => (
 function App() {
   return (
     <Router>
+      <PageViewTracker />
       <div className="min-h-screen bg-white">
         <Suspense fallback={<div className="h-screen flex items-center justify-center"><div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-600"></div></div>}>
           <Routes>

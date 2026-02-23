@@ -1,15 +1,9 @@
 import React, { useEffect, useRef } from 'react';
 import { Check, Target, ShoppingCart, Globe, ArrowRight, Zap, Shield, Search, TrendingUp } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { trackEvent } from '../utils/analytics';
 
 const TypesDeSites = () => {
-  const trackEvent = (eventName: string, params?: Record<string, unknown>) => {
-    try {
-      if (typeof window !== 'undefined' && typeof window.gtag === 'function') {
-        window.gtag('event', eventName, params || {});
-      }
-    } catch { /* gtag not available */ }
-  };
 
   const sectionRef = useRef<HTMLElement>(null);
   const navigate = useNavigate();
@@ -271,7 +265,7 @@ const TypesDeSites = () => {
           </p>
           <button
             onClick={() => {
-              trackEvent('cta_click', { id: 'types_sites_contact' });
+              trackEvent('contact_click', { source: 'types_sites', cta: 'me_contacter' });
               navigate('/contact');
             }}
             className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-8 rounded-full transition-all shadow-lg hover:shadow-blue-500/20 active:scale-95 inline-flex items-center"
