@@ -15,6 +15,8 @@ const PORT = process.env.PORT || 3000;
 const JWT_PRIVATE_KEY_PATH = process.env.JWT_PRIVATE_KEY_PATH || (process.env.NODE_ENV === 'production' ? '/app/secrets/jwt_private_key.pem' : join(__dirname, '..', '..', 'Email-Service', 'secrets', 'jwt_private_key.pem'));
 const EMAIL_SERVICE_URL = process.env.EMAIL_SERVICE_URL || 'http://email-service.email-service.svc.cluster.local:8080';
 const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'enzomonnetmata@gmail.com';
+const GOTIFY_URL = process.env.GOTIFY_URL || '';
+const GOTIFY_TOKEN = process.env.GOTIFY_TOKEN || '';
 
 app.use(cors({
   origin: process.env.ALLOWED_ORIGINS ? process.env.ALLOWED_ORIGINS.split(',') : ['https://www.zenixweb.fr', 'http://localhost:5173'],
@@ -68,6 +70,26 @@ async function sendEmailToService(templateId, toEmail, toName, variables) {
   }
 
   return await response.json();
+}
+
+async function sendGotifyNotification(title, message, priority = 5) {
+  if (!GOTIFY_URL || !GOTIFY_TOKEN) {
+    console.warn('Gotify not configured (GOTIFY_URL or GOTIFY_TOKEN missing), skipping notification');
+    return;
+  }
+  const url = `${GOTIFY_URL.replace(/\/$/, '')}/message?token=${GOTIFY_TOKEN}`;
+  const formData = new FormData();
+  formData.append('title', title);
+  formData.append('message', message);
+  formData.append('priority', String(priority));
+  const response = await fetch(url, {
+    method: 'POST',
+    body: formData,
+  });
+  if (!response.ok) {
+    console.error('Gotify notification failed:', response.status, await response.text());
+    throw new Error(`Gotify HTTP ${response.status}`);
+  }
 }
 
 app.post('/api/send-contact', async (req, res) => {
@@ -124,6 +146,13 @@ app.post('/api/send-contact', async (req, res) => {
     await sendEmailToService('contact', from_email, from_name, {
       message: 'Votre demande a bien été reçue.'
     });
+
+    try {
+      const gotifyMessage = `${from_name} (${from_email}) - ${getProjectLabel(project)} - ${getTimelineLabel(timeline)}`;
+      await sendGotifyNotification('Nouveau Contact ZenixWeb', gotifyMessage, 5);
+    } catch (err) {
+      console.error('Gotify notification error (emails sent successfully):', err.message);
+    }
 
     res.json({ success: true });
   } catch (error) {
