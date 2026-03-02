@@ -45,6 +45,6 @@
   "overrides": {
     "tar": ">=7.5.8",
     "esbuild": ">=0.25.0",
-    "minimatch": ">=10.2.1"
+    "minimatch": ">=10.2.3"
   }
 }
