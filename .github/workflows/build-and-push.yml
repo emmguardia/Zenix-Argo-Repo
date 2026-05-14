@@ -1,0 +1,340 @@
+# Build & push : main -> bump version + scan Trivy + push GHCR + pin digest dans values.yaml
+# ArgoCD reprend ensuite le relai et déploie sur le cluster.
+#
+# Runners GitHub-hosted ubuntu-latest (illimités pour repo public).
+# pnpm + minimum-release-age 24h pour défense supply-chain.
+#
+# Secrets GitHub requis (Settings -> Secrets and variables -> Actions) :
+#   KUBE_CONFIG_DATA : kubeconfig base64 pour récupérer le Sealed Secret côté build
+#                      (echo "$KUBECONFIG_CONTENT" | base64 -w0)
+#
+# Secrets optionnels (sinon défauts hardcodés) :
+#   Aucun — VITE_RECAPTCHA_SITE_KEY et VITE_BACKEND_URL sont lus depuis le secret K8s
+#   zenix-backend-secrets via kubectl. Le runner a accès au cluster via KUBE_CONFIG_DATA.
+
+name: Build and push to GHCR
+
+on:
+  push:
+    branches:
+      - main
+      - master
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: 'Branch to build'
+        required: true
+        default: 'main'
+        type: choice
+        options:
+          - main
+
+env:
+  REGISTRY: ghcr.io
+  TRIVY_IMAGE: aquasec/trivy:0.69.3
+  PNPM_VERSION: 10.33.4
+  NODE_VERSION: '26'
+
+permissions:
+  contents: read
+  packages: write
+  attestations: write
+  id-token: write
+
+concurrency:
+  group: build-and-push-${{ github.ref_name }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    name: Test & security
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      actions: read
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+          cache-dependency-path: |
+            Backend/pnpm-lock.yaml
+            Frontend/pnpm-lock.yaml
+
+      - name: Backend – install
+        working-directory: Backend
+        run: pnpm install --frozen-lockfile
+
+      - name: Backend – audit (high+)
+        working-directory: Backend
+        run: pnpm audit --audit-level high || true
+        # `pnpm audit` retourne non-zéro même sur des CVEs de devDependencies non utilisées
+        # en runtime — on log mais on ne bloque pas. Pour bloquer en prod uniquement :
+        # `pnpm audit --prod --audit-level high`
+        continue-on-error: true
+
+      - name: Backend – test (if present)
+        working-directory: Backend
+        # pnpm run --if-present test  (et NON pnpm test --if-present qui passerait
+        # --if-present comme argument du script)
+        run: pnpm run --if-present test
+
+      - name: Frontend – install
+        working-directory: Frontend
+        run: pnpm install --frozen-lockfile
+
+      - name: Frontend – audit (high+, prod deps only)
+        working-directory: Frontend
+        run: pnpm audit --prod --audit-level high
+        continue-on-error: true
+
+      - name: Frontend – lint
+        working-directory: Frontend
+        run: pnpm lint
+        # lint informatif tant qu'on n'a pas fini de fixer les warnings legacy
+        continue-on-error: true
+
+      - name: Frontend – test (if present)
+        working-directory: Frontend
+        run: pnpm run --if-present test
+
+  build-and-push:
+    name: Build and push
+    needs: test
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    permissions:
+      contents: write
+      packages: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+          cache-dependency-path: |
+            Backend/pnpm-lock.yaml
+            Frontend/pnpm-lock.yaml
+
+      - name: Bump version (prod)
+        id: tag
+        run: |
+          CONTENT=$(cat version.txt | tr -d '\r\n ')
+          MAJOR=$(echo "$CONTENT" | cut -d. -f1)
+          MINOR=$(echo "$CONTENT" | cut -d. -f2)
+          PATCH=$(echo "$CONTENT" | cut -d. -f3)
+          if ! [[ "$MAJOR" =~ ^[0-9]+$ ]] || ! [[ "$MINOR" =~ ^[0-9]+$ ]] || ! [[ "$PATCH" =~ ^[0-9]+$ ]]; then
+            echo "version.txt invalide: $CONTENT (attendu X.Y.Z)"
+            exit 1
+          fi
+          if [ "$PATCH" -lt 9 ]; then
+            PATCH=$((PATCH + 1))
+          else
+            PATCH=0
+            MINOR=$((MINOR + 1))
+          fi
+          NEW_VERSION="${MAJOR}.${MINOR}.${PATCH}"
+          echo "$NEW_VERSION" > version.txt
+          TAG="v${NEW_VERSION}"
+          echo "IMAGE_TAG=$TAG" >> $GITHUB_ENV
+          echo "tag=$TAG" >> $GITHUB_OUTPUT
+          echo "Version: $CONTENT → $NEW_VERSION (tag: $TAG)"
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      # ── Récupération des variables de build frontend depuis le Sealed Secret K8s ──
+      - name: Install kubectl
+        uses: azure/setup-kubectl@v5
+        with:
+          version: 'latest'
+
+      - name: Configure kubeconfig from secret
+        env:
+          KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
+        run: |
+          mkdir -p ~/.kube
+          echo "$KUBE_CONFIG_DATA" | base64 -d > ~/.kube/config
+          chmod 600 ~/.kube/config
+
+      - name: Get build env from cluster (Sealed Secret)
+        id: cluster-env
+        run: |
+          set -euo pipefail
+          # On lit le secret déchiffré côté cluster (déchiffré par sealed-secrets-controller).
+          if SECRET_JSON=$(kubectl get secret zenix-backend-secrets -n zenix -o json 2>/dev/null); then
+            VITE_RECAPTCHA_SITE_KEY=$(echo "$SECRET_JSON" | jq -r '.data."vite-recaptcha-site-key" // empty' | base64 -d 2>/dev/null || true)
+            VITE_BACKEND_URL=$(echo "$SECRET_JSON" | jq -r '.data."vite-backend-url" // empty' | base64 -d 2>/dev/null || true)
+          else
+            echo "::warning::Cluster inaccessible ou secret zenix-backend-secrets absent. Utilisation des défauts."
+            VITE_RECAPTCHA_SITE_KEY=""
+            VITE_BACKEND_URL=""
+          fi
+          # Défaut sain : VITE_BACKEND_URL=/api (Ingress du même cluster)
+          [ -z "$VITE_BACKEND_URL" ] && VITE_BACKEND_URL="/api"
+          # On masque la clé reCAPTCHA dans les logs au cas où
+          echo "::add-mask::$VITE_RECAPTCHA_SITE_KEY"
+          echo "VITE_RECAPTCHA_SITE_KEY=$VITE_RECAPTCHA_SITE_KEY" >> $GITHUB_ENV
+          echo "VITE_BACKEND_URL=$VITE_BACKEND_URL" >> $GITHUB_ENV
+          echo "Variables de build récupérées (URL=$VITE_BACKEND_URL, reCAPTCHA défini=$([ -n "$VITE_RECAPTCHA_SITE_KEY" ] && echo oui || echo non))"
+
+      # ── Backend ──────────────────────────────────────────────────────────────
+      - name: Extract metadata (backend)
+        id: meta-backend
+        uses: docker/metadata-action@v6
+        with:
+          images: ${{ env.REGISTRY }}/${{ github.repository_owner }}/zenix-backend
+          tags: |
+            type=raw,value=${{ steps.tag.outputs.tag }}
+
+      # Étape 1 : build local pour le scan Trivy (pas de push)
+      - name: Build backend (local — pour scan Trivy)
+        uses: docker/build-push-action@v7
+        with:
+          context: ./Backend
+          load: true
+          push: false
+          tags: scan-backend:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          pull: true
+
+      # Étape 2 : scan AVANT push — image vulnérable ne part JAMAIS dans GHCR
+      - name: Trivy scan backend (avant push)
+        run: |
+          docker run --rm -v /var/run/docker.sock:/var/run/docker.sock \
+            ${{ env.TRIVY_IMAGE }} image --exit-code 1 --severity CRITICAL,HIGH --ignore-unfixed --format table \
+            scan-backend:latest
+
+      # Étape 3 : push uniquement si le scan est clean
+      - name: Push backend
+        id: build-backend
+        uses: docker/build-push-action@v7
+        with:
+          context: ./Backend
+          push: true
+          tags: ${{ steps.meta-backend.outputs.tags }}
+          labels: ${{ steps.meta-backend.outputs.labels }}
+          cache-from: type=gha
+          pull: true
+
+      # ── Frontend ─────────────────────────────────────────────────────────────
+      - name: Frontend – install & build (dist/ requis par Dockerfile)
+        working-directory: Frontend
+        env:
+          VITE_RECAPTCHA_SITE_KEY: ${{ env.VITE_RECAPTCHA_SITE_KEY }}
+          VITE_BACKEND_URL: ${{ env.VITE_BACKEND_URL }}
+        run: |
+          pnpm install --frozen-lockfile
+          pnpm run build
+
+      - name: Extract metadata (frontend)
+        id: meta-frontend
+        uses: docker/metadata-action@v6
+        with:
+          images: ${{ env.REGISTRY }}/${{ github.repository_owner }}/zenix-front
+          tags: |
+            type=raw,value=${{ steps.tag.outputs.tag }}
+
+      - name: Build frontend (local — pour scan Trivy)
+        uses: docker/build-push-action@v7
+        with:
+          context: ./Frontend
+          load: true
+          push: false
+          tags: scan-frontend:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          pull: true
+
+      - name: Trivy scan frontend (avant push)
+        run: |
+          docker run --rm -v /var/run/docker.sock:/var/run/docker.sock \
+            ${{ env.TRIVY_IMAGE }} image --exit-code 1 --severity CRITICAL,HIGH --ignore-unfixed --format table \
+            scan-frontend:latest
+
+      - name: Push frontend
+        id: build-frontend
+        uses: docker/build-push-action@v7
+        with:
+          context: ./Frontend
+          push: true
+          tags: ${{ steps.meta-frontend.outputs.tags }}
+          labels: ${{ steps.meta-frontend.outputs.labels }}
+          cache-from: type=gha
+          pull: true
+
+      # ── Pin digest dans values.yaml → ArgoCD sync automatique ────────────────
+      - name: Pin Helm values to image digest
+        run: |
+          TAG="${{ steps.tag.outputs.tag }}"
+          DIGEST_BACKEND="${{ steps.build-backend.outputs.digest }}"
+          DIGEST_FRONTEND="${{ steps.build-frontend.outputs.digest }}"
+          OWNER="${{ github.repository_owner }}"
+          REG="${{ env.REGISTRY }}"
+
+          if [ -n "$DIGEST_BACKEND" ]; then
+            BACKEND_IMAGE="${REG}/${OWNER}/zenix-backend@${DIGEST_BACKEND}"
+          else
+            BACKEND_IMAGE="${REG}/${OWNER}/zenix-backend:${TAG}"
+          fi
+          if [ -n "$DIGEST_FRONTEND" ]; then
+            FRONTEND_IMAGE="${REG}/${OWNER}/zenix-front@${DIGEST_FRONTEND}"
+          else
+            FRONTEND_IMAGE="${REG}/${OWNER}/zenix-front:${TAG}"
+          fi
+
+          VALUES_PATH="charts/zenix/values.yaml"
+
+          sed -i "s|  image: ghcr.io/.*zenix-backend.*|  image: ${BACKEND_IMAGE}|" "$VALUES_PATH"
+          sed -i "s|  image: ghcr.io/.*zenix-front.*|  image: ${FRONTEND_IMAGE}|" "$VALUES_PATH"
+
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          git add version.txt "$VALUES_PATH"
+
+          if git diff --staged --quiet; then
+            echo "Helm values already up to date, skip commit"
+          else
+            git commit -m "chore(helm): pin images to digest $TAG [skip ci]"
+            git pull --rebase origin ${{ github.ref_name }}
+            git push origin ${{ github.ref_name }}
+          fi
+
+      - name: Cleanup kubeconfig
+        if: always()
+        run: rm -f ~/.kube/config

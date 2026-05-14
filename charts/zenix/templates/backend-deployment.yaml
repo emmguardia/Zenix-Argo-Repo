@@ -1,0 +1,98 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: zenix-backend
+  namespace: {{ include "zenix.namespace" . }}
+  labels:
+    {{- include "zenix.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.backend.replicas }}
+  revisionHistoryLimit: 2
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  selector:
+    matchLabels:
+      app: zenix-backend
+  template:
+    metadata:
+      labels:
+        app: zenix-backend
+    spec:
+      imagePullSecrets:
+        {{- toYaml .Values.imagePullSecrets | nindent 8 }}
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        fsGroup: 1000
+      containers:
+      - name: zenix-backend
+        image: {{ .Values.backend.image }}
+        imagePullPolicy: {{ .Values.backend.imagePullPolicy }}
+        securityContext:
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: false
+          capabilities:
+            drop:
+            - ALL
+        ports:
+        - containerPort: {{ .Values.backend.port }}
+        env:
+        - name: PORT
+          value: {{ .Values.backend.env.PORT | quote }}
+        - name: NODE_ENV
+          value: {{ .Values.backend.env.NODE_ENV | quote }}
+        - name: JWT_PRIVATE_KEY_PATH
+          value: {{ .Values.backend.env.JWT_PRIVATE_KEY_PATH | quote }}
+        - name: EMAIL_SERVICE_URL
+          value: {{ .Values.backend.env.EMAIL_SERVICE_URL | quote }}
+        - name: ADMIN_EMAIL
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.backend.secretName }}
+              key: admin-email
+        - name: ALLOWED_ORIGINS
+          value: {{ .Values.backend.env.ALLOWED_ORIGINS | quote }}
+        - name: GOTIFY_URL
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.backend.secretName }}
+              key: gotify-url
+        - name: GOTIFY_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.backend.secretName }}
+              key: gotify-token
+        resources:
+          {{- toYaml .Values.backend.resources | nindent 10 }}
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: {{ .Values.backend.port }}
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: {{ .Values.backend.port }}
+          initialDelaySeconds: 10
+          periodSeconds: 5
+          timeoutSeconds: 3
+          failureThreshold: 3
+        volumeMounts:
+        - name: secrets
+          mountPath: /app/secrets
+          readOnly: true
+      volumes:
+      - name: secrets
+        secret:
+          secretName: {{ .Values.backend.secretName }}
+          items:
+          - key: jwt-private-key
+            path: jwt_private_key.pem
+          - key: jwt-public-key
+            path: jwt_public_key.pem

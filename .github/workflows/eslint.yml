@@ -1,0 +1,95 @@
+name: ESLint
+
+# Analyse statique du frontend. Sur les PRs et les push main, on lint le code et
+# on annote les erreurs directement dans la PR via les annotations GitHub.
+#
+# L'upload SARIF vers l'onglet Security nécessite GitHub Advanced Security,
+# disponible uniquement sur Organizations payantes. Sur repo privé personnel,
+# on saute proprement l'upload. Si le repo passe en public ou est transféré
+# à une org avec GHAS, l'upload se ré-active automatiquement.
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  eslint:
+    name: Run ESLint scanning
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write
+      actions: read
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.33.4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+          cache-dependency-path: Frontend/pnpm-lock.yaml
+
+      - name: Install Dependencies
+        working-directory: ./Frontend
+        run: pnpm install --frozen-lockfile
+
+      # Lint avec annotations GitHub : les erreurs apparaissent directement
+      # comme commentaires inline dans les PRs même sans Advanced Security.
+      - name: Run ESLint (annotations)
+        working-directory: ./Frontend
+        run: pnpm exec eslint . --ext .js,.jsx,.ts,.tsx
+
+      # ── Upload SARIF (optionnel — nécessite GitHub Advanced Security) ────────
+      # GHAS est gratuit sur repo public, sinon org-only payant. Sur repo privé
+      # perso, ces steps sont skip plutôt que de faire échouer le workflow.
+      - name: Check if SARIF upload is available
+        id: check_ghas
+        run: |
+          # Détecte si le repo est public OU si Code Scanning est activé
+          # (signal que GHAS est dispo). API GET retourne 404 si pas activé,
+          # 403 si pas d'accès, 200 si dispo.
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
+            -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+            -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/${{ github.repository }}/code-scanning/alerts" || echo "000")
+          if [ "$STATUS" = "200" ] || [ "$STATUS" = "204" ]; then
+            echo "available=true" >> $GITHUB_OUTPUT
+            echo "Code Scanning disponible (HTTP $STATUS), upload SARIF activé."
+          else
+            echo "available=false" >> $GITHUB_OUTPUT
+            echo "::notice::Code Scanning indisponible sur ce repo (HTTP $STATUS). SARIF upload skip — voir SECURITY.md pour les options (repo public / GHAS Organisation)."
+          fi
+
+      - name: Install SARIF Formatter
+        if: steps.check_ghas.outputs.available == 'true'
+        working-directory: ./Frontend
+        run: pnpm add -D @microsoft/eslint-formatter-sarif@3.1.0
+
+      - name: Generate SARIF
+        if: steps.check_ghas.outputs.available == 'true'
+        working-directory: ./Frontend
+        env:
+          SARIF_ESLINT_IGNORE_SUPPRESSED: "true"
+        run: |
+          echo '{"version":"2.1.0","$schema":"https://json.schemastore.org/sarif-2.1.0.json","runs":[{"tool":{"driver":{"name":"ESLint","rules":[]}},"results":[]}]}' > eslint-results.sarif
+          pnpm exec eslint . \
+            --ext .js,.jsx,.ts,.tsx \
+            --format @microsoft/eslint-formatter-sarif \
+            --output-file eslint-results.sarif || true
+
+      - name: Upload analysis results to GitHub
+        if: steps.check_ghas.outputs.available == 'true' && github.actor != 'dependabot[bot]'
+        uses: github/codeql-action/upload-sarif@v4
+        with:
+          sarif_file: ./Frontend/eslint-results.sarif
+          wait-for-processing: true

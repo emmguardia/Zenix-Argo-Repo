@@ -1,0 +1,24 @@
+# Speed up docker build by excluding artifacts and dev-only files from context.
+node_modules
+.pnpm-store
+.git
+.env
+.env.*
+*.log
+.vscode
+.idea
+.DS_Store
+Thumbs.db
+
+# Sources et configs : pas nécessaires car le Dockerfile copie uniquement dist/, Public et nginx/
+src
+eslint.config.js
+postcss.config.js
+tailwind.config.js
+tsconfig*.json
+vite.config.ts
+vitest.config.ts
+package.json
+package-lock.json
+pnpm-lock.yaml
+.npmrc

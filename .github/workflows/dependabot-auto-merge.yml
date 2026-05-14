@@ -1,0 +1,52 @@
+name: Dependabot Auto-Merge
+
+# Approuve et merge automatiquement les PRs Dependabot patch/minor.
+# Le push sur main déclenche build-and-push.yml qui :
+#   1. Re-teste tout (lint, audit, build)
+#   2. Build les images
+#   3. Scan Trivy AVANT push
+#   4. Pousse sur GHCR
+#   5. Pin le digest dans values.yaml
+#   6. ArgoCD déploie automatiquement
+#
+# Combiné au minimum-release-age=1440 du .npmrc, ça veut dire qu'un paquet npm
+# compromis publié dans les 24 dernières heures sera REFUSÉ par pnpm install
+# même si Dependabot ouvre une PR — la PR échouera et ne pourra pas être mergée.
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize]
+    branches:
+      - main
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  dependabot:
+    runs-on: ubuntu-latest
+    if: github.actor == 'dependabot[bot]'
+
+    steps:
+      - name: Dependabot metadata
+        id: metadata
+        uses: dependabot/fetch-metadata@v2
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Approve PR (patch / minor uniquement)
+        if: steps.metadata.outputs.update-type != 'version-update:semver-major'
+        run: gh pr review --approve "$PR_URL"
+        env:
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # Auto-merge : attend que tous les checks (test + build) passent puis merge.
+      # → le push sur main déclenche build-and-push.yml naturellement.
+      - name: Enable auto-merge (patch / minor)
+        if: steps.metadata.outputs.update-type != 'version-update:semver-major'
+        run: gh pr merge --auto --merge "$PR_URL"
+        env:
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

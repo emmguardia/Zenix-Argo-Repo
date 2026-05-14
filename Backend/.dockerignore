@@ -1,0 +1,15 @@
+# Speed up docker build by excluding artifacts and dev-only files from context.
+node_modules
+.pnpm-store
+.git
+.env
+.env.*
+*.log
+.vscode
+.idea
+.DS_Store
+Thumbs.db
+
+# Tests pas nécessaires en image production
+test
+*.test.js
