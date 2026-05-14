@@ -59,13 +59,14 @@ const Footer = () => {
               <li><Link to="/site-ecommerce" className="hover:text-white transition-colors" onClick={() => trackEvent('footer_link_click', { destination: '/site-ecommerce', page: 'site_ecommerce' })}>Site E-commerce</Link></li>
               <li><Link to="/landing" className="hover:text-white transition-colors" onClick={() => trackEvent('footer_link_click', { destination: '/landing', page: 'landing' })}>Landing Page</Link></li>
               <li><Link to="/hebergement" className="hover:text-white transition-colors" onClick={() => trackEvent('footer_link_click', { destination: '/hebergement', page: 'hebergement' })}>Hébergement</Link></li>
+              <li><Link to="/faq" className="hover:text-white transition-colors" onClick={() => trackEvent('footer_link_click', { destination: '/faq', page: 'faq' })}>FAQ</Link></li>
             </ul>
           </div>
         </div>
         <div className="border-t border-slate-800 mt-8 pt-8">
           <div className="flex flex-col md:flex-row justify-between items-center text-slate-400">
             <p>&copy; {new Date().getFullYear()} Zenix. Tous droits réservés.</p>
-            <div className="flex flex-wrap justify-center md:justify-end space-x-6 mt-4 md:mt-0">
+            <div className="flex flex-wrap justify-center md:justify-end gap-x-6 gap-y-2 mt-4 md:mt-0">
               <Link to="/mentions-legales" className="hover:text-white transition-colors text-sm">
                 Mentions Légales
               </Link>
@@ -74,6 +75,13 @@ const Footer = () => {
               </Link>
               <Link to="/conditions-vente" className="hover:text-white transition-colors text-sm">
                 Conditions de Vente
+              </Link>
+              <Link
+                to="/partenaires"
+                className="text-slate-600 hover:text-slate-400 transition-colors text-xs"
+                onClick={() => trackEvent('footer_link_click', { destination: '/partenaires', page: 'partenaires' })}
+              >
+                Partenaires
               </Link>
             </div>
           </div>

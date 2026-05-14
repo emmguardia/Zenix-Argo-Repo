@@ -1,6 +1,6 @@
-import React, { useEffect, useRef } from 'react';
-import { Check, Server, Shield, Zap, BarChart, ArrowRight } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { useEffect, useRef } from 'react';
+import { Check, Server, Shield, Zap, BarChart, ArrowRight, MapPin, Activity, Database, FileSearch, RotateCcw, GraduationCap } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
 import { trackEvent } from '../utils/analytics';
 
 interface PricingCardProps {
@@ -16,7 +16,7 @@ const PricingCard = ({ name, price, description, features, highlight = false, de
   const navigate = useNavigate();
 
   return (
-    <div 
+    <div
       className={`bg-white rounded-2xl shadow-xl p-8 transition-all hover:shadow-2xl duration-300 flex flex-col ${
         highlight ? 'ring-4 ring-blue-600 scale-105' : ''
       }`}
@@ -26,10 +26,11 @@ const PricingCard = ({ name, price, description, features, highlight = false, de
       <div className="text-center mb-6">
         <h3 className="text-2xl font-bold text-slate-800 mb-2">{name}</h3>
         <p className="text-slate-600 mb-4">{description}</p>
-        <div className="mb-6">
+        <div className="mb-2">
           <span className="text-4xl font-bold text-blue-600">{price}</span>
-          <span className="text-slate-600 ml-2">/ mois</span>
+          <span className="text-slate-600 ml-2">HT / mois</span>
         </div>
+        <p className="text-xs text-slate-500">Engagement mensuel sans durée minimale</p>
       </div>
       <ul className="space-y-4 mb-8 flex-grow">
         {features.map((feature, index) => (
@@ -56,6 +57,30 @@ const PricingCard = ({ name, price, description, features, highlight = false, de
     </div>
   );
 };
+
+interface AddOnRowProps {
+  icon: React.ReactNode;
+  name: string;
+  description: string;
+  price: string;
+}
+
+const AddOnRow = ({ icon, name, description, price }: AddOnRowProps) => (
+  <div className="flex items-start justify-between gap-4 p-4 bg-white rounded-xl border border-slate-200 hover:border-blue-300 transition-colors">
+    <div className="flex items-start gap-4">
+      <div className="bg-blue-50 p-2 rounded-lg flex-shrink-0">
+        {icon}
+      </div>
+      <div>
+        <h4 className="font-semibold text-slate-800">{name}</h4>
+        <p className="text-sm text-slate-600">{description}</p>
+      </div>
+    </div>
+    <div className="text-right flex-shrink-0">
+      <span className="font-bold text-blue-600">{price}</span>
+    </div>
+  </div>
+);
 
 const Hosting = () => {
   const sectionRef = useRef<HTMLElement>(null);
@@ -85,39 +110,39 @@ const Hosting = () => {
   const plans = [
     {
       name: 'Zenix Start',
-      price: '25€',
+      price: '39€',
       description: 'La base solide pour votre présence en ligne.',
       features: [
-        'Votre site est hébergé sur une infrastructure professionnelle qui s\'adapte automatiquement au trafic (plus de visiteurs = plus de puissance) et se répare tout seul en cas de problème technique',
-        'Protection complète contre les attaques et sauvegarde automatique de votre site tous les jours sur un serveur séparé (même en cas de panne, vos données sont sauvegardées)',
-        'Petites modifications : Changer un texte, remplacer une image ou modifier un prix = 5€ par modification',
-        'Grosses modifications : Ajouter une nouvelle page ou une fonctionnalité = Sur devis selon vos besoins'
+        'Infrastructure professionnelle hébergée en France, qui s\'adapte automatiquement au trafic et se répare seule en cas de problème technique',
+        'Protection complète contre les attaques et sauvegarde automatique de votre site tous les jours sur un serveur séparé',
+        '2 petites modifications par mois incluses (texte, image, prix, horaires, etc.)',
+        'Petites modifications supplémentaires : 15€ chacune. Grosses modifications (nouvelle page, fonctionnalité) : sur devis'
       ],
       highlight: false,
       delayValue: '200'
     },
     {
       name: 'Zenix Relax',
-      price: '40€',
+      price: '69€',
       description: 'Le confort pour faire vivre votre site sans compter.',
       features: [
-        'Tout ce qui est inclus dans Zenix Start (infrastructure professionnelle, sécurité et sauvegardes)',
-        'Jusqu\'à 5 petites modifications par mois incluses dans le prix (changer un texte, une image, un prix, etc.)',
-        'Tous les 3 mois, vous recevez un rapport simple qui vous montre si votre site fonctionne bien et combien de personnes l\'ont visité',
-        'Pour les grosses modifications (nouvelle page, nouvelle fonctionnalité), vous bénéficiez d\'un tarif préférentiel'
+        'Tout ce qui est inclus dans Zenix Start (infrastructure, sécurité, sauvegardes)',
+        'Jusqu\'à 6 petites modifications par mois incluses dans le prix',
+        'Tous les 3 mois, vous recevez un rapport simple qui vous montre comment votre site fonctionne et combien de personnes l\'ont visité',
+        'Pour les grosses modifications (nouvelle page, fonctionnalité), tarif préférentiel'
       ],
       highlight: true,
       delayValue: '400'
     },
     {
       name: 'Zenix Pro',
-      price: '80€',
-      description: 'Le pilotage complet de votre visibilité.',
+      price: '149€',
+      description: 'Le pilotage complet de votre site.',
       features: [
-        'Tout ce qui est inclus dans Zenix Start (infrastructure professionnelle, sécurité et sauvegardes)',
+        'Tout ce qui est inclus dans Zenix Relax (infrastructure, sécurité, sauvegardes, rapport)',
         'Modifications illimitées de votre site (dans la limite de 2 heures de travail par mois)',
-        'Chaque mois, vous recevez un rapport détaillé avec vos statistiques de visiteurs et votre position sur Google',
-        'Optimisation continue : J\'améliore régulièrement votre site pour qu\'il soit mieux positionné sur Google et attire plus de visiteurs'
+        'Chaque mois, vous recevez un rapport détaillé avec vos statistiques de visiteurs et la santé technique de votre site',
+        'Optimisations techniques SEO continues : performance, balises, Core Web Vitals, données structurées'
       ],
       highlight: false,
       delayValue: '600'
@@ -127,13 +152,28 @@ const Hosting = () => {
   return (
     <section className="py-20 bg-gradient-to-br from-slate-50 to-blue-50 pt-32" ref={sectionRef}>
       <div className="container mx-auto px-6">
-        <div className="text-center mb-16">
+        <div className="text-center mb-10">
           <h1 className="text-4xl font-bold text-slate-800 mb-4">Offres d'Hébergement & Maintenance</h1>
           <div className="h-1 w-20 bg-blue-600 mx-auto mb-6"></div>
           <p className="text-lg text-slate-600 max-w-3xl mx-auto">
-            Des solutions d'hébergement haute performance avec sécurité renforcée et maintenance incluse. 
+            Des solutions d'hébergement haute performance avec sécurité renforcée et maintenance incluse.
             Choisissez l'offre qui correspond à vos besoins.
           </p>
+        </div>
+
+        <div className="flex flex-wrap justify-center gap-3 mb-16 max-w-3xl mx-auto">
+          <div className="inline-flex items-center gap-2 bg-white px-4 py-2 rounded-full shadow-sm border border-slate-200">
+            <MapPin className="w-4 h-4 text-blue-600" aria-hidden="true" />
+            <span className="text-sm font-medium text-slate-700">Hébergé en France &mdash; données souveraines RGPD</span>
+          </div>
+          <div className="inline-flex items-center gap-2 bg-white px-4 py-2 rounded-full shadow-sm border border-slate-200">
+            <Activity className="w-4 h-4 text-green-600" aria-hidden="true" />
+            <span className="text-sm font-medium text-slate-700">99,9% de disponibilité visée</span>
+          </div>
+          <div className="inline-flex items-center gap-2 bg-white px-4 py-2 rounded-full shadow-sm border border-slate-200">
+            <Shield className="w-4 h-4 text-violet-600" aria-hidden="true" />
+            <span className="text-sm font-medium text-slate-700">Sauvegardes quotidiennes chiffrées</span>
+          </div>
         </div>
 
         <div className="grid md:grid-cols-3 gap-8 max-w-7xl mx-auto mb-16">
@@ -151,49 +191,86 @@ const Hosting = () => {
         </div>
 
         <div className="bg-white rounded-2xl shadow-lg p-8 md:p-12 max-w-5xl mx-auto mb-12">
+          <h2 className="text-3xl font-bold text-slate-800 mb-2 text-center">Options à la carte</h2>
+          <p className="text-slate-600 text-center mb-8">À ajouter à n'importe quelle formule selon vos besoins.</p>
+          <div className="grid md:grid-cols-2 gap-4">
+            <AddOnRow
+              icon={<RotateCcw className="w-5 h-5 text-blue-600" aria-hidden="true" />}
+              name="Migration de site existant"
+              description="Vous avez déjà un site chez OVH, Wix, Squarespace, WordPress.com ou autre ? Je rapatrie l'ensemble (fichiers, base de données, configuration) vers Zenix, puis je bascule le nom de domaine sans interruption visible pour vos visiteurs."
+              price="99€ une fois"
+            />
+            <AddOnRow
+              icon={<Database className="w-5 h-5 text-blue-600" aria-hidden="true" />}
+              name="Sauvegardes géo-redondantes"
+              description="En plus des sauvegardes quotidiennes incluses, une copie supplémentaire est stockée dans un second datacenter géographiquement séparé. Vous restez protégé même en cas d'incident majeur sur le site principal."
+              price="+10€/mois"
+            />
+            <AddOnRow
+              icon={<Activity className="w-5 h-5 text-blue-600" aria-hidden="true" />}
+              name="Monitoring & alertes"
+              description="Surveillance continue 24/7 avec notifications dès qu'une page met plus de quelques secondes à répondre ou tombe."
+              price="+10€/mois"
+            />
+            <AddOnRow
+              icon={<FileSearch className="w-5 h-5 text-blue-600" aria-hidden="true" />}
+              name="Audit performance"
+              description="Analyse Lighthouse complète + plan d'optimisation, livré en PDF. Vous repartez avec des actions concrètes priorisées."
+              price="79€ une fois"
+            />
+            <AddOnRow
+              icon={<GraduationCap className="w-5 h-5 text-blue-600" aria-hidden="true" />}
+              name="Scan sécurité mensuel"
+              description="Audit réalisé par un étudiant en cybersécurité à Guardia (école spécialisée). Détection de vulnérabilités, audit des en-têtes HTTP, scan des dépendances, tests d'intrusion ciblés. Rapport clair avec actions correctives."
+              price="+20€/mois"
+            />
+          </div>
+        </div>
+
+        <div className="bg-white rounded-2xl shadow-lg p-8 md:p-12 max-w-5xl mx-auto mb-12">
           <h2 className="text-3xl font-bold text-slate-800 mb-8 text-center">Pourquoi choisir nos offres d'hébergement ?</h2>
           <div className="grid md:grid-cols-2 gap-8">
             <div className="flex items-start space-x-4">
               <div className="bg-blue-100 p-3 rounded-lg">
-                <Server className="w-6 h-6 text-blue-600" />
+                <Server className="w-6 h-6 text-blue-600" aria-hidden="true" />
               </div>
               <div>
                 <h3 className="text-xl font-semibold text-slate-800 mb-2">Infrastructure Professionnelle</h3>
                 <p className="text-slate-600">
-                  Votre site est hébergé sur une infrastructure moderne qui s'adapte automatiquement : si vous avez beaucoup de visiteurs, le site devient plus puissant. Si un problème survient, le système se répare tout seul. Votre site reste accessible 24/7.
+                  Votre site est hébergé sur une infrastructure moderne qui s'adapte automatiquement : plus de visiteurs, plus de puissance. Si un problème survient, le système se répare seul. Disponibilité 24/7.
                 </p>
               </div>
             </div>
             <div className="flex items-start space-x-4">
               <div className="bg-violet-100 p-3 rounded-lg">
-                <Shield className="w-6 h-6 text-violet-600" />
+                <Shield className="w-6 h-6 text-violet-600" aria-hidden="true" />
               </div>
               <div>
                 <h3 className="text-xl font-semibold text-slate-800 mb-2">Sécurité Maximale</h3>
                 <p className="text-slate-600">
-                  Protection complète contre les attaques informatiques, les virus et les tentatives de piratage. Votre site est aussi plus rapide grâce à un système qui met en cache vos pages dans le monde entier.
+                  Protection contre les attaques, les bots et les tentatives de piratage. Votre site est aussi plus rapide grâce à un système qui met en cache vos pages partout dans le monde.
                 </p>
               </div>
             </div>
             <div className="flex items-start space-x-4">
               <div className="bg-green-100 p-3 rounded-lg">
-                <Zap className="w-6 h-6 text-green-600" />
+                <Zap className="w-6 h-6 text-green-600" aria-hidden="true" />
               </div>
               <div>
                 <h3 className="text-xl font-semibold text-slate-800 mb-2">Sauvegarde Quotidienne</h3>
                 <p className="text-slate-600">
-                  Chaque jour, une copie complète de votre site est automatiquement sauvegardée sur un serveur séparé. En cas de problème (panne, erreur, piratage), je peux restaurer votre site en quelques minutes. Vos données sont toujours protégées.
+                  Chaque jour, une copie complète de votre site est sauvegardée automatiquement sur un serveur séparé. En cas de problème, je peux restaurer votre site en quelques minutes.
                 </p>
               </div>
             </div>
             <div className="flex items-start space-x-4">
               <div className="bg-amber-100 p-3 rounded-lg">
-                <BarChart className="w-6 h-6 text-amber-600" />
+                <BarChart className="w-6 h-6 text-amber-600" aria-hidden="true" />
               </div>
               <div>
                 <h3 className="text-xl font-semibold text-slate-800 mb-2">Suivi & Rapports</h3>
                 <p className="text-slate-600">
-                  Vous savez toujours comment va votre site : combien de visiteurs, d'où ils viennent, si le site fonctionne bien. Des rapports réguliers vous permettent de suivre l'évolution de votre présence en ligne.
+                  Vous savez toujours comment va votre site : visiteurs, performances, incidents. Des rapports clairs vous permettent de suivre l'évolution de votre présence en ligne.
                 </p>
               </div>
             </div>
@@ -206,27 +283,37 @@ const Hosting = () => {
             <div>
               <h3 className="text-lg font-semibold text-slate-800 mb-2">C'est quoi une "petite modification" ?</h3>
               <p className="text-slate-600">
-                Une petite modification, c'est changer un texte, remplacer une image, modifier un prix ou une adresse, ajouter une photo dans une galerie. C'est une modification simple qui prend moins de 15 minutes.
+                Changer un texte, remplacer une image, modifier un prix, une adresse, des horaires, ajouter une photo dans une galerie. Une modification simple qui prend moins de 15 minutes.
               </p>
             </div>
             <div>
               <h3 className="text-lg font-semibold text-slate-800 mb-2">C'est quoi une "grosse modification" ?</h3>
               <p className="text-slate-600">
-                Une grosse modification, c'est ajouter une nouvelle page complète, créer une nouvelle fonctionnalité (comme un formulaire de contact, un système de réservation), ou faire des changements importants dans le design. Cela nécessite plus de temps et de réflexion.
+                Ajouter une nouvelle page complète, créer une nouvelle fonctionnalité (formulaire avancé, système de réservation), ou refondre une section du design. Cela nécessite plus de temps et de réflexion, donc un devis.
               </p>
             </div>
             <div>
-              <h3 className="text-lg font-semibold text-slate-800 mb-2">Que se passe-t-il si mon site a un problème ?</h3>
+              <h3 className="text-lg font-semibold text-slate-800 mb-2">Vous reprenez mon site déjà existant ?</h3>
               <p className="text-slate-600">
-                Avec notre infrastructure, votre site se répare automatiquement en cas de problème technique. Si c'est plus grave, je suis alerté et j'interviens rapidement. Grâce aux sauvegardes quotidiennes, je peux restaurer votre site en quelques minutes si nécessaire.
+                Oui. La migration depuis Wix, Squarespace, WordPress ou tout autre hébergeur est proposée en option à 99€ une fois, sans interruption visible pour vos visiteurs.
               </p>
             </div>
             <div>
               <h3 className="text-lg font-semibold text-slate-800 mb-2">Puis-je changer d'offre plus tard ?</h3>
               <p className="text-slate-600">
-                Oui, absolument ! Vous pouvez passer d'une offre à l'autre à tout moment selon vos besoins. Si vous commencez avec Zenix Start et que vous avez besoin de plus de modifications, vous pouvez passer à Zenix Relax ou Zenix Pro.
+                Oui, vous pouvez passer d'une offre à l'autre à tout moment, sans frais. La nouvelle formule s'applique dès le mois suivant.
               </p>
             </div>
+          </div>
+          <div className="text-center mt-8">
+            <Link
+              to="/faq"
+              onClick={() => trackEvent('faq_click', { source: 'hosting' })}
+              className="inline-flex items-center text-blue-600 hover:text-blue-700 font-semibold"
+            >
+              Voir toutes les questions fréquentes
+              <ArrowRight className="w-4 h-4 ml-1" aria-hidden="true" />
+            </Link>
           </div>
         </div>
 

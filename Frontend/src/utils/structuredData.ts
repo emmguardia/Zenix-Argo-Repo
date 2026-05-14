@@ -219,9 +219,9 @@ export const hostingServiceSchema = {
         "itemOffered": {
           "@type": "Service",
           "name": "Zenix Start",
-          "description": "Hébergement haute performance avec cluster K3S, auto-scaling, Cloudflare et sauvegarde quotidienne. 25€/mois."
+          "description": "Hébergement haute performance avec cluster K3S, auto-scaling, Cloudflare, sauvegarde quotidienne et 2 petites modifications mensuelles. 39€ HT/mois."
         },
-        "price": "25",
+        "price": "39",
         "priceCurrency": "EUR"
       },
       {
@@ -229,9 +229,9 @@ export const hostingServiceSchema = {
         "itemOffered": {
           "@type": "Service",
           "name": "Zenix Relax",
-          "description": "Hébergement avec modifications incluses (5 par mois) et rapport trimestriel. 40€/mois."
+          "description": "Hébergement avec 6 petites modifications par mois incluses et rapport trimestriel. 69€ HT/mois."
         },
-        "price": "40",
+        "price": "69",
         "priceCurrency": "EUR"
       },
       {
@@ -239,9 +239,9 @@ export const hostingServiceSchema = {
         "itemOffered": {
           "@type": "Service",
           "name": "Zenix Pro",
-          "description": "Hébergement avec modifications illimitées, rapport mensuel et optimisation SEO continue. 80€/mois."
+          "description": "Hébergement avec modifications illimitées (2h/mois), rapport mensuel et optimisations techniques SEO continues. 149€ HT/mois."
         },
-        "price": "80",
+        "price": "149",
         "priceCurrency": "EUR"
       }
     ]
@@ -267,6 +267,140 @@ export const vitrineServiceSchema = {
     "description": "Création de site vitrine professionnel avec SEO et sécurité optimisés",
     "availability": "https://schema.org/InStock"
   }
+};
+export const partnersServiceSchema = {
+  "@context": "https://schema.org",
+  "@type": "Service",
+  "name": "Programme Partenaires Zenix - Hébergement Wholesale",
+  "description": "Programme partenaires pour développeurs et agences : hébergement managé K3s en wholesale, white-label, infrastructure souveraine en France.",
+  "provider": {
+    "@type": "Organization",
+    "name": "Zenix Web",
+    "url": "https://www.zenixweb.fr"
+  },
+  "serviceType": "Hébergement Web Wholesale",
+  "areaServed": {
+    "@type": "Country",
+    "name": "France"
+  },
+  "audience": {
+    "@type": "BusinessAudience",
+    "audienceType": "Développeurs web, agences digitales, freelances"
+  },
+  "hasOfferCatalog": {
+    "@type": "OfferCatalog",
+    "name": "Tarifs Wholesale",
+    "itemListElement": [
+      {
+        "@type": "Offer",
+        "itemOffered": {
+          "@type": "Service",
+          "name": "Pack 1 à 5 sites",
+          "description": "Hébergement managé K3s en wholesale pour revente, 20€/site/mois HT."
+        },
+        "price": "20",
+        "priceCurrency": "EUR"
+      },
+      {
+        "@type": "Offer",
+        "itemOffered": {
+          "@type": "Service",
+          "name": "Pack 6 à 20 sites",
+          "description": "Hébergement managé K3s en wholesale pour revente, 17€/site/mois HT."
+        },
+        "price": "17",
+        "priceCurrency": "EUR"
+      },
+      {
+        "@type": "Offer",
+        "itemOffered": {
+          "@type": "Service",
+          "name": "Pack 21+ sites",
+          "description": "Hébergement managé K3s en wholesale pour revente, 14€/site/mois HT."
+        },
+        "price": "14",
+        "priceCurrency": "EUR"
+      }
+    ]
+  }
+};
+export const faqPageSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Qui se cache derrière Zenix ?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Zenix est portée par Enzo Monnet Mata, développeur web freelance basé à Lyon, étudiant en cybersécurité à Guardia."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Où êtes-vous basé ?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "À Lyon, en France. Les serveurs sont également hébergés en France, ce qui garantit la souveraineté des données et la conformité RGPD."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Combien de temps pour mettre en ligne un site ?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Une landing page simple : 5 à 10 jours. Un site vitrine : 2 à 4 semaines. Un e-commerce : 4 à 8 semaines."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "C'est quoi une petite modification ?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Changer un texte, remplacer une image, modifier un prix, une adresse, des horaires. Tout ce qui prend moins de 15 minutes."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Mon site est hébergé ailleurs, vous le migrez ?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Oui. La migration depuis Wix, Squarespace, OVH, o2switch, WordPress ou autre est proposée en option à 99€ une fois, sans interruption visible pour vos visiteurs."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Que se passe-t-il si mon site a un problème ?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "L'infrastructure se répare automatiquement pour la majorité des incidents. En dernier recours, restauration depuis sauvegarde quotidienne sous quelques minutes."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Mes données sont-elles bien en Europe ?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Oui. Hébergement physique en France, sauvegardes en UE. Pas de transfert vers les États-Unis pour les données client."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Y a-t-il un engagement de durée ?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Non. Toutes les offres d'hébergement sont sans engagement, facturées au mois. Vous pouvez résilier à tout moment avec un préavis d'un mois."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Je suis développeur, puis-je revendre votre hébergement à mes clients ?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Oui, c'est le programme partenaires. Tarifs wholesale dégressifs, white-label possible, vous gardez la relation client."
+      }
+    }
+  ]
 };
 export const ecommerceServiceSchema = {
   "@context": "https://schema.org",

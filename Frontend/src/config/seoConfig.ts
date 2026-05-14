@@ -65,6 +65,18 @@ export const seoConfig = {
     keywords: "services développement web, landing page, site vitrine, site e-commerce, création site web Lyon, services web professionnels",
     url: "https://www.zenixweb.fr/nos-services",
   },
+  faq: {
+    title: "FAQ | Questions fréquentes sur Zenix Web | Hébergement, Sites, Sécurité",
+    description: "Réponses aux questions fréquentes sur Zenix Web : création de sites, hébergement managé K3s, sécurité RGPD, tarifs, modifications et programme partenaires.",
+    keywords: "FAQ Zenix Web, questions hébergement web, questions création site, RGPD, sécurité site web, tarifs hébergement Lyon",
+    url: "https://www.zenixweb.fr/faq",
+  },
+  partners: {
+    title: "Programme Partenaires & Revendeurs | Hébergement Wholesale | Zenix Web",
+    description: "Programme partenaires Zenix pour développeurs et agences : hébergement managé K3s en wholesale dès 14€/site, white-label, marge récurrente, infrastructure France et support technicien à technicien.",
+    keywords: "hébergement revendeur, partenaire hébergement, wholesale hosting France, white-label hosting, K3s managed, hébergement agences web",
+    url: "https://www.zenixweb.fr/partenaires",
+  },
 };
 export const primaryKeywords = [
   "développement web Lyon",

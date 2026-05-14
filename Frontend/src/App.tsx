@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'r
 import SEO from './components/SEO';
 import { seoConfig } from './config/seoConfig';
 import { trackEvent } from './utils/analytics';
-import { organizationSchema, websiteSchema, serviceSchema, hostingServiceSchema, vitrineServiceSchema, ecommerceServiceSchema } from './utils/structuredData';
+import { organizationSchema, websiteSchema, serviceSchema, hostingServiceSchema, vitrineServiceSchema, ecommerceServiceSchema, partnersServiceSchema, faqPageSchema } from './utils/structuredData';
 import Header from './components/Header';
 const Hero = lazy(() => import('./components/Hero'));
 const AboutMe = lazy(() => import('./components/AboutMe'));
@@ -18,6 +18,8 @@ const LegalMentions = lazy(() => import('./components/LegalMentions'));
 const PrivacyPolicy = lazy(() => import('./components/PrivacyPolicy'));
 const TermsOfService = lazy(() => import('./components/TermsOfService'));
 const Hosting = lazy(() => import('./components/Hosting'));
+const Partners = lazy(() => import('./components/Partners'));
+const FAQ = lazy(() => import('./components/FAQ'));
 
 const PageViewTracker = () => {
   const location = useLocation();
@@ -189,6 +191,38 @@ function App() {
                   <Header />
                   <main>
                     <Ecommerce />
+                  </main>
+                  <Footer />
+                </>
+              } />
+              <Route path="/faq" element={
+                <>
+                  <SEO
+                    title={seoConfig.faq.title}
+                    description={seoConfig.faq.description}
+                    keywords={seoConfig.faq.keywords}
+                    url={seoConfig.faq.url}
+                    structuredData={[faqPageSchema, organizationSchema]}
+                  />
+                  <Header />
+                  <main>
+                    <FAQ />
+                  </main>
+                  <Footer />
+                </>
+              } />
+              <Route path="/partenaires" element={
+                <>
+                  <SEO
+                    title={seoConfig.partners.title}
+                    description={seoConfig.partners.description}
+                    keywords={seoConfig.partners.keywords}
+                    url={seoConfig.partners.url}
+                    structuredData={[partnersServiceSchema, organizationSchema]}
+                  />
+                  <Header />
+                  <main>
+                    <Partners />
                   </main>
                   <Footer />
                 </>
