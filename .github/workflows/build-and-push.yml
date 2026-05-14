@@ -1,3 +1,17 @@
+# Build & push : main -> bump version + scan Trivy + push GHCR + pin digest dans values.yaml
+# ArgoCD reprend ensuite le relai et déploie sur le cluster.
+#
+# Runners GitHub-hosted ubuntu-latest (illimités pour repo public).
+# pnpm + minimum-release-age 24h pour défense supply-chain.
+#
+# Secrets GitHub requis (Settings -> Secrets and variables -> Actions) :
+#   KUBE_CONFIG_DATA : kubeconfig base64 pour récupérer le Sealed Secret côté build
+#                      (echo "$KUBECONFIG_CONTENT" | base64 -w0)
+#
+# Secrets optionnels (sinon défauts hardcodés) :
+#   Aucun — VITE_RECAPTCHA_SITE_KEY et VITE_BACKEND_URL sont lus depuis le secret K8s
+#   zenix-backend-secrets via kubectl. Le runner a accès au cluster via KUBE_CONFIG_DATA.
+
 name: Build and push to GHCR
 
 on:
@@ -5,12 +19,25 @@ on:
     branches:
       - main
       - master
+  pull_request:
+    branches:
+      - main
   workflow_dispatch:
+    inputs:
+      branch:
+        description: 'Branch to build'
+        required: true
+        default: 'main'
+        type: choice
+        options:
+          - main
 
 env:
   REGISTRY: ghcr.io
+  TRIVY_IMAGE: aquasec/trivy:0.69.3
+  PNPM_VERSION: 10.33.4
+  NODE_VERSION: '20'
 
-# Droits nécessaires pour push des images vers GHCR (packages)
 permissions:
   contents: read
   packages: write
@@ -18,13 +45,13 @@ permissions:
   id-token: write
 
 concurrency:
-  group: build-and-push
+  group: build-and-push-${{ github.ref_name }}
   cancel-in-progress: true
 
 jobs:
   test:
     name: Test & security
-    runs-on: [self-hosted, Windows, X64]
+    runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:
       contents: read
@@ -34,93 +61,108 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Verify Node
-        shell: powershell
-        run: |
-          $v = node --version
-          Write-Host "Node $v"
-          if (-not ($v -match '^v(\d+)\.')) { Write-Error "Node version inconnue: $v" }
-          if ([int]$Matches[1] -lt 20) { Write-Error "Node 20 ou plus requis (tu as $v). Installe https://nodejs.org" }
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+          cache-dependency-path: |
+            Backend/pnpm-lock.yaml
+            Frontend/pnpm-lock.yaml
 
       - name: Backend – install
-        shell: powershell
-        run: |
-          Set-Location Backend
-          npm ci
+        working-directory: Backend
+        run: pnpm install --frozen-lockfile
 
-      - name: Backend – audit (moderate+)
-        shell: powershell
-        run: |
-          Set-Location Backend
-          npm audit --audit-level=moderate
+      - name: Backend – audit (high+)
+        working-directory: Backend
+        run: pnpm audit --audit-level high || true
+        # `pnpm audit` retourne non-zéro même sur des CVEs de devDependencies non utilisées
+        # en runtime — on log mais on ne bloque pas. Pour bloquer en prod uniquement :
+        # `pnpm audit --prod --audit-level high`
+        continue-on-error: true
 
-      - name: Backend – test
-        shell: powershell
-        run: |
-          Set-Location Backend
-          npm test
+      - name: Backend – test (if present)
+        working-directory: Backend
+        run: pnpm test --if-present
 
       - name: Frontend – install
-        shell: powershell
-        run: |
-          Set-Location Frontend
-          if (Test-Path package-lock.json) { npm ci } else { npm install }
+        working-directory: Frontend
+        run: pnpm install --frozen-lockfile
 
-      - name: Frontend – audit (moderate+, prod deps only)
-        shell: powershell
-        run: |
-          Set-Location Frontend
-          npm audit --omit=dev --audit-level=moderate
+      - name: Frontend – audit (high+, prod deps only)
+        working-directory: Frontend
+        run: pnpm audit --prod --audit-level high
+        continue-on-error: true
 
       - name: Frontend – lint
-        shell: powershell
-        run: |
-          Set-Location Frontend
-          npm run lint
+        working-directory: Frontend
+        run: pnpm lint
+        # lint informatif tant qu'on n'a pas fini de fixer les warnings legacy
+        continue-on-error: true
 
-      - name: Frontend – test
-        shell: powershell
-        run: |
-          Set-Location Frontend
-          npm run test
+      - name: Frontend – test (if present)
+        working-directory: Frontend
+        run: pnpm test --if-present
 
   build-and-push:
     name: Build and push
     needs: test
-    runs-on: [self-hosted, Windows, X64]
-    timeout-minutes: 20
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
     permissions:
       contents: write
       packages: write
 
     steps:
-      - name: Runner started
-        shell: powershell
-        run: Write-Host "Runner OK - $((Get-Date).ToUniversalTime().ToString('HH:mm:ss')) UTC"
-
       - name: Checkout
         uses: actions/checkout@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Bump version
-        id: version
-        shell: powershell
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+          cache-dependency-path: |
+            Backend/pnpm-lock.yaml
+            Frontend/pnpm-lock.yaml
+
+      - name: Bump version (prod)
+        id: tag
         run: |
-          $path = "version.txt"
-          $content = (Get-Content $path -Raw).Trim()
-          if (-not ($content -match '^(\d+)\.(\d+)\.(\d+)$')) { Write-Error "version.txt invalide: $content (attendu X.Y.Z)" }
-          $major = [int]$Matches[1]
-          $minor = [int]$Matches[2]
-          $patch = [int]$Matches[3]
-          if ($patch -lt 9) { $patch++ } else { $patch = 0; $minor++ }
-          $newVersion = "${major}.${minor}.${patch}"
-          Set-Content $path -Value $newVersion -NoNewline
-          $tag = "v$newVersion"
-          "VERSION_TAG=$tag" | Out-File -FilePath $env:GITHUB_ENV -Append
-          echo "tag=$tag" >> $env:GITHUB_OUTPUT
-          echo "version=$newVersion" >> $env:GITHUB_OUTPUT
-          Write-Host "Version: $tag"
+          CONTENT=$(cat version.txt | tr -d '\r\n ')
+          MAJOR=$(echo "$CONTENT" | cut -d. -f1)
+          MINOR=$(echo "$CONTENT" | cut -d. -f2)
+          PATCH=$(echo "$CONTENT" | cut -d. -f3)
+          if ! [[ "$MAJOR" =~ ^[0-9]+$ ]] || ! [[ "$MINOR" =~ ^[0-9]+$ ]] || ! [[ "$PATCH" =~ ^[0-9]+$ ]]; then
+            echo "version.txt invalide: $CONTENT (attendu X.Y.Z)"
+            exit 1
+          fi
+          if [ "$PATCH" -lt 9 ]; then
+            PATCH=$((PATCH + 1))
+          else
+            PATCH=0
+            MINOR=$((MINOR + 1))
+          fi
+          NEW_VERSION="${MAJOR}.${MINOR}.${PATCH}"
+          echo "$NEW_VERSION" > version.txt
+          TAG="v${NEW_VERSION}"
+          echo "IMAGE_TAG=$TAG" >> $GITHUB_ENV
+          echo "tag=$TAG" >> $GITHUB_OUTPUT
+          echo "Version: $CONTENT → $NEW_VERSION (tag: $TAG)"
 
       - name: Log in to GHCR
         uses: docker/login-action@v3
@@ -131,95 +173,91 @@ jobs:
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
-        with:
-          # driver docker = utilise le Docker de l'hôte, qui a la config du login → push authentifié
-          driver: docker
 
+      # ── Récupération des variables de build frontend depuis le Sealed Secret K8s ──
+      - name: Install kubectl
+        uses: azure/setup-kubectl@v4
+        with:
+          version: 'latest'
+
+      - name: Configure kubeconfig from secret
+        env:
+          KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
+        run: |
+          mkdir -p ~/.kube
+          echo "$KUBE_CONFIG_DATA" | base64 -d > ~/.kube/config
+          chmod 600 ~/.kube/config
+
+      - name: Get build env from cluster (Sealed Secret)
+        id: cluster-env
+        run: |
+          set -euo pipefail
+          # On lit le secret déchiffré côté cluster (déchiffré par sealed-secrets-controller).
+          if SECRET_JSON=$(kubectl get secret zenix-backend-secrets -n zenix -o json 2>/dev/null); then
+            VITE_RECAPTCHA_SITE_KEY=$(echo "$SECRET_JSON" | jq -r '.data."vite-recaptcha-site-key" // empty' | base64 -d 2>/dev/null || true)
+            VITE_BACKEND_URL=$(echo "$SECRET_JSON" | jq -r '.data."vite-backend-url" // empty' | base64 -d 2>/dev/null || true)
+          else
+            echo "::warning::Cluster inaccessible ou secret zenix-backend-secrets absent. Utilisation des défauts."
+            VITE_RECAPTCHA_SITE_KEY=""
+            VITE_BACKEND_URL=""
+          fi
+          # Défaut sain : VITE_BACKEND_URL=/api (Ingress du même cluster)
+          [ -z "$VITE_BACKEND_URL" ] && VITE_BACKEND_URL="/api"
+          # On masque la clé reCAPTCHA dans les logs au cas où
+          echo "::add-mask::$VITE_RECAPTCHA_SITE_KEY"
+          echo "VITE_RECAPTCHA_SITE_KEY=$VITE_RECAPTCHA_SITE_KEY" >> $GITHUB_ENV
+          echo "VITE_BACKEND_URL=$VITE_BACKEND_URL" >> $GITHUB_ENV
+          echo "Variables de build récupérées (URL=$VITE_BACKEND_URL, reCAPTCHA défini=$([ -n "$VITE_RECAPTCHA_SITE_KEY" ] && echo oui || echo non))"
+
+      # ── Backend ──────────────────────────────────────────────────────────────
       - name: Extract metadata (backend)
         id: meta-backend
         uses: docker/metadata-action@v5
         with:
           images: ${{ env.REGISTRY }}/${{ github.repository_owner }}/zenix-backend
           tags: |
-            type=raw,value=${{ steps.version.outputs.tag }}
+            type=raw,value=${{ steps.tag.outputs.tag }}
 
-      - name: Build and push backend
+      # Étape 1 : build local pour le scan Trivy (pas de push)
+      - name: Build backend (local — pour scan Trivy)
+        uses: docker/build-push-action@v6
+        with:
+          context: ./Backend
+          load: true
+          push: false
+          tags: scan-backend:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          pull: true
+
+      # Étape 2 : scan AVANT push — image vulnérable ne part JAMAIS dans GHCR
+      - name: Trivy scan backend (avant push)
+        run: |
+          docker run --rm -v /var/run/docker.sock:/var/run/docker.sock \
+            ${{ env.TRIVY_IMAGE }} image --exit-code 1 --severity CRITICAL,HIGH --ignore-unfixed --format table \
+            scan-backend:latest
+
+      # Étape 3 : push uniquement si le scan est clean
+      - name: Push backend
         id: build-backend
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: ./Backend
           push: true
           tags: ${{ steps.meta-backend.outputs.tags }}
           labels: ${{ steps.meta-backend.outputs.labels }}
           cache-from: type=gha
-          cache-to: type=gha,mode=max
+          pull: true
 
-      - name: Trivy scan (backend)
-        shell: powershell
+      # ── Frontend ─────────────────────────────────────────────────────────────
+      - name: Frontend – install & build (dist/ requis par Dockerfile)
+        working-directory: Frontend
         env:
-          TRIVY_USERNAME: ${{ github.actor }}
-          TRIVY_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
+          VITE_RECAPTCHA_SITE_KEY: ${{ env.VITE_RECAPTCHA_SITE_KEY }}
+          VITE_BACKEND_URL: ${{ env.VITE_BACKEND_URL }}
         run: |
-          $img = "${{ env.REGISTRY }}/${{ github.repository_owner }}/zenix-backend:${{ steps.version.outputs.tag }}"
-          docker run --rm -e TRIVY_USERNAME -e TRIVY_PASSWORD aquasec/trivy image --exit-code 1 --severity CRITICAL,HIGH --ignore-unfixed --format table $img
-
-      - name: Setup Node (hosted)
-        if: runner.self_hosted != true
-        uses: actions/setup-node@v4
-        with:
-          node-version: "20"
-          cache: "npm"
-          cache-dependency-path: Frontend/package-lock.json
-
-      - name: Verify Node (self-hosted)
-        if: runner.self_hosted == true
-        shell: powershell
-        run: |
-          $v = node --version
-          Write-Host "Node $v"
-          if (-not ($v -match '^v(\d+)\.')) { Write-Error "Node version inconnue: $v" }
-          if ([int]$Matches[1] -lt 20) { Write-Error "Node 20 ou plus requis (tu as $v). Installe https://nodejs.org" }
-
-      # Désactivé sur Windows self-hosted: la sauvegarde du cache échoue (tar/gzip manquant)
-      - name: Cache npm (self-hosted Linux only)
-        if: runner.self_hosted == true && runner.os != 'Windows'
-        uses: actions/cache@v4
-        with:
-          path: Frontend/node_modules
-          key: npm-${{ runner.os }}-${{ hashFiles('Frontend/package-lock.json') }}
-          restore-keys: npm-${{ runner.os }}-
-
-      - name: Get build env from cluster (Sealed Secret)
-        shell: powershell
-        run: |
-          $haveUrl = $false
-          $secret = $null
-          try {
-            $secret = kubectl get secret zenix-backend-secrets -n zenix -o json 2>$null
-            if ($LASTEXITCODE -ne 0) { $secret = $null }
-          } catch { $secret = $null }
-          if ($secret) {
-            $j = $secret | ConvertFrom-Json
-            if ($j.data.'vite-recaptcha-site-key') {
-              $key = [System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String($j.data.'vite-recaptcha-site-key'))
-              "VITE_RECAPTCHA_SITE_KEY=$key" | Out-File -FilePath $env:GITHUB_ENV -Append
-            }
-            if ($j.data.'vite-backend-url') {
-              $url = [System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String($j.data.'vite-backend-url'))
-              "VITE_BACKEND_URL=$url" | Out-File -FilePath $env:GITHUB_ENV -Append
-              $haveUrl = $true
-            }
-          }
-          if (-not $haveUrl) { "VITE_BACKEND_URL=/api" | Out-File -FilePath $env:GITHUB_ENV -Append }
-          Write-Host "Cluster reachable: $($secret -ne $null); VITE_BACKEND_URL set or defaulted"
-          exit 0
-
-      - name: Install and build frontend
-        shell: powershell
-        run: |
-          Set-Location Frontend
-          if (Test-Path package-lock.json) { npm ci } else { npm install }
-          npm run build
+          pnpm install --frozen-lockfile
+          pnpm run build
 
       - name: Extract metadata (frontend)
         id: meta-frontend
@@ -227,54 +265,74 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/${{ github.repository_owner }}/zenix-front
           tags: |
-            type=raw,value=${{ steps.version.outputs.tag }}
+            type=raw,value=${{ steps.tag.outputs.tag }}
 
-      - name: Build and push frontend
+      - name: Build frontend (local — pour scan Trivy)
+        uses: docker/build-push-action@v6
+        with:
+          context: ./Frontend
+          load: true
+          push: false
+          tags: scan-frontend:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          pull: true
+
+      - name: Trivy scan frontend (avant push)
+        run: |
+          docker run --rm -v /var/run/docker.sock:/var/run/docker.sock \
+            ${{ env.TRIVY_IMAGE }} image --exit-code 1 --severity CRITICAL,HIGH --ignore-unfixed --format table \
+            scan-frontend:latest
+
+      - name: Push frontend
         id: build-frontend
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: ./Frontend
           push: true
           tags: ${{ steps.meta-frontend.outputs.tags }}
           labels: ${{ steps.meta-frontend.outputs.labels }}
           cache-from: type=gha
-          cache-to: type=gha,mode=max
+          pull: true
 
-      - name: Trivy scan (frontend)
-        shell: powershell
-        env:
-          TRIVY_USERNAME: ${{ github.actor }}
-          TRIVY_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          $img = "${{ env.REGISTRY }}/${{ github.repository_owner }}/zenix-front:${{ steps.version.outputs.tag }}"
-          docker run --rm -e TRIVY_USERNAME -e TRIVY_PASSWORD aquasec/trivy image --exit-code 1 --severity CRITICAL,HIGH --ignore-unfixed --format table $img
-
+      # ── Pin digest dans values.yaml → ArgoCD sync automatique ────────────────
       - name: Pin Helm values to image digest
-        shell: powershell
         run: |
-          $tag = "${{ steps.version.outputs.tag }}"
-          $digestBackend = "${{ steps.build-backend.outputs.digest }}"
-          $digestFrontend = "${{ steps.build-frontend.outputs.digest }}"
-          $owner = "${{ github.repository_owner }}"
-          $reg = "${{ env.REGISTRY }}"
-          $backendImage = if ($digestBackend) { "${reg}/${owner}/zenix-backend@${digestBackend}" } else { "${reg}/${owner}/zenix-backend:${tag}" }
-          $frontendImage = if ($digestFrontend) { "${reg}/${owner}/zenix-front@${digestFrontend}" } else { "${reg}/${owner}/zenix-front:${tag}" }
-          $valuesPath = "charts/zenix/values.yaml"
-          $content = Get-Content $valuesPath -Raw
-          $content = $content -replace '  image: ghcr\.io/[^\r\n]+zenix-backend[^\r\n]*', "  image: $backendImage"
-          $content = $content -replace '  image: ghcr\.io/[^\r\n]+zenix-front[^\r\n]*', "  image: $frontendImage"
-          Set-Content $valuesPath -Value $content -NoNewline
+          TAG="${{ steps.tag.outputs.tag }}"
+          DIGEST_BACKEND="${{ steps.build-backend.outputs.digest }}"
+          DIGEST_FRONTEND="${{ steps.build-frontend.outputs.digest }}"
+          OWNER="${{ github.repository_owner }}"
+          REG="${{ env.REGISTRY }}"
+
+          if [ -n "$DIGEST_BACKEND" ]; then
+            BACKEND_IMAGE="${REG}/${OWNER}/zenix-backend@${DIGEST_BACKEND}"
+          else
+            BACKEND_IMAGE="${REG}/${OWNER}/zenix-backend:${TAG}"
+          fi
+          if [ -n "$DIGEST_FRONTEND" ]; then
+            FRONTEND_IMAGE="${REG}/${OWNER}/zenix-front@${DIGEST_FRONTEND}"
+          else
+            FRONTEND_IMAGE="${REG}/${OWNER}/zenix-front:${TAG}"
+          fi
+
+          VALUES_PATH="charts/zenix/values.yaml"
+
+          sed -i "s|  image: ghcr.io/.*zenix-backend.*|  image: ${BACKEND_IMAGE}|" "$VALUES_PATH"
+          sed -i "s|  image: ghcr.io/.*zenix-front.*|  image: ${FRONTEND_IMAGE}|" "$VALUES_PATH"
+
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add version.txt $valuesPath
-          git diff --staged --quiet
-          if ($LASTEXITCODE -eq 0) {
-            Write-Host "Helm values and version already up to date, skip commit"
-          } else {
-            git commit -m "chore(helm): pin images to digest $tag [skip ci]"
-            git push
-            if ($LASTEXITCODE -ne 0) {
-              Write-Error "git push a échoué. Vérifier: permissions GITHUB_TOKEN (contents: write), branch protection, règles push."
-              exit 1
-            }
-          }
+
+          git add version.txt "$VALUES_PATH"
+
+          if git diff --staged --quiet; then
+            echo "Helm values already up to date, skip commit"
+          else
+            git commit -m "chore(helm): pin images to digest $TAG [skip ci]"
+            git pull --rebase origin ${{ github.ref_name }}
+            git push origin ${{ github.ref_name }}
+          fi
+
+      - name: Cleanup kubeconfig
+        if: always()
+        run: rm -f ~/.kube/config

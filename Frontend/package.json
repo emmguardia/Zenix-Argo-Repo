@@ -3,6 +3,11 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "packageManager": "pnpm@10.33.4",
+  "engines": {
+    "node": ">=20",
+    "pnpm": ">=10"
+  },
   "scripts": {
     "dev": "vite",
     "build": "vite build",
@@ -24,6 +29,8 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.39.2",
+    "@tailwindcss/postcss": "^4.1.18",
+    "@testing-library/react": "^16.0.1",
     "@types/react": "^19.2.8",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^5.1.2",
@@ -32,19 +39,23 @@
     "eslint-plugin-react-hooks": "^7.0.1",
     "eslint-plugin-react-refresh": "^0.4.26",
     "globals": "^17.0.0",
-    "@tailwindcss/postcss": "^4.1.18",
+    "jsdom": "^25.0.1",
     "postcss": "^8.5.6",
+    "tailwindcss": "^4.1.18",
     "terser": "^5.44.1",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.56.1",
     "vite": "^7.3.1",
-    "vitest": "^2.1.8",
-    "@testing-library/react": "^16.0.1",
-    "jsdom": "^25.0.1"
+    "vitest": "^2.1.8"
   },
-  "overrides": {
-    "tar": ">=7.5.8",
-    "esbuild": ">=0.25.0",
-    "minimatch": ">=10.2.3"
+  "pnpm": {
+    "overrides": {
+      "tar": ">=7.5.8",
+      "esbuild": ">=0.25.0",
+      "minimatch": ">=10.2.3"
+    },
+    "onlyBuiltDependencies": [
+      "esbuild"
+    ]
   }
 }

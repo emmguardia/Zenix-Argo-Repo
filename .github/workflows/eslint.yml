@@ -1,0 +1,62 @@
+name: ESLint
+
+# Analyse statique du frontend, résultats remontés dans l'onglet Security du repo
+# au format SARIF. Tourne sur push main + PR ouvertes vers main.
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  eslint:
+    name: Run ESLint scanning
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write
+      actions: read
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.33.4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+          cache-dependency-path: Frontend/pnpm-lock.yaml
+
+      - name: Install Dependencies
+        working-directory: ./Frontend
+        run: pnpm install --frozen-lockfile
+
+      - name: Install SARIF Formatter
+        working-directory: ./Frontend
+        run: pnpm add -D @microsoft/eslint-formatter-sarif@3.1.0
+
+      - name: Run ESLint
+        working-directory: ./Frontend
+        env:
+          SARIF_ESLINT_IGNORE_SUPPRESSED: "true"
+        run: |
+          echo '{"version":"2.1.0","$schema":"https://json.schemastore.org/sarif-2.1.0.json","runs":[{"tool":{"driver":{"name":"ESLint","rules":[]}},"results":[]}]}' > eslint-results.sarif
+          pnpm exec eslint . \
+            --ext .js,.jsx,.ts,.tsx \
+            --format @microsoft/eslint-formatter-sarif \
+            --output-file eslint-results.sarif || true
+
+      - name: Upload analysis results to GitHub
+        uses: github/codeql-action/upload-sarif@v4
+        # Skip sur les PRs Dependabot — token restreint sans accès security-events
+        if: always() && github.actor != 'dependabot[bot]'
+        with:
+          sarif_file: ./Frontend/eslint-results.sarif
+          wait-for-processing: true
