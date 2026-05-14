@@ -220,7 +220,7 @@ jobs:
 
       # Étape 1 : build local pour le scan Trivy (pas de push)
       - name: Build backend (local — pour scan Trivy)
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         with:
           context: ./Backend
           load: true
@@ -240,7 +240,7 @@ jobs:
       # Étape 3 : push uniquement si le scan est clean
       - name: Push backend
         id: build-backend
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         with:
           context: ./Backend
           push: true
@@ -268,7 +268,7 @@ jobs:
             type=raw,value=${{ steps.tag.outputs.tag }}
 
       - name: Build frontend (local — pour scan Trivy)
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         with:
           context: ./Frontend
           load: true
@@ -286,7 +286,7 @@ jobs:
 
       - name: Push frontend
         id: build-frontend
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         with:
           context: ./Frontend
           push: true
