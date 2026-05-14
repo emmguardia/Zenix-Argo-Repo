@@ -176,7 +176,7 @@ jobs:
 
       # ── Récupération des variables de build frontend depuis le Sealed Secret K8s ──
       - name: Install kubectl
-        uses: azure/setup-kubectl@v4
+        uses: azure/setup-kubectl@v5
         with:
           version: 'latest'
 
