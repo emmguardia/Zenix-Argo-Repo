@@ -7,6 +7,7 @@ import { organizationSchema, websiteSchema, serviceSchema, hostingServiceSchema,
 import Header from './components/Header';
 const Hero = lazy(() => import('./components/Hero'));
 const AboutMe = lazy(() => import('./components/AboutMe'));
+const Portfolio = lazy(() => import('./components/Portfolio'));
 const CompanyInfo = lazy(() => import('./components/CompanyInfo'));
 const LandingExplanation = lazy(() => import('./components/LandingExplanation'));
 const PreDevisQuestions = lazy(() => import('./components/PreDevisQuestions'));
@@ -47,6 +48,7 @@ const HomePage = () => (
     <main>
       <Hero />
       <AboutMe />
+      <Portfolio />
       <CompanyInfo />
     </main>
     <Footer />
