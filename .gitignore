@@ -43,3 +43,10 @@ Thumbs.db
 
 # ── Docker ───────────────────────────────────────────────────────────────────
 *.tar
+
+# ── Docs de travail (brainstorm, non publiées) ───────────────────────────────
+docs/SPEC-ESPACE-CLIENT.md
+
+# ── Outillage local (non publié) ─────────────────────────────────────────────
+scripts/fetch-sealed-cert.ps1
+scripts/seal-secrets.ps1
