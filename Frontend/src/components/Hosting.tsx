@@ -31,6 +31,9 @@ const PricingCard = ({ name, price, description, features, highlight = false, de
           <span className="text-slate-600 ml-2">HT / mois</span>
         </div>
         <p className="text-xs text-slate-500">Engagement mensuel sans durée minimale</p>
+        <p className="text-xs font-semibold text-green-700 mt-1">
+          Ou engagement 1 an : le 12ᵉ mois est offert — toujours prélevé mois par mois, rien à avancer
+        </p>
       </div>
       <ul className="space-y-4 mb-8 flex-grow">
         {features.map((feature, index) => (
