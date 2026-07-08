@@ -1,4 +1,12 @@
 import { useNavigate } from 'react-router-dom';
+
+const Article = ({ title, children }: { title: string; children: React.ReactNode }) => (
+  <div>
+    <p className="font-semibold mb-2">{title}</p>
+    <div className="space-y-2">{children}</div>
+  </div>
+);
+
 const TermsOfService = () => {
   const navigate = useNavigate();
   return (
@@ -8,192 +16,221 @@ const TermsOfService = () => {
           <h1 className="text-4xl font-bold text-slate-800 mb-4">Conditions Générales de Vente</h1>
           <div className="h-1 w-20 bg-blue-600 mx-auto mb-6"></div>
           <p className="text-lg text-slate-600">
-            Conditions de vente et d'utilisation des services
+            et de Prestation de Services — Création de sites web · Hébergement · Maintenance
           </p>
+          <p className="text-sm text-slate-500 mt-2">Version 3.0 — en vigueur au 8 juillet 2026</p>
         </div>
+
         <div className="prose prose-lg max-w-none">
+          {/* Identification */}
           <div className="bg-blue-50 rounded-lg p-8 mb-8">
-            <h2 className="text-2xl font-bold text-slate-800 mb-6">I. Identification des Parties</h2>
+            <h2 className="text-2xl font-bold text-slate-800 mb-6">Identification du Prestataire</h2>
             <div className="space-y-3 text-slate-700">
-              <p><strong>Prestataire :</strong> Enzo Monnet-Mata</p>
-              <p><strong>Adresse :</strong> 69830 Saint-Georges-de-Reneins, France</p>
-              <p><strong>SIRET :</strong> 991 413 600</p>
-              <p><strong>Email :</strong> contact@zenixweb.fr</p>
-              <p><strong>Site web :</strong> www.zenixweb.fr</p>
-              <p><strong>TVA :</strong> TVA non applicable – article 293 B du CGI</p>
-              <p className="mt-4"><strong>Client</strong></p>
-              <p>Toute personne morale ou physique ayant accepté un devis ou passé commande auprès du Prestataire.</p>
+              <p><strong>Prestataire :</strong> Zenix Web — Enzo Monnet-Mata, entrepreneur individuel (micro-entreprise)</p>
+              <p><strong>Siège :</strong> 545 chemin des Vignerons, 69830 Saint-Georges-de-Reneins, France</p>
+              <p><strong>SIRET :</strong> 991 413 600 00016 · TVA non applicable, art. 293 B du CGI</p>
+              <p><strong>Contact :</strong> contact@zenixweb.fr · zenixweb.fr</p>
             </div>
           </div>
+
+          {/* Objet, définitions, documents, commande */}
           <div className="bg-slate-50 rounded-lg p-8 mb-8">
-            <h2 className="text-2xl font-bold text-slate-800 mb-6">II. Objet et Documents Contractuels</h2>
-            <div className="space-y-4 text-slate-700">
-              <div>
-                <p className="font-semibold mb-2">1. Objet</p>
-                <p>Les présentes CGV définissent les conditions dans lesquelles le Prestataire fournit des prestations de création, refonte, hébergement, maintenance et services associés (ex. landing pages, sites vitrine, sites e-commerce) au Client.</p>
-              </div>
-              <div>
-                <p className="font-semibold mb-2">2. Documents Contractuels</p>
-                <p>L'offre contractuelle est constituée, par ordre de priorité décroissant :</p>
-                <ul className="list-disc list-inside ml-4 space-y-1 mt-2">
-                  <li>Le devis accepté et signé par le Client (ou bon de commande).</li>
-                  <li>Le présent document (CGV).</li>
-                  <li>Le cahier des charges / annexe fonctionnelle signé(e).</li>
+            <h2 className="text-2xl font-bold text-slate-800 mb-6">Objet, Définitions et Formation du Contrat</h2>
+            <div className="space-y-6 text-slate-700">
+              <Article title="Article 1 — Objet et champ d'application">
+                <p>Les présentes Conditions Générales de Vente (« CGV ») régissent l'ensemble des relations contractuelles entre le Prestataire, Enzo Monnet-Mata exerçant sous l'enseigne « Zenix Web », et tout client professionnel, entreprise ou association (le « Client »). Elles couvrent deux grandes familles de prestations : (i) la création, refonte et intégration de sites web (sites vitrine, e-commerce, landing pages) et (ii) l'hébergement et la maintenance de ces sites. Elles ne s'adressent pas aux consommateurs au sens du Code de la consommation.</p>
+                <p>Toute commande emporte acceptation pleine et entière des présentes CGV, qui prévalent sur tout document du Client (conditions générales d'achat, bon de commande), sauf accord écrit exprès du Prestataire. Conformément à l'article L441-1 du Code de commerce, les CGV sont communiquées à tout client professionnel qui en fait la demande.</p>
+              </Article>
+              <Article title="Article 2 — Définitions">
+                <p>Dans les présentes CGV, les termes suivants ont la signification indiquée ci-dessous :</p>
+                <ul className="list-disc list-inside ml-4 space-y-1">
+                  <li><strong>Prestataire :</strong> Zenix Web (Enzo Monnet-Mata), fournisseur des prestations.</li>
+                  <li><strong>Client :</strong> la personne morale ou physique agissant à titre professionnel ou associatif ayant accepté un devis.</li>
+                  <li><strong>Parties :</strong> le Prestataire et le Client.</li>
+                  <li><strong>Devis :</strong> l'offre chiffrée décrivant les prestations, le prix, les délais et les modalités ; une fois signé, il vaut bon de commande.</li>
+                  <li><strong>Prestation de création :</strong> la conception, la refonte ou l'intégration d'un site web.</li>
+                  <li><strong>Livrable :</strong> tout élément (site, page, développement, document, code) remis au Client.</li>
+                  <li><strong>Recette :</strong> la phase de vérification et de validation du Livrable par le Client.</li>
+                  <li><strong>Abonnement :</strong> toute prestation récurrente d'hébergement et/ou de maintenance.</li>
+                  <li><strong>Site :</strong> le site web objet des prestations, ses fichiers et sa base de données.</li>
+                  <li><strong>Espace Client :</strong> la plateforme en ligne sécurisée mise à disposition du Client.</li>
                 </ul>
-                <p className="mt-2">Tout document émanant du Client (bon de commande, conditions générales d'achat) est inopposable au Prestataire, sauf acceptation écrite expresse de ce dernier.</p>
-              </div>
+              </Article>
+              <Article title="Article 3 — Documents contractuels">
+                <p>L'accord des Parties est constitué, par ordre de priorité décroissant : (1) le devis signé par le Client ; (2) le cahier des charges ou l'annexe fonctionnelle signé(e), le cas échéant ; (3) les présentes CGV. En cas de contradiction, le document de rang supérieur prévaut. L'ensemble forme l'intégralité de l'accord et remplace tout échange antérieur.</p>
+              </Article>
+              <Article title="Article 4 — Devis, commande et formation du contrat">
+                <p>Sauf mention contraire, les devis sont valables trente (30) jours à compter de leur émission. Le contrat est réputé formé à la réception cumulative, par le Prestataire, du devis daté et signé par le Client et du paiement de l'acompte prévu. Le Prestataire débute les travaux après encaissement de l'acompte et réception de l'ensemble des éléments nécessaires (textes, images, accès, identifiants, etc.).</p>
+              </Article>
             </div>
           </div>
+
+          {/* Prix et paiement */}
           <div className="bg-slate-50 rounded-lg p-8 mb-8">
-            <h2 className="text-2xl font-bold text-slate-800 mb-6">III. Commande et Prix</h2>
-            <div className="space-y-4 text-slate-700">
-              <div>
-                <p className="font-semibold mb-2">3. Devis, Commande et Validation</p>
-                <p>La commande est réputée fermée à réception cumulative :</p>
-                <ul className="list-disc list-inside ml-4 space-y-1 mt-2">
-                  <li>Du devis signé / bon de commande signé par le Client.</li>
-                  <li>Du paiement de l'acompte prévu au devis.</li>
-                </ul>
-                <p className="mt-2">Le devis précise la nature des prestations, le prix, les délais, les modalités de paiement et les éventuelles prestations complémentaires. Le Prestataire commence les travaux après réception de l'acompte et des éléments nécessaires fournis par le Client (textes, images, accès, etc.).</p>
-              </div>
-              <div>
-                <p className="font-semibold mb-2">4. Prix et Modalités de Paiement</p>
+            <h2 className="text-2xl font-bold text-slate-800 mb-6">Prix et Paiement</h2>
+            <div className="space-y-6 text-slate-700">
+              <Article title="Article 5 — Prix">
+                <p>Les prix sont exprimés en euros (€) et nets de taxe : en application de l'article 293 B du CGI, la TVA n'est pas applicable. Ils s'entendent hors frais de services tiers (nom de domaine, licences logicielles, thèmes, extensions, polices, API, régies publicitaires), qui restent à la charge du Client et peuvent lui être refacturés au coût réel. Aucun escompte n'est accordé en cas de paiement anticipé.</p>
+              </Article>
+              <Article title="Article 6 — Modalités et échéancier de paiement">
+                <p>Sauf stipulation contraire au devis, les modalités sont les suivantes :</p>
                 <ul className="list-disc list-inside ml-4 space-y-1">
-                  <li><strong>Prix :</strong> Les prix sont indiqués en euros (€). Sauf mention contraire sur le devis, les prestations sont facturées en régime de TVA non applicable – article 293 B du CGI.</li>
-                  <li><strong>Modalités :</strong> Les modalités sont celles indiquées sur le devis. À défaut, les modalités par défaut sont : acompte à la commande [pourcentage défini sur le devis], solde à la livraison.</li>
-                  <li><strong>Moyens de paiement :</strong> Virement bancaire, PayPal, chèque (si accepté et mentionné sur le devis).</li>
+                  <li><strong>Prestations de création :</strong> un acompte de 20 % à la commande, le solde étant exigible à la livraison. Pour les projets importants, le paiement peut être échelonné en 20 % à la commande, 40 % à une étape clé d'avancement et 40 % à la livraison.</li>
+                  <li><strong>Abonnements (hébergement / maintenance) :</strong> payables mensuellement d'avance, par prélèvement automatique via Stripe.</li>
+                  <li><strong>Factures ponctuelles :</strong> payables sous 30 jours à compter de leur émission.</li>
                 </ul>
-                <p className="mt-3 font-semibold">Retard de Paiement (Applicable en B2B)</p>
-                <p>Conformément à l'article L441-10 du Code de commerce :</p>
-                <ul className="list-disc list-inside ml-4 space-y-1 mt-2">
-                  <li>En cas de retard de paiement, des intérêts de retard seront appliqués au taux légal majoré, calculés de plein droit à compter du jour suivant la date d'échéance.</li>
-                  <li>Une indemnité forfaitaire de 40 € pour frais de recouvrement sera également due.</li>
-                  <li>En cas de non-paiement total ou partiel à l'échéance, le Prestataire pourra suspendre l'exécution des prestations après mise en demeure restée sans effet.</li>
-                </ul>
-              </div>
+                <p>Les moyens de paiement acceptés sont le virement bancaire et la carte bancaire via Stripe.</p>
+              </Article>
+              <Article title="Article 7 — Retard de paiement">
+                <p><strong>Client professionnel</strong> — Conformément aux articles L441-10 et L441-9 du Code de commerce, tout retard de paiement entraîne de plein droit, sans mise en demeure préalable : des intérêts de retard au taux de la BCE majoré de 10 points, ainsi qu'une indemnité forfaitaire de 40 € pour frais de recouvrement (sans préjudice d'une indemnisation complémentaire sur justificatifs).</p>
+                <p>En cas de non-paiement et après mise en demeure restée sans effet, le Prestataire pourra suspendre l'exécution des prestations.</p>
+              </Article>
             </div>
           </div>
+
+          {/* Exécution */}
           <div className="bg-slate-50 rounded-lg p-8 mb-8">
-            <h2 className="text-2xl font-bold text-slate-800 mb-6">IV. Exécution et Modifications</h2>
-            <div className="space-y-4 text-slate-700">
-              <div>
-                <p className="font-semibold mb-2">5. Délais de Livraison – Validation et Réception</p>
+            <h2 className="text-2xl font-bold text-slate-800 mb-6">Exécution des Prestations</h2>
+            <div className="space-y-6 text-slate-700">
+              <Article title="Article 8 — Obligations et collaboration du Client">
+                <p>La bonne exécution des prestations suppose une collaboration active du Client, qui s'engage à :</p>
                 <ul className="list-disc list-inside ml-4 space-y-1">
-                  <li><strong>Délais :</strong> Indiqués sur le devis. Ils commencent à courir à compter de la réception de l'acompte et de l'ensemble des éléments nécessaires transmis par le Client.</li>
-                  <li><strong>Validation (Recette) :</strong> La livraison est accompagnée d'une phase de validation. Le Client dispose d'un délai précisé sur le devis (par défaut : 10 jours ouvrables) pour formuler ses réserves. À défaut, la prestation est considérée comme acceptée.</li>
+                  <li>fournir en temps utile l'ensemble des contenus, informations et accès nécessaires ;</li>
+                  <li>désigner un interlocuteur unique habilité à valider les demandes et les livrables ;</li>
+                  <li>répondre aux sollicitations et valider les étapes dans les délais convenus ;</li>
+                  <li>garantir qu'il détient les droits sur les contenus qu'il transmet (textes, images, marques, logos), et garantir le Prestataire contre toute réclamation d'un tiers à ce titre.</li>
                 </ul>
-              </div>
-              <div>
-                <p className="font-semibold mb-2">6. Modifications et Prestations Complémentaires</p>
-                <p>Toute modification en cours de projet (change request) non prévue au devis fera l'objet d'un devis complémentaire et d'une facturation supplémentaire. Les délais initiaux pourront être ajustés en conséquence.</p>
-              </div>
+                <p>Tout retard ou manquement du Client dans la fourniture des éléments suspend d'autant les délais d'exécution, sans que la responsabilité du Prestataire puisse être engagée.</p>
+              </Article>
+              <Article title="Article 9 — Délais d'exécution">
+                <p>Les délais indiqués au devis sont donnés à titre indicatif, sauf délai expressément qualifié de ferme. Ils courent à compter de l'encaissement de l'acompte et de la réception de l'ensemble des éléments nécessaires. Un dépassement raisonnable de délai ne peut donner lieu à indemnité, retenue ou annulation.</p>
+              </Article>
+              <Article title="Article 10 — Cycles de révision de la maquette">
+                <p>La prestation de création comprend quatre (4) séries de modifications sur les propositions graphiques (maquettes) et le contenu, permettant au Client d'ajuster le rendu. Au-delà de ces quatre séries, toute nouvelle demande de retouche fait l'objet d'un devis complémentaire.</p>
+              </Article>
+              <Article title="Article 11 — Recette et réception">
+                <p>La livraison s'accompagne d'une phase de recette. Le Client dispose d'un délai de dix (10) jours ouvrés pour formuler par écrit ses réserves motivées portant sur une non-conformité au devis. À défaut de réserve dans ce délai, ou en cas de mise en ligne / exploitation du Livrable par le Client, la prestation est réputée acceptée sans réserve.</p>
+              </Article>
+              <Article title="Article 12 — Modifications et prestations complémentaires">
+                <p>Toute demande de modification n'entrant pas dans le périmètre défini au devis (« change request ») fait l'objet d'un devis complémentaire et d'une facturation supplémentaire. Les délais initiaux sont ajustés en conséquence.</p>
+              </Article>
             </div>
           </div>
+
+          {/* Propriété intellectuelle */}
           <div className="bg-slate-50 rounded-lg p-8 mb-8">
-            <h2 className="text-2xl font-bold text-slate-800 mb-6">V. Réclamations, Garantie et Support</h2>
-            <div className="space-y-3 text-slate-700">
-              <p className="font-semibold mb-2">7. Réclamations, Garantie et Support</p>
-              <ul className="list-disc list-inside ml-4 space-y-1">
-                <li><strong>Réclamations :</strong> Toute réclamation relative à la livraison doit être signalée par écrit (email à contact@zenixweb.fr ou courrier recommandé).</li>
-                <li><strong>Non-conformité et défauts critiques :</strong> à signaler dans un délai maximal de 10 jours calendaires à compter de la livraison.</li>
-                <li><strong>Autres réclamations :</strong> au plus tard 14 jours après la livraison.</li>
-                <li><strong>Garantie Contractuelle :</strong> Le Prestataire accorde une garantie contractuelle gratuite de 1 mois à compter de la livraison, couvrant les bugs techniques, erreurs d'affichage, dysfonctionnements de navigation ou de paiement résultant d'un défaut de développement.</li>
-                <li><strong>Exclusions de Garantie :</strong> La garantie ne couvre pas les modifications non autorisées par le Client ou un tiers, les problèmes causés par les contenus fournis par le Client, les problèmes liés à un hébergement tiers, ou les problèmes liés à des services tiers mal configurés par le Client. La garantie prend fin à l'expiration de la période d'un mois ou au transfert du site sur un hébergement tiers.</li>
-                <li><strong>Support :</strong> Le Prestataire fournit 1 mois de support technique inclus ; au-delà, le support est facturé sur devis ou au tarif en vigueur.</li>
-              </ul>
+            <h2 className="text-2xl font-bold text-slate-800 mb-6">Propriété Intellectuelle</h2>
+            <div className="space-y-6 text-slate-700">
+              <Article title="Article 13 — Propriété intellectuelle et licence d'utilisation">
+                <p>Conformément à l'article L131-3 du Code de la propriété intellectuelle, les droits sont définis comme suit :</p>
+                <ul className="list-disc list-inside ml-4 space-y-1">
+                  <li><strong>Titularité (propriété) :</strong> le Prestataire, en sa qualité d'auteur, demeure titulaire des droits de propriété intellectuelle sur le code source qu'il développe, ainsi que sur ses composants, briques techniques, bibliothèques et savoir-faire génériques. Il conserve le droit de les réutiliser pour d'autres projets.</li>
+                  <li><strong>Licence concédée au Client :</strong> à compter du paiement intégral, le Prestataire concède au Client une licence d'utilisation non exclusive, cessible avec le Site, mondiale et pour toute la durée légale des droits d'auteur. Cette licence couvre les droits de reproduction, de représentation et d'adaptation (modification) du Site, pour l'exploitation de l'activité du Client.</li>
+                  <li><strong>Éléments spécifiques :</strong> les éléments graphiques et développements réalisés spécifiquement pour le Client lui sont cédés dans le cadre de cette licence.</li>
+                  <li><strong>Contenus du Client :</strong> les textes, images, marques et logos fournis par le Client restent sa propriété.</li>
+                  <li><strong>Composants tiers :</strong> les composants tiers (CMS, extensions, thèmes, polices, images sous licence) restent soumis aux conditions de leurs éditeurs et sont exclus de la présente licence.</li>
+                </ul>
+                <p className="bg-blue-50 rounded-lg p-4 mt-3"><strong>En clair</strong> — Le Client est pleinement libre d'utiliser son Site : il peut l'héberger où il veut, l'exploiter, le faire évoluer et le confier à un autre prestataire de son choix, y compris récupérer et réutiliser le code pour son propre Site. De son côté, le Prestataire, en tant qu'auteur, en conserve la propriété et peut réutiliser ses briques techniques génériques pour d'autres clients. Personne n'est prisonnier de l'autre.</p>
+              </Article>
+              <Article title="Article 14 — Signature du Prestataire">
+                <p>Une mention discrète « Réalisé par Zenix Web », avec lien vers le site du Prestataire, figure en pied de page du Site. Le Client s'engage à la conserver pendant toute la durée de l'hébergement du Site par le Prestataire. En cas de migration du Site vers un autre hébergeur, cette obligation cesse et le Client est libre de retirer la mention.</p>
+              </Article>
+              <Article title="Article 15 — Droit de portfolio et références">
+                <p>Le Prestataire est autorisé à présenter la réalisation (captures, nom, lien) au sein de son portfolio et de ses supports de communication, à des fins de référence, sauf refus écrit du Client.</p>
+              </Article>
             </div>
           </div>
+
+          {/* Hébergement et abonnements */}
           <div className="bg-slate-50 rounded-lg p-8 mb-8">
-            <h2 className="text-2xl font-bold text-slate-800 mb-6">VI. Propriété Intellectuelle et Responsabilité</h2>
-            <div className="space-y-4 text-slate-700">
-              <div>
-                <p className="font-semibold mb-2">8. Propriété Intellectuelle</p>
+            <h2 className="text-2xl font-bold text-slate-800 mb-6">Hébergement, Maintenance et Abonnements</h2>
+            <div className="space-y-6 text-slate-700">
+              <Article title="Article 16 — Hébergement et maintenance (Abonnements)">
                 <ul className="list-disc list-inside ml-4 space-y-1">
-                  <li><strong>Titularité :</strong> Sauf stipulation contraire, le Prestataire demeure titulaire des droits de propriété intellectuelle afférents aux éléments techniques (code source, composants développés spécifiquement) jusqu'au paiement intégral de la prestation.</li>
-                  <li><strong>Cession des droits :</strong> À compter du paiement intégral, le Prestataire cède au Client les droits d'utilisation nécessaires à l'exploitation du site pour son activité (droits patrimoniaux), dans les conditions prévues au devis.</li>
-                  <li>Sont exclus de la cession les composants tiers (plugins, thèmes, bibliothèques, images sous licence) qui restent soumis aux conditions de leurs éditeurs.</li>
-                  <li><strong>Droit de Portfolio :</strong> Le Prestataire conserve le droit d'intégrer le projet au sein de son portfolio, sauf accord contraire écrit.</li>
-                  <li><strong>Garantie du Client :</strong> Le Client garantit qu'il a les droits nécessaires sur les contenus qu'il fournit et indemnise le Prestataire en cas de réclamation d'un tiers.</li>
+                  <li><strong>Infrastructure :</strong> l'hébergement est assuré sur des serveurs détenus et administrés par le Prestataire, situés en France. Le Prestataire a la qualité d'hébergeur au sens de la loi n° 2004-575 (LCEN).</li>
+                  <li><strong>Durée et reconduction :</strong> les Abonnements mensuels sont conclus sans engagement et reconduits tacitement chaque mois. L'option annuelle est conclue avec engagement de douze (12) mois.</li>
+                  <li><strong>Résiliation :</strong> l'Abonnement est résiliable par écrit moyennant un préavis de trente (30) jours, avec effet à la fin de la période en cours (aucun remboursement au prorata).</li>
+                  <li><strong>Disponibilité :</strong> le Prestataire vise une disponibilité de 99 % (obligation de moyens), hors opérations de maintenance planifiées, cas de force majeure et incidents imputables à un tiers.</li>
+                  <li><strong>Sauvegardes :</strong> des sauvegardes régulières sont réalisées dans le cadre de l'Abonnement. En l'absence d'Abonnement de maintenance actif, aucune sauvegarde ni garantie de disponibilité n'est assurée.</li>
+                  <li><strong>Impayé :</strong> un échec de prélèvement donne lieu à relance ; à défaut de régularisation sous quinze (15) jours, le service peut être suspendu, puis résilié, sans remboursement des périodes échues.</li>
                 </ul>
-              </div>
-              <div>
-                <p className="font-semibold mb-2">9. Hébergement, Sauvegarde et Transfert</p>
-                <ul className="list-disc list-inside ml-4 space-y-1">
-                  <li>Si l'hébergement est fourni par le Prestataire, les conditions sont précisées au devis.</li>
-                  <li>Le Prestataire n'est pas responsable des incidents liés à l'hébergeur choisi par le Client, ni des perturbations liées à la fourniture d'accès Internet.</li>
-                  <li>En cas de transfert du site vers un hébergement tiers, le Prestataire peut facturer les opérations de migration si celles-ci ne sont pas incluses dans le devis.</li>
-                </ul>
-              </div>
-              <div>
-                <p className="font-semibold mb-2">10. Données Personnelles (RGPD)</p>
-                <ul className="list-disc list-inside ml-4 space-y-1">
-                  <li>Le Prestataire traite les données personnelles nécessaires à l'exécution de la prestation conformément au RGPD.</li>
-                  <li>Le Client s'engage à respecter la réglementation applicable (collecte de consentements, mentions légales, cookies).</li>
-                  <li>Le Prestataire agit en qualité de sous-traitant lorsque celui-ci traite des données personnelles pour le compte du Client ; un contrat ou une clause spécifique est mise en place le cas échéant.</li>
-                </ul>
-              </div>
-              <div>
-                <p className="font-semibold mb-2">11. Confidentialité</p>
-                <p>Chaque Partie s'engage à ne pas divulguer les informations confidentielles reçues pendant la durée du projet et pendant 3 ans après la fin du contrat, sauf information déjà publique ou obligation légale.</p>
-              </div>
-              <div>
-                <p className="font-semibold mb-2">12. Responsabilité</p>
-                <ul className="list-disc list-inside ml-4 space-y-1">
-                  <li>Le Prestataire exécute sa mission avec diligence. Sa responsabilité contractuelle est limitée aux dommages directs et prouvés, dans la limite du montant total payé par le Client au titre de la prestation concernée.</li>
-                  <li>Le Prestataire ne pourra en aucun cas être tenu pour responsable des dommages indirects (perte d'exploitation, perte de clientèle, préjudice commercial, etc.).</li>
-                  <li>Cette limitation ne s'applique pas en cas de faute lourde ou dolosive.</li>
-                </ul>
-              </div>
+                <p><strong>Réversibilité :</strong> à la fin de l'Abonnement, le Prestataire met à disposition du Client, sur demande, une copie exportable des fichiers et de la base de données du Site. Les données sont conservées trente (30) jours après la fin de l'Abonnement, puis peuvent être définitivement supprimées des serveurs.</p>
+              </Article>
+              <Article title="Article 17 — Tarifs des abonnements et garantie de prix">
+                <p>Le tarif d'Abonnement souscrit par le Client est garanti et gelé pour toute la durée pendant laquelle l'Abonnement demeure actif et payé sans interruption : il n'est pas révisé à la hausse tant que cette continuité est respectée.</p>
+                <p><strong>Perte du tarif garanti</strong> — En cas d'interruption, de suspension pour impayé ou de résiliation de l'Abonnement, le tarif garanti est définitivement perdu. Toute reprise ou réactivation du service s'effectue au tarif en vigueur au jour de la reprise, sans négociation possible.</p>
+              </Article>
+              <Article title="Article 18 — Statut d'hébergeur (LCEN)">
+                <p>En sa qualité d'hébergeur (art. 6 de la LCEN), le Prestataire conserve les données d'identification requises et défère aux réquisitions de l'autorité judiciaire. Il n'est pas tenu à une obligation générale de surveillance des contenus. Le Client demeure éditeur et seul responsable des contenus qu'il publie sur le Site, et s'engage à ne rien diffuser d'illicite. Le Prestataire peut suspendre l'accès à un contenu manifestement illicite dès qu'il en a connaissance.</p>
+              </Article>
+              <Article title="Article 19 — Accessibilité numérique">
+                <p>La mise en conformité du Site avec les normes d'accessibilité numérique (RGAA / EN 301 549, « European Accessibility Act ») n'est pas comprise dans les prestations, sauf mention expresse au devis. Le Client est informé qu'il peut y être légalement tenu (notamment pour un site e-commerce, s'il emploie plus de 10 salariés ou réalise plus de 2 M€ de chiffre d'affaires) et en demeure seul responsable. Une prestation d'audit et de mise en conformité peut être proposée sur devis distinct.</p>
+              </Article>
             </div>
           </div>
+
+          {/* Garantie, données, confidentialité */}
           <div className="bg-slate-50 rounded-lg p-8 mb-8">
-            <h2 className="text-2xl font-bold text-slate-800 mb-6">VII. Dispositions Générales</h2>
-            <div className="space-y-4 text-slate-700">
-              <div>
-                <p className="font-semibold mb-2">13. Force Majeure</p>
-                <p>Les Parties ne pourront être tenues responsables en cas d'inexécution ou de retard résultant d'un cas de force majeure (grève, incendie, catastrophe naturelle, panne généralisée, etc.).</p>
-              </div>
-              <div>
-                <p className="font-semibold mb-2">14. Sous-traitance</p>
-                <p>Le Prestataire se réserve la possibilité de confier, sous sa responsabilité, tout ou partie des prestations à des sous-traitants.</p>
-              </div>
-              <div>
-                <p className="font-semibold mb-2">15. Résiliation</p>
-                <p>En cas de manquement grave par l'une des Parties, après mise en demeure restée sans effet pendant 15 jours, l'autre Partie pourra résilier le contrat. En cas de résiliation à l'initiative du Client sans faute du Prestataire, l'acompte reste acquis et les prestations réalisées facturées au prorata.</p>
-              </div>
-              <div>
-                <p className="font-semibold mb-2">16. Preuves et Facturation</p>
-                <p>Les factures sont envoyées par email. Toute contestation relative à une facture doit être formulée dans les 14 jours suivant sa réception.</p>
-              </div>
-              <div>
-                <p className="font-semibold mb-2">17. Médiation / Litiges</p>
-                <p>Les Parties s'engagent à rechercher une solution amiable avant toute action judiciaire. À défaut d'accord amiable, compétence exclusive est attribuée aux tribunaux de Lyon (ou la juridiction spécifiée dans le devis/contrat).</p>
-              </div>
-              <div>
-                <p className="font-semibold mb-2">18. Acceptation</p>
-                <p>L'acceptation du devis et/ou le paiement de l'acompte vaut acceptation pleine et entière des présentes Conditions Générales de Vente.</p>
-              </div>
+            <h2 className="text-2xl font-bold text-slate-800 mb-6">Garantie, Données Personnelles et Confidentialité</h2>
+            <div className="space-y-6 text-slate-700">
+              <Article title="Article 20 — Garantie et support">
+                <p>Le Prestataire accorde une garantie contractuelle gratuite d'un (1) mois à compter de la livraison, couvrant les bugs, erreurs d'affichage et dysfonctionnements résultant d'un défaut de développement. Sont exclus : les modifications réalisées par le Client ou un tiers, les problèmes liés aux contenus fournis par le Client, à un hébergement tiers ou à des services tiers mal configurés. La garantie cesse à l'expiration du mois ou au transfert du Site vers un hébergement tiers. Au-delà, le support est assuré dans le cadre d'un Abonnement de maintenance ou facturé sur devis.</p>
+              </Article>
+              <Article title="Article 21 — Données personnelles (RGPD)">
+                <p>Lorsqu'il traite des données personnelles pour le compte du Client, le Prestataire agit en qualité de sous-traitant au sens de l'article 28 du RGPD : il traite les données sur instructions documentées du Client, veille à leur sécurité et à leur confidentialité, n'a recours à des sous-traitants ultérieurs qu'avec information du Client, et supprime ou restitue les données en fin de contrat. Le Client, responsable de traitement, garantit la licéité des traitements et assure ses propres obligations (mentions légales, consentements, cookies). Les données propres du Client (facturation, contact) sont traitées par le Prestataire en qualité de responsable et conservées pour la durée légale.</p>
+              </Article>
+              <Article title="Article 22 — Confidentialité">
+                <p>Chaque Partie s'engage à ne pas divulguer les informations confidentielles échangées, pendant la durée du contrat et pendant trois (3) ans après son terme, sauf information déjà publique ou obligation légale de divulgation.</p>
+              </Article>
             </div>
           </div>
-          <div className="bg-slate-50 rounded-lg p-8">
-            <h2 className="text-2xl font-bold text-slate-800 mb-6">Annexes (à joindre au devis)</h2>
-            <ul className="list-disc list-inside ml-4 space-y-1 text-slate-700">
-              <li>Cahier des charges / spécifications fonctionnelles.</li>
-              <li>Devis / bon de commande.</li>
-              <li>Modalités spécifiques d'hébergement/maintenance si applicable.</li>
-            </ul>
+
+          {/* Responsabilité et dispositions générales */}
+          <div className="bg-slate-50 rounded-lg p-8 mb-8">
+            <h2 className="text-2xl font-bold text-slate-800 mb-6">Responsabilité et Dispositions Générales</h2>
+            <div className="space-y-6 text-slate-700">
+              <Article title="Article 23 — Responsabilité">
+                <p>Le Prestataire est tenu d'une obligation de moyens. Sa responsabilité contractuelle est limitée aux dommages directs et prouvés, dans la limite du montant total effectivement payé par le Client au titre de la prestation concernée (ou, pour un Abonnement, des douze derniers mois). Le Prestataire ne saurait être tenu responsable des dommages indirects (perte d'exploitation, de données, de clientèle, préjudice commercial). Cette limitation ne s'applique pas en cas de faute lourde ou dolosive. En l'absence d'Abonnement de sauvegarde, le Client demeure responsable de la conservation de ses propres contenus.</p>
+              </Article>
+              <Article title="Article 24 — Force majeure">
+                <p>Aucune des Parties ne pourra être tenue responsable d'un manquement résultant d'un cas de force majeure au sens de l'article 1218 du Code civil (notamment catastrophe naturelle, incendie, panne généralisée, défaillance d'un fournisseur d'accès ou d'énergie). Les obligations sont suspendues pendant la durée de l'événement ; s'il se prolonge au-delà de trente (30) jours, le contrat pourra être résilié de plein droit.</p>
+              </Article>
+              <Article title="Article 25 — Sous-traitance">
+                <p>Le Prestataire se réserve la faculté de confier, sous sa responsabilité, tout ou partie des prestations à des sous-traitants de son choix.</p>
+              </Article>
+              <Article title="Article 26 — Résiliation">
+                <p>En cas de manquement grave de l'une des Parties, non réparé dans un délai de quinze (15) jours après mise en demeure restée sans effet, l'autre Partie pourra résilier le contrat de plein droit. En cas de résiliation à l'initiative du Client sans faute du Prestataire, l'acompte reste acquis au Prestataire et les prestations déjà réalisées sont facturées au prorata de leur avancement.</p>
+              </Article>
+              <Article title="Article 27 — Indépendance des Parties">
+                <p>Le Prestataire exécute ses prestations en toute indépendance, en qualité de professionnel indépendant. Les présentes CGV ne créent aucun lien de subordination, de société ni de mandat entre les Parties.</p>
+              </Article>
+              <Article title="Article 28 — Non-renonciation et nullité partielle">
+                <p>Le fait pour l'une des Parties de ne pas se prévaloir d'une clause n'emporte pas renonciation à s'en prévaloir ultérieurement. Si une stipulation est jugée nulle ou inapplicable, les autres conservent leur pleine valeur.</p>
+              </Article>
+              <Article title="Article 29 — Modification des CGV">
+                <p>Les CGV applicables sont celles en vigueur à la date de la commande. Pour les Abonnements, toute modification des CGV est notifiée moyennant un préavis d'un (1) mois ; le refus du Client vaut demande de résiliation à l'échéance.</p>
+              </Article>
+              <Article title="Article 30 — Droit applicable et litiges">
+                <p>Les présentes CGV sont soumises au droit français. En cas de litige, les Parties s'efforceront de trouver une solution amiable. À défaut d'accord dans un délai raisonnable, le litige sera porté devant les tribunaux compétents du ressort de Lyon, y compris en cas de pluralité de défendeurs ou d'appel en garantie.</p>
+              </Article>
+              <Article title="Article 31 — Acceptation">
+                <p>L'acceptation du devis et/ou le paiement de l'acompte vaut acceptation pleine et entière des présentes Conditions Générales de Vente et de Prestation de Services.</p>
+              </Article>
+            </div>
           </div>
-        </div>
-        <div className="text-center mt-12">
-          <button 
-            onClick={() => navigate(-1)}
-            className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-8 rounded-full transition-all shadow-lg hover:shadow-blue-500/20 active:scale-95"
-          >
-            Retour
-          </button>
+
+          <div className="text-center">
+            <button
+              onClick={() => navigate('/')}
+              className="bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-all"
+            >
+              Retour à l'accueil
+            </button>
+          </div>
         </div>
       </div>
     </section>
   );
 };
+
 export default TermsOfService;
