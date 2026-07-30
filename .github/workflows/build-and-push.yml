@@ -4,13 +4,17 @@
 # Runners GitHub-hosted ubuntu-latest (illimités pour repo public).
 # pnpm + minimum-release-age 24h pour défense supply-chain.
 #
-# Secrets GitHub requis (Settings -> Secrets and variables -> Actions) :
-#   KUBE_CONFIG_DATA : kubeconfig base64 pour récupérer le Sealed Secret côté build
-#                      (echo "$KUBECONFIG_CONTENT" | base64 -w0)
+# Secrets GitHub requis : aucun en dehors du GITHUB_TOKEN fourni par la plateforme.
 #
-# Secrets optionnels (sinon défauts hardcodés) :
-#   Aucun — VITE_RECAPTCHA_SITE_KEY et VITE_BACKEND_URL sont lus depuis le secret K8s
-#   zenix-backend-secrets via kubectl. Le runner a accès au cluster via KUBE_CONFIG_DATA.
+# Le workflow montait auparavant un kubeconfig complet du cluster sur le runner
+# pour lire zenix-backend-secrets et en extraire deux variables de build. Cette
+# étape a été supprimée :
+#   - elle exposait l'intégralité du secret (clé privée JWT, token Gotify) à un
+#     runner GitHub, pour un bénéfice nul ;
+#   - les deux clés recherchées (vite-recaptcha-site-key, vite-backend-url)
+#     n'existaient pas dans le secret, la récupération échouait donc en silence
+#     et VITE_BACKEND_URL retombait systématiquement sur sa valeur par défaut.
+# Le secret GitHub KUBE_CONFIG_DATA peut être révoqué et supprimé.
 
 name: Build and push to GHCR
 
@@ -79,13 +83,13 @@ jobs:
         working-directory: Backend
         run: pnpm install --frozen-lockfile
 
-      - name: Backend – audit (high+)
+      # Bloquant : restreint aux dépendances de production, une CVE HIGH qui part
+      # en prod fait échouer le build. Les exceptions justifiées se déclarent
+      # dans pnpm.auditConfig.ignoreGhsas du package.json, pas en ignorant
+      # l'ensemble du résultat.
+      - name: Backend – audit (prod, high+)
         working-directory: Backend
-        run: pnpm audit --audit-level high || true
-        # `pnpm audit` retourne non-zéro même sur des CVEs de devDependencies non utilisées
-        # en runtime — on log mais on ne bloque pas. Pour bloquer en prod uniquement :
-        # `pnpm audit --prod --audit-level high`
-        continue-on-error: true
+        run: pnpm audit --prod --audit-level high
 
       - name: Backend – test (if present)
         working-directory: Backend
@@ -97,16 +101,17 @@ jobs:
         working-directory: Frontend
         run: pnpm install --frozen-lockfile
 
-      - name: Frontend – audit (high+, prod deps only)
+      - name: Frontend – audit (prod, high+)
         working-directory: Frontend
         run: pnpm audit --prod --audit-level high
-        continue-on-error: true
 
       - name: Frontend – lint
         working-directory: Frontend
         run: pnpm lint
-        # lint informatif tant qu'on n'a pas fini de fixer les warnings legacy
-        continue-on-error: true
+
+      - name: Frontend – typecheck
+        working-directory: Frontend
+        run: pnpm typecheck
 
       - name: Frontend – test (if present)
         working-directory: Frontend
@@ -176,41 +181,6 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      # ── Récupération des variables de build frontend depuis le Sealed Secret K8s ──
-      - name: Install kubectl
-        uses: azure/setup-kubectl@v5
-        with:
-          version: 'latest'
-
-      - name: Configure kubeconfig from secret
-        env:
-          KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
-        run: |
-          mkdir -p ~/.kube
-          echo "$KUBE_CONFIG_DATA" | base64 -d > ~/.kube/config
-          chmod 600 ~/.kube/config
-
-      - name: Get build env from cluster (Sealed Secret)
-        id: cluster-env
-        run: |
-          set -euo pipefail
-          # On lit le secret déchiffré côté cluster (déchiffré par sealed-secrets-controller).
-          if SECRET_JSON=$(kubectl get secret zenix-backend-secrets -n zenix -o json 2>/dev/null); then
-            VITE_RECAPTCHA_SITE_KEY=$(echo "$SECRET_JSON" | jq -r '.data."vite-recaptcha-site-key" // empty' | base64 -d 2>/dev/null || true)
-            VITE_BACKEND_URL=$(echo "$SECRET_JSON" | jq -r '.data."vite-backend-url" // empty' | base64 -d 2>/dev/null || true)
-          else
-            echo "::warning::Cluster inaccessible ou secret zenix-backend-secrets absent. Utilisation des défauts."
-            VITE_RECAPTCHA_SITE_KEY=""
-            VITE_BACKEND_URL=""
-          fi
-          # Défaut sain : VITE_BACKEND_URL=/api (Ingress du même cluster)
-          [ -z "$VITE_BACKEND_URL" ] && VITE_BACKEND_URL="/api"
-          # On masque la clé reCAPTCHA dans les logs au cas où
-          echo "::add-mask::$VITE_RECAPTCHA_SITE_KEY"
-          echo "VITE_RECAPTCHA_SITE_KEY=$VITE_RECAPTCHA_SITE_KEY" >> $GITHUB_ENV
-          echo "VITE_BACKEND_URL=$VITE_BACKEND_URL" >> $GITHUB_ENV
-          echo "Variables de build récupérées (URL=$VITE_BACKEND_URL, reCAPTCHA défini=$([ -n "$VITE_RECAPTCHA_SITE_KEY" ] && echo oui || echo non))"
-
       # ── Backend ──────────────────────────────────────────────────────────────
       - name: Extract metadata (backend)
         id: meta-backend
@@ -255,8 +225,9 @@ jobs:
       - name: Frontend – install & build (dist/ requis par Dockerfile)
         working-directory: Frontend
         env:
-          VITE_RECAPTCHA_SITE_KEY: ${{ env.VITE_RECAPTCHA_SITE_KEY }}
-          VITE_BACKEND_URL: ${{ env.VITE_BACKEND_URL }}
+          # Le frontend appelle l'API via le même hôte, proxifiée par nginx sur
+          # /api : aucune variable de build à récupérer ailleurs.
+          VITE_BACKEND_URL: /api
         run: |
           pnpm install --frozen-lockfile
           pnpm run build
@@ -334,7 +305,3 @@ jobs:
             git pull --rebase origin ${{ github.ref_name }}
             git push origin ${{ github.ref_name }}
           fi
-
-      - name: Cleanup kubeconfig
-        if: always()
-        run: rm -f ~/.kube/config

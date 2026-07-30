@@ -1,8 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Mail, MapPin, Calendar, User, GraduationCap, Shield } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import SEO from './SEO';
-import { consultationSchema, organizationSchema, personSchema } from '../utils/structuredData';
 import { trackEvent } from '../utils/analytics';
 const ContactPage = () => {
   const formStartTracked = useRef(false);
@@ -30,6 +28,10 @@ const ContactPage = () => {
     timeline: '',
     message: ''
   });
+  // Champ piège anti-spam : invisible et hors du parcours clavier, donc jamais
+  // rempli par un humain. Le backend ignore silencieusement toute soumission
+  // où il est renseigné.
+  const [website, setWebsite] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
@@ -103,6 +105,7 @@ const ContactPage = () => {
         budget: formData.budget ? String(Math.max(0, Math.min(100000, Number(formData.budget)))) : '',
         timeline: formData.timeline,
         message: sanitizeInput(formData.message, 2000),
+        website,
       };
 
       console.log('Sending data:', {
@@ -163,28 +166,22 @@ const ContactPage = () => {
       setIsSubmitting(false);
     }
   };
-  const structuredData = [
-    consultationSchema,
-    organizationSchema,
-    personSchema
-  ];
+  // Les balises SEO sont posées par le gabarit Page (src/App.tsx) à partir de
+  // src/config/routes.ts, pour que le pré-rendu du build voie les mêmes valeurs.
   return (
     <>
-      <SEO
-        title="Contact - Prendre RDV Gratuit | Zenix Web"
-        description="Prenez rendez-vous gratuitement pour discuter de votre projet de landing page. Consultation gratuite de 15 minutes avec Enzo Monnet Mata, développeur web expert à Lyon."
-        keywords="prendre rdv, consultation gratuite, rendez-vous, développeur web, landing page, Lyon, Enzo Monnet Mata, calendly, contact"
-        url="https://www.zenixweb.fr/contact"
-        type="website"
-        structuredData={structuredData}
-      />
       <section className="py-20 bg-white pt-32">
       <div className="container mx-auto px-6">
         <div className="text-center mb-16">
-          <h2 className="text-3xl font-bold text-slate-800 mb-4">Demandez votre devis gratuit</h2>
+          {/* h1 : cette page n'en avait aucun, Google n'avait donc aucun titre
+              principal pour comprendre son sujet. */}
+          <h1 className="text-3xl md:text-4xl font-bold text-slate-800 mb-4">
+            Demandez votre devis gratuit pour votre site web
+          </h1>
           <div className="h-1 w-20 bg-blue-600 mx-auto mb-6"></div>
           <p className="text-lg text-slate-600 max-w-2xl mx-auto">
-            Remplissez ce formulaire et je vous recontacte dans les 24h pour discuter de votre projet de landing page.
+            Décrivez votre projet en quelques lignes : je vous réponds sous 24 heures avec un devis
+            personnalisé et sans engagement. Site vitrine, e-commerce ou landing page, à Lyon et partout en France.
           </p>
         </div>
         <div className="grid lg:grid-cols-2 gap-12 max-w-6xl mx-auto">
@@ -272,6 +269,22 @@ const ContactPage = () => {
             <h3 className="text-2xl font-bold text-slate-800 mb-2">Formulaire de contact</h3>
             <p className="text-slate-600 mb-6">Quelques questions pour mieux comprendre votre projet</p>
             <form ref={formRef} onSubmit={handleSubmit} className="space-y-6">
+              {/* Honeypot anti-spam : masqué visuellement, retiré de l'ordre de
+                  tabulation et des lecteurs d'écran. Un visiteur ne le voit ni
+                  ne l'atteint ; les bots qui remplissent tous les champs se
+                  trahissent. */}
+              <div className="absolute -left-[9999px] top-[-9999px] w-px h-px overflow-hidden" aria-hidden="true">
+                <label htmlFor="website">Ne pas remplir ce champ</label>
+                <input
+                  type="text"
+                  id="website"
+                  name="website"
+                  value={website}
+                  onChange={(e) => setWebsite(e.target.value)}
+                  tabIndex={-1}
+                  autoComplete="off"
+                />
+              </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <label htmlFor="name" className="block text-sm font-medium text-slate-700 mb-1">

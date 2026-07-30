@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { Check, Globe, Search, Shield, Zap, ArrowRight, Code, Palette } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { trackEvent } from '../utils/analytics';
@@ -40,7 +40,7 @@ const Vitrine = () => {
     {
       icon: <Shield className="w-6 h-6" />,
       title: 'Sécurité Renforcée',
-      description: 'Protection contre les attaques, HTTPS obligatoire, headers de sécurité, validation des formulaires et protection CSRF.'
+      description: 'Protection contre les attaques, HTTPS obligatoire, headers de sécurité stricts (CSP, HSTS), validation et nettoyage des données de formulaire.'
     },
     {
       icon: <Zap className="w-6 h-6" />,
@@ -61,8 +61,8 @@ const Vitrine = () => {
 
   const services = [
     'Pages multiples (Accueil, À propos, Services, Portfolio, Contact)',
-    'Formulaire de contact sécurisé avec reCAPTCHA',
-    'Intégration Google Analytics avec consentement RGPD',
+    'Formulaire de contact sécurisé avec protection anti-spam',
+    'Mesure d\'audience sans cookie (Umami auto-hébergé, sans bandeau de consentement)',
     'Optimisation des images et médias',
     'Intégration réseaux sociaux',
     'Mentions légales et politique de confidentialité',
@@ -129,9 +129,9 @@ const Vitrine = () => {
                 </h3>
                 <ul className="space-y-2 text-slate-600">
                   <li>• HTTPS avec certificat SSL/TLS</li>
-                  <li>• Headers de sécurité (CSP, X-Frame-Options, etc.)</li>
-                  <li>• Protection CSRF et XSS</li>
-                  <li>• Validation et sanitization des formulaires</li>
+                  <li>• Headers de sécurité (CSP, HSTS, X-Frame-Options, etc.)</li>
+                  <li>• Protection XSS et anti-spam sur les formulaires</li>
+                  <li>• Validation et sanitization des données saisies</li>
                   <li>• Protection contre les injections</li>
                   <li>• Sauvegardes automatiques quotidiennes</li>
                 </ul>

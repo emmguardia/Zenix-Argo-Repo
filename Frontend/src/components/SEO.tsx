@@ -15,8 +15,11 @@ const SEO: React.FC<SEOProps> = ({
   title = "Zenix | Services de Développement Web Expert",
   description = "Services professionnels de développement web incluant la création de sites, l'hébergement, les mises à jour et la modification de sites web. Obtenez un site web beau et fonctionnel pour votre entreprise.",
   keywords = "développement web, création site web, landing page, hébergement web, SEO, design web, Lyon, France, Enzo Monnet Mata",
-  image = "https://www.zenixweb.fr/images/Logo.webp",
-  url = "https://www.zenixweb.fr",
+  // Visuel de partage dédié au format 1200x630 attendu par les réseaux sociaux.
+  // Le logo était utilisé auparavant alors qu'il est carré (2048x2048), tout en
+  // étant déclaré en 1200x630 : les plateformes le recadraient mal.
+  image = "https://zenixweb.fr/images/og-cover.webp",
+  url = "https://zenixweb.fr",
   type = "website",
   structuredData,
   noindex = false
@@ -30,7 +33,7 @@ const SEO: React.FC<SEOProps> = ({
 
   const fullTitle = title.includes("Zenix") ? title : `${title} | Zenix Web`;
   const robotsContent = noindex ? "noindex, nofollow" : "index, follow";
-  const canonicalUrl = url && url.startsWith('http') ? url : `https://www.zenixweb.fr${url.startsWith('/') ? url : '/' + url}`;
+  const canonicalUrl = url && url.startsWith('http') ? url : `https://zenixweb.fr${url.startsWith('/') ? url : '/' + url}`;
 
   useEffect(() => {
     document.title = sanitizeMetaContent(fullTitle);
@@ -55,13 +58,13 @@ const SEO: React.FC<SEOProps> = ({
       element.href = href;
     };
 
+    // Retire TOUS les blocs JSON-LD, y compris ceux écrits dans le HTML au
+    // build par scripts/prerender-seo.mjs. Ne supprimer que les blocs marqués
+    // `data-seo-dynamic` laisserait cohabiter le JSON-LD pré-rendu et celui
+    // injecté à l'hydratation, soit chaque schéma déclaré deux fois.
+    // Au runtime, ce composant est seul responsable des données structurées.
     const removeScripts = (type: string) => {
-      const scripts = document.querySelectorAll(`script[type="${type}"]`);
-      scripts.forEach(script => {
-        if (script.getAttribute('data-seo-dynamic')) {
-          script.remove();
-        }
-      });
+      document.querySelectorAll(`script[type="${type}"]`).forEach((script) => script.remove());
     };
 
     updateMetaTag('description', description);
@@ -86,7 +89,7 @@ const SEO: React.FC<SEOProps> = ({
     updateMetaTag('twitter:title', fullTitle);
     updateMetaTag('twitter:description', description);
     updateMetaTag('twitter:image', image);
-    updateMetaTag('twitter:creator', '@zenixweb');
+    // Pas de twitter:creator : aucun compte X n'est rattaché à Zenix.
 
     const safeCanonicalUrl = canonicalUrl.replace(/[<>"']/g, '');
     updateLinkTag('canonical', safeCanonicalUrl);

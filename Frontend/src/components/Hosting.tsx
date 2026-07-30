@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import { Check, Server, Shield, Zap, BarChart, ArrowRight, MapPin, Activity, Database, FileSearch, RotateCcw, GraduationCap } from 'lucide-react';
+import { Check, Server, Shield, Zap, BarChart, ArrowRight, MapPin, Activity, Database, RotateCcw, GraduationCap } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { trackEvent } from '../utils/analytics';
 
@@ -28,9 +28,11 @@ const PricingCard = ({ name, price, description, features, highlight = false, de
         <p className="text-slate-600 mb-4">{description}</p>
         <div className="mb-2">
           <span className="text-4xl font-bold text-blue-600">{price}</span>
-          <span className="text-slate-600 ml-2">HT / mois</span>
+          <span className="text-slate-600 ml-2">/ mois</span>
         </div>
-        <p className="text-xs text-slate-500">Engagement mensuel sans durée minimale</p>
+        <p className="text-xs text-slate-500">
+          Engagement mensuel sans durée minimale &middot; TVA non applicable, art. 293 B du CGI
+        </p>
         <p className="text-xs font-semibold text-green-700 mt-1">
           Ou engagement 1 an : le 12ᵉ mois est offert — toujours prélevé mois par mois, rien à avancer
         </p>
@@ -66,9 +68,10 @@ interface AddOnRowProps {
   name: string;
   description: string;
   price: string;
+  priceAlt?: string;
 }
 
-const AddOnRow = ({ icon, name, description, price }: AddOnRowProps) => (
+const AddOnRow = ({ icon, name, description, price, priceAlt }: AddOnRowProps) => (
   <div className="flex items-start justify-between gap-4 p-4 bg-white rounded-xl border border-slate-200 hover:border-blue-300 transition-colors">
     <div className="flex items-start gap-4">
       <div className="bg-blue-50 p-2 rounded-lg flex-shrink-0">
@@ -80,7 +83,13 @@ const AddOnRow = ({ icon, name, description, price }: AddOnRowProps) => (
       </div>
     </div>
     <div className="text-right flex-shrink-0">
-      <span className="font-bold text-blue-600">{price}</span>
+      <span className="font-bold text-blue-600 whitespace-nowrap">{price}</span>
+      {priceAlt && (
+        <>
+          <span className="block text-xs text-slate-400">ou</span>
+          <span className="block font-bold text-blue-600 whitespace-nowrap">{priceAlt}</span>
+        </>
+      )}
     </div>
   </div>
 );
@@ -117,7 +126,7 @@ const Hosting = () => {
       description: 'La base solide pour votre présence en ligne.',
       features: [
         'Infrastructure professionnelle hébergée en France, qui s\'adapte automatiquement au trafic et se répare seule en cas de problème technique',
-        'Protection complète contre les attaques et sauvegarde automatique de votre site tous les jours sur un serveur séparé',
+        'Protection complète contre les attaques et sauvegarde automatique de votre site tous les jours, répliquée sur deux lieux différents',
         '2 petites modifications par mois incluses (texte, image, prix, horaires, etc.)',
         'Petites modifications supplémentaires : 15€ chacune. Grosses modifications (nouvelle page, fonctionnalité) : sur devis'
       ],
@@ -171,7 +180,7 @@ const Hosting = () => {
           </div>
           <div className="inline-flex items-center gap-2 bg-white px-4 py-2 rounded-full shadow-sm border border-slate-200">
             <Activity className="w-4 h-4 text-green-600" aria-hidden="true" />
-            <span className="text-sm font-medium text-slate-700">99,9% de disponibilité visée</span>
+            <span className="text-sm font-medium text-slate-700">99% de disponibilité visée</span>
           </div>
           <div className="inline-flex items-center gap-2 bg-white px-4 py-2 rounded-full shadow-sm border border-slate-200">
             <Shield className="w-4 h-4 text-violet-600" aria-hidden="true" />
@@ -201,31 +210,20 @@ const Hosting = () => {
               icon={<RotateCcw className="w-5 h-5 text-blue-600" aria-hidden="true" />}
               name="Migration de site existant"
               description="Vous avez déjà un site chez OVH, Wix, Squarespace, WordPress.com ou autre ? Je rapatrie l'ensemble (fichiers, base de données, configuration) vers Zenix, puis je bascule le nom de domaine sans interruption visible pour vos visiteurs."
-              price="99€ une fois"
+              price="69€ une fois"
             />
             <AddOnRow
               icon={<Database className="w-5 h-5 text-blue-600" aria-hidden="true" />}
-              name="Sauvegardes géo-redondantes"
-              description="En plus des sauvegardes quotidiennes incluses, une copie supplémentaire est stockée dans un second datacenter géographiquement séparé. Vous restez protégé même en cas d'incident majeur sur le site principal."
+              name="Sauvegardes hors infrastructure Zenix"
+              description="Vos sauvegardes quotidiennes incluses sont déjà répliquées sur mes serveurs, dans deux lieux différents. Cette option ajoute une copie stockée en dehors de mon infrastructure, chez un hébergeur tiers indépendant : même si l'intégralité de mes serveurs devenait inaccessible, votre site reste récupérable."
               price="+10€/mois"
-            />
-            <AddOnRow
-              icon={<Activity className="w-5 h-5 text-blue-600" aria-hidden="true" />}
-              name="Monitoring & alertes"
-              description="Surveillance continue 24/7 avec notifications dès qu'une page met plus de quelques secondes à répondre ou tombe."
-              price="+10€/mois"
-            />
-            <AddOnRow
-              icon={<FileSearch className="w-5 h-5 text-blue-600" aria-hidden="true" />}
-              name="Audit performance"
-              description="Analyse Lighthouse complète + plan d'optimisation, livré en PDF. Vous repartez avec des actions concrètes priorisées."
-              price="79€ une fois"
             />
             <AddOnRow
               icon={<GraduationCap className="w-5 h-5 text-blue-600" aria-hidden="true" />}
-              name="Scan sécurité mensuel"
-              description="Audit réalisé par un étudiant en cybersécurité à Guardia (école spécialisée). Détection de vulnérabilités, audit des en-têtes HTTP, scan des dépendances, tests d'intrusion ciblés. Rapport clair avec actions correctives."
-              price="+20€/mois"
+              name="Scan de sécurité"
+              description="Audit réalisé par un étudiant en cybersécurité à Guardia (école spécialisée). Détection de vulnérabilités, audit des en-têtes HTTP, scan des dépendances, tests d'intrusion ciblés. Rapport clair avec actions correctives. En ponctuel pour un état des lieux, ou en mensuel pour un suivi continu."
+              price="25€ une fois"
+              priceAlt="15€/mois"
             />
           </div>
         </div>
@@ -262,7 +260,7 @@ const Hosting = () => {
               <div>
                 <h3 className="text-xl font-semibold text-slate-800 mb-2">Sauvegarde Quotidienne</h3>
                 <p className="text-slate-600">
-                  Chaque jour, une copie complète de votre site est sauvegardée automatiquement sur un serveur séparé. En cas de problème, je peux restaurer votre site en quelques minutes.
+                  Chaque jour, une copie complète de votre site est sauvegardée automatiquement, puis répliquée sur mes serveurs dans deux lieux différents. En cas de problème, je peux restaurer votre site en quelques minutes.
                 </p>
               </div>
             </div>
@@ -298,7 +296,7 @@ const Hosting = () => {
             <div>
               <h3 className="text-lg font-semibold text-slate-800 mb-2">Vous reprenez mon site déjà existant ?</h3>
               <p className="text-slate-600">
-                Oui. La migration depuis Wix, Squarespace, WordPress ou tout autre hébergeur est proposée en option à 99€ une fois, sans interruption visible pour vos visiteurs.
+                Oui. La migration depuis Wix, Squarespace, WordPress ou tout autre hébergeur est proposée en option à 69€ une fois, sans interruption visible pour vos visiteurs.
               </p>
             </div>
             <div>

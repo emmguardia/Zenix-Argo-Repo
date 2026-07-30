@@ -1,106 +1,114 @@
+/**
+ * Métadonnées SEO par page.
+ *
+ * Contraintes respectées ici, car Google tronque au-delà :
+ *   - title       : ~60 caractères max, mot-clé principal en tête, marque à la fin.
+ *   - description : ~155 caractères max. Elle n'est pas un facteur de classement,
+ *                   mais c'est le texte qui décide du clic : un bénéfice concret
+ *                   y vaut mieux qu'une accumulation de mots-clés.
+ *
+ * Ces valeurs sont aussi celles injectées en dur dans le HTML au build par
+ * scripts/prerender-seo.mjs — c'est donc ici, et nulle part ailleurs, qu'on
+ * modifie un titre ou une description.
+ */
 export const seoConfig = {
   home: {
-    title: "Zenix | Services de Développement Web Expert à Lyon",
-    description: "Services professionnels de développement web incluant la création de sites, l'hébergement, les mises à jour et la modification de sites web. Spécialiste des landing pages modernes à Lyon.",
-    keywords: "développement web Lyon, création site web, landing page, hébergement web, SEO, design web, Enzo Monnet Mata, Guardia",
-    url: "https://www.zenixweb.fr/",
+    title: "Création de site web à Lyon | Zenix Web",
+    description:
+      "Développeur web indépendant à Lyon : sites vitrine, e-commerce et landing pages, avec hébergement managé en France. Devis gratuit sous 24 h.",
+    keywords:
+      "création site web Lyon, développeur web Lyon, site vitrine, site e-commerce, landing page, hébergement web France",
+    url: "https://zenixweb.fr/",
   },
   landing: {
-    title: "Landing Page Personnalisée | Configuration Gratuite | Zenix Web",
-    description: "Configurez votre landing page personnalisée en quelques clics. Design moderne, optimisée conversion, devis gratuit. Spécialiste landing pages à Lyon.",
-    keywords: "landing page, configuration landing page, design landing page, conversion, devis gratuit, Lyon, Zenix Web",
-    url: "https://www.zenixweb.fr/landing",
+    title: "Création de landing page qui convertit | Zenix Web",
+    description:
+      "Landing page sur mesure pensée pour la conversion : design moderne, chargement rapide, formulaire intégré. Devis gratuit sous 24 h.",
+    keywords:
+      "création landing page, landing page conversion, page d'atterrissage, landing page Lyon, générer des leads",
+    url: "https://zenixweb.fr/landing",
   },
   contact: {
-    title: "Contact | Devis Gratuit | Développeur Web Lyon | Zenix Web",
-    description: "Contactez Enzo Monnet Mata pour un devis gratuit. Développeur web spécialisé en landing pages et sites modernes à Lyon. Réponse rapide garantie.",
-    keywords: "contact développeur web, devis gratuit, Enzo Monnet Mata, Lyon, landing page, site web, consultation",
-    url: "https://www.zenixweb.fr/contact",
+    title: "Devis gratuit pour votre site web | Zenix Web",
+    description:
+      "Décrivez votre projet et recevez un devis personnalisé sous 24 h. Site vitrine, e-commerce ou landing page, à Lyon et partout en France.",
+    keywords:
+      "devis site web gratuit, contact développeur web, créer un site internet, devis création site Lyon",
+    url: "https://zenixweb.fr/contact",
   },
   mentionsLegales: {
-    title: "Mentions Légales | Zenix Web | Développement Web Lyon",
-    description: "Mentions légales de Zenix Web, services de développement web à Lyon. Informations légales et conditions d'utilisation.",
-    keywords: "mentions légales, Zenix Web, développement web, Lyon, conditions d'utilisation",
-    url: "https://www.zenixweb.fr/mentions-legales",
+    title: "Mentions légales | Zenix Web",
+    description:
+      "Mentions légales du site zenixweb.fr : éditeur, hébergeur, propriété intellectuelle et traitement des données personnelles.",
+    keywords: "mentions légales, Zenix Web, éditeur du site, hébergeur",
+    url: "https://zenixweb.fr/mentions-legales",
   },
   politiqueConfidentialite: {
-    title: "Politique de Confidentialité | Zenix Web | Protection des Données",
-    description: "Politique de confidentialité de Zenix Web. Protection et traitement de vos données personnelles conformément au RGPD.",
-    keywords: "politique confidentialité, RGPD, protection données, Zenix Web, développement web",
-    url: "https://www.zenixweb.fr/politique-confidentialite",
+    title: "Politique de confidentialité | Zenix Web",
+    description:
+      "Comment vos données personnelles sont collectées et protégées : finalités, durées de conservation, droits RGPD et mesure d'audience sans cookie.",
+    keywords: "politique de confidentialité, RGPD, protection des données, cookies, Umami",
+    url: "https://zenixweb.fr/politique-confidentialite",
   },
   conditionsVente: {
-    title: "Conditions de Vente | Zenix Web | Services Développement Web",
-    description: "Conditions générales de vente de Zenix Web. Termes et conditions pour nos services de développement web à Lyon.",
-    keywords: "conditions de vente, CGV, Zenix Web, développement web, services, Lyon",
-    url: "https://www.zenixweb.fr/conditions-vente",
+    title: "Conditions générales de vente | Zenix Web",
+    description:
+      "CGV de Zenix Web : prestations, prix, délais, propriété intellectuelle, hébergement, garantie et responsabilité. Version 3.0 en vigueur.",
+    keywords: "CGV, conditions générales de vente, contrat création site web, prestation web",
+    url: "https://zenixweb.fr/conditions-vente",
   },
   confirmation: {
-    title: "Confirmation | Message Envoyé | Zenix Web",
-    description: "Votre message a été envoyé avec succès. Nous vous répondrons dans les plus brefs délais.",
-    keywords: "confirmation, message envoyé, contact, Zenix Web",
-    url: "https://www.zenixweb.fr/confirmation",
+    title: "Message envoyé | Zenix Web",
+    description: "Votre demande a bien été envoyée. Je vous réponds sous 24 heures.",
+    keywords: "confirmation, message envoyé",
+    url: "https://zenixweb.fr/confirmation",
   },
   hosting: {
-    title: "Hébergement Web Haute Performance | Offres Zenix Start, Relax, Pro | Zenix Web",
-    description: "Offres d'hébergement web avec cluster K3S, auto-scaling, Cloudflare et sauvegarde quotidienne. Zenix Start 25€/mois, Zenix Relax 40€/mois, Zenix Pro 80€/mois. Maintenance et sécurité incluses.",
-    keywords: "hébergement web, hébergement K3S, Cloudflare, sauvegarde site web, maintenance site web, auto-scaling, auto-healing, hébergement sécurisé Lyon",
-    url: "https://www.zenixweb.fr/hebergement",
+    title: "Hébergement web managé en France | Zenix Web",
+    description:
+      "Hébergement et maintenance de votre site : serveurs en France, sauvegardes quotidiennes, sécurité incluse. Dès 39 €/mois, sans engagement.",
+    keywords:
+      "hébergement web France, hébergement managé, maintenance site web, sauvegarde site, hébergement sécurisé, hébergement Kubernetes",
+    url: "https://zenixweb.fr/hebergement",
   },
   vitrine: {
-    title: "Création Site Vitrine Professionnel | SEO & Sécurité Optimisés | Zenix Web Lyon",
-    description: "Sites vitrine modernes, sécurisés et optimisés pour le SEO. Design responsive, sécurité renforcée, structured data JSON-LD. Création de site vitrine professionnel à Lyon.",
-    keywords: "création site vitrine, site vitrine professionnel, site vitrine Lyon, site vitrine SEO, site vitrine sécurisé, développement site vitrine, site web entreprise",
-    url: "https://www.zenixweb.fr/site-vitrine",
+    title: "Création de site vitrine professionnel | Zenix Web",
+    description:
+      "Site vitrine sur mesure, rapide, sécurisé et optimisé pour le référencement. Design responsive et hébergement en France. Devis gratuit sous 24 h.",
+    keywords:
+      "création site vitrine, site vitrine professionnel, site vitrine Lyon, site internet entreprise, site vitrine sur mesure",
+    url: "https://zenixweb.fr/site-vitrine",
   },
   ecommerce: {
-    title: "Création Site E-commerce Sécurisé | Boutique en Ligne | Zenix Web Lyon",
-    description: "Boutiques en ligne sécurisées avec paiement intégré, gestion produits, SEO e-commerce optimisé. Conformité PCI-DSS, protection anti-fraude. Création site e-commerce professionnel à Lyon.",
-    keywords: "création site e-commerce, boutique en ligne, site e-commerce sécurisé, e-commerce Lyon, paiement en ligne, gestion produits, SEO e-commerce, PCI-DSS",
-    url: "https://www.zenixweb.fr/site-ecommerce",
+    title: "Création de site e-commerce sécurisé | Zenix Web",
+    description:
+      "Boutique en ligne complète : catalogue produits, paiement sécurisé, gestion des commandes et référencement optimisé. Devis gratuit sous 24 h.",
+    keywords:
+      "création site e-commerce, boutique en ligne, vendre en ligne, site e-commerce Lyon, paiement sécurisé",
+    url: "https://zenixweb.fr/site-ecommerce",
   },
   typesDeSites: {
-    title: "Nos Services | Landing Page, Site Vitrine, E-commerce | Zenix Web",
-    description: "Découvrez nos services de développement web : Landing Page pour convertir, Site Vitrine pour présenter votre entreprise, Site E-commerce pour vendre en ligne. Choisissez la solution qui correspond à vos besoins.",
-    keywords: "services développement web, landing page, site vitrine, site e-commerce, création site web Lyon, services web professionnels",
-    url: "https://www.zenixweb.fr/nos-services",
+    title: "Nos services de création de sites web | Zenix Web",
+    description:
+      "Landing page pour convertir, site vitrine pour présenter votre activité, e-commerce pour vendre en ligne. Trouvez la solution adaptée à votre projet.",
+    keywords:
+      "services création site web, types de sites internet, landing page, site vitrine, site e-commerce",
+    url: "https://zenixweb.fr/nos-services",
   },
   faq: {
-    title: "FAQ | Questions fréquentes sur Zenix Web | Hébergement, Sites, Sécurité",
-    description: "Réponses aux questions fréquentes sur Zenix Web : création de sites, hébergement managé K3s, sécurité RGPD, tarifs, modifications et programme partenaires.",
-    keywords: "FAQ Zenix Web, questions hébergement web, questions création site, RGPD, sécurité site web, tarifs hébergement Lyon",
-    url: "https://www.zenixweb.fr/faq",
+    title: "Questions fréquentes | Zenix Web",
+    description:
+      "Délais, tarifs, hébergement, sécurité, RGPD, modifications : les réponses aux questions les plus posées sur la création et l'hébergement de sites web.",
+    keywords:
+      "FAQ création site web, tarifs site internet, délai création site, questions hébergement web",
+    url: "https://zenixweb.fr/faq",
   },
   partners: {
-    title: "Programme Partenaires & Revendeurs | Hébergement Wholesale | Zenix Web",
-    description: "Programme partenaires Zenix pour développeurs et agences : hébergement managé K3s en wholesale dès 14€/site, white-label, marge récurrente, infrastructure France et support technicien à technicien.",
-    keywords: "hébergement revendeur, partenaire hébergement, wholesale hosting France, white-label hosting, K3s managed, hébergement agences web",
-    url: "https://www.zenixweb.fr/partenaires",
+    title: "Programme partenaires revendeurs | Zenix Web",
+    description:
+      "Développeurs et agences : hébergement managé en wholesale dès 14 €/site, en marque blanche. Marge récurrente et infrastructure en France.",
+    keywords:
+      "hébergement revendeur, programme partenaire hébergement, white label hosting, hébergement agences web",
+    url: "https://zenixweb.fr/partenaires",
   },
 };
-export const primaryKeywords = [
-  "développement web Lyon",
-  "création site web",
-  "landing page",
-  "hébergement web",
-  "SEO Lyon",
-  "design web",
-  "Enzo Monnet Mata",
-  "Guardia",
-  "cybersécurité",
-  "React",
-  "TypeScript",
-  "Tailwind CSS"
-];
-export const longTailKeywords = [
-  "création site web professionnel Lyon",
-  "développeur web freelance Lyon",
-  "landing page optimisée conversion",
-  "hébergement site web sécurisé",
-  "maintenance site web Lyon",
-  "design UI/UX moderne",
-  "optimisation SEO site web",
-  "développement web étudiant cybersécurité",
-  "création site web étudiant Guardia",
-  "services web personnalisés Lyon"
-];

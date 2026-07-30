@@ -16,10 +16,10 @@ const PrivacyPolicy = () => {
             <h2 className="text-2xl font-bold text-slate-800 mb-6">Responsable du traitement</h2>
             <div className="space-y-3 text-slate-700">
               <p><strong>Nom :</strong> Enzo Monnet-Mata</p>
-              <p><strong>Adresse :</strong>69830 Saint-Georges-de-Reneins, France</p>
-              <p><strong>SIRET :</strong> 991 413 600</p>
+              <p><strong>Adresse :</strong> 545 chemin des Vignerons, 69830 Saint-Georges-de-Reneins, France</p>
+              <p><strong>SIRET :</strong> 991 413 600 00016</p>
               <p><strong>Email :</strong> contact@zenixweb.fr</p>
-              <p><strong>Statut :</strong> Étudiant</p>
+              <p><strong>Statut :</strong> Entrepreneur Individuel (Micro-Entrepreneur), exerçant sous l'enseigne Zenix Web</p>
             </div>
           </div>
           <div className="bg-slate-50 rounded-lg p-8 mb-8">
@@ -38,13 +38,30 @@ const PrivacyPolicy = () => {
                 </ul>
               </div>
               <div>
-                <h3 className="text-lg font-semibold text-slate-800 mb-2">Données techniques :</h3>
+                <h3 className="text-lg font-semibold text-slate-800 mb-2">Mesure d'audience (Umami) :</h3>
+                <p className="mb-2">
+                  La fréquentation du site est mesurée avec <strong>Umami</strong>, une solution auto-hébergée sur nos serveurs en France.
+                  Aucun cookie n'est déposé et aucune donnée n'est transmise à un tiers. Les informations suivantes sont traitées
+                  sous forme <strong>agrégée et anonyme</strong> :
+                </p>
                 <ul className="list-disc list-inside space-y-1 ml-4">
-                  <li>Adresse IP</li>
-                  <li>Type de navigateur</li>
-                  <li>Pages visitées</li>
-                  <li>Durée de visite</li>
+                  <li>Pages visitées et durée de consultation</li>
+                  <li>Type de navigateur, système d'exploitation et type d'appareil</li>
+                  <li>Pays de provenance et site référent</li>
+                  <li>Adresse IP : utilisée uniquement en mémoire pour générer un identifiant de visite anonyme, puis <strong>immédiatement écartée</strong> — elle n'est jamais enregistrée</li>
                 </ul>
+                <p className="mt-2">
+                  Ces données ne permettent ni de vous identifier, ni de vous suivre d'un site à l'autre.
+                  Base légale : intérêt légitime (article 6.1.f du RGPD) à mesurer la fréquentation de notre site.
+                  Ce traitement étant strictement anonyme et sans cookie, il ne nécessite pas votre consentement préalable.
+                </p>
+              </div>
+              <div>
+                <h3 className="text-lg font-semibold text-slate-800 mb-2">Journaux techniques :</h3>
+                <p>
+                  Nos serveurs conservent des journaux de connexion (adresse IP, date, ressource demandée) à des fins de
+                  sécurité et de diagnostic, ainsi qu'au titre de nos obligations légales d'hébergeur (article 6 de la LCEN).
+                </p>
               </div>
             </div>
           </div>
@@ -78,7 +95,8 @@ const PrivacyPolicy = () => {
               <ul className="list-disc list-inside space-y-1 ml-4">
                 <li><strong>Données de contact :</strong> 3 ans après le dernier échange</li>
                 <li><strong>Données contractuelles :</strong> 5 ans après la fin du contrat</li>
-                <li><strong>Données de navigation :</strong> 13 mois maximum</li>
+                <li><strong>Statistiques de fréquentation (anonymes) :</strong> 13 mois maximum</li>
+                <li><strong>Journaux de connexion :</strong> 12 mois (obligation légale d'hébergeur, LCEN)</li>
               </ul>
             </div>
           </div>
@@ -137,8 +155,10 @@ const PrivacyPolicy = () => {
             <h2 className="text-2xl font-bold text-slate-800 mb-6">Cookies et technologies similaires</h2>
             <div className="space-y-3 text-slate-700">
               <p>
-                Ce site n'utilise pas de cookies de tracking ou d'analyse. Seuls des cookies techniques 
-                nécessaires au fonctionnement du site peuvent être utilisés.
+                Ce site ne dépose <strong>aucun cookie</strong> de tracking, de publicité ou de mesure d'audience.
+                Notre solution d'analyse (Umami, auto-hébergée) fonctionne sans cookie : c'est pourquoi aucun
+                bandeau de consentement ne vous est présenté. Seuls des cookies strictement techniques,
+                nécessaires au fonctionnement du site, peuvent être utilisés.
               </p>
               <p>
                 Vous pouvez configurer votre navigateur pour refuser les cookies, mais cela peut 
@@ -171,7 +191,12 @@ const PrivacyPolicy = () => {
                 Cette politique de confidentialité peut être modifiée à tout moment. 
                 Toute modification sera publiée sur cette page avec une date de mise à jour.
               </p>
-              <p><strong>Dernière mise à jour :</strong> {new Date().toLocaleDateString('fr-FR')}</p>
+              {/* Date figée volontairement. Un `new Date()` affichait la date du
+                  jour à chaque visite : le document se prétendait mis à jour
+                  quotidiennement, ce qui vide la mention de tout sens et n'est
+                  pas défendable pour un document opposable.
+                  À modifier à la main lors d'une vraie révision. */}
+              <p><strong>Dernière mise à jour :</strong> 30 juillet 2026</p>
             </div>
           </div>
         </div>

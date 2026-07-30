@@ -14,7 +14,6 @@ Thumbs.db
 src
 eslint.config.js
 postcss.config.js
-tailwind.config.js
 tsconfig*.json
 vite.config.ts
 vitest.config.ts

@@ -89,14 +89,16 @@ const Partners = () => {
                 </tr>
               </thead>
               <tbody>
-                <TierRow range="1 à 5 sites" unitPrice="20€ HT" margin="+30 à +60€ / site / mois" />
-                <TierRow range="6 à 20 sites" unitPrice="17€ HT" margin="+35 à +65€ / site / mois" />
-                <TierRow range="21+ sites" unitPrice="14€ HT" margin="sur mesure" />
+                <TierRow range="1 à 5 sites" unitPrice="20€" margin="+30 à +60€ / site / mois" />
+                <TierRow range="6 à 20 sites" unitPrice="17€" margin="+35 à +65€ / site / mois" />
+                <TierRow range="21+ sites" unitPrice="14€" margin="sur mesure" />
               </tbody>
             </table>
           </div>
           <p className="text-xs text-slate-500 mt-4 text-center">
             Engagement mensuel, facturation unique partenaire. Pas de frais d'entrée. Premier mois offert sur le premier site.
+            <br />
+            TVA non applicable, art. 293 B du CGI : le prix affiché est le prix facturé, sans TVA à récupérer de votre côté.
           </p>
         </div>
 

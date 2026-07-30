@@ -23,10 +23,18 @@ spec:
     spec:
       imagePullSecrets:
         {{- toYaml .Values.imagePullSecrets | nindent 8 }}
+      # L'image backend crée son utilisateur en uid 10000 et lui donne la
+      # propriété de /app. Le securityContext forçait auparavant l'uid 1000,
+      # qui ne correspondait à rien dans l'image : ça fonctionnait par
+      # raccroc (fichiers lisibles par tous) mais cassait au moindre fichier
+      # restreint. Les deux valeurs sont désormais alignées.
       securityContext:
         runAsNonRoot: true
-        runAsUser: 1000
-        fsGroup: 1000
+        runAsUser: 10000
+        runAsGroup: 10000
+        fsGroup: 10000
+        seccompProfile:
+          type: RuntimeDefault
       containers:
       - name: zenix-backend
         image: {{ .Values.backend.image }}

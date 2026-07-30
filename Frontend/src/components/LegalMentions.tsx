@@ -8,21 +8,21 @@ const LegalMentions = () => {
           <h1 className="text-4xl font-bold text-slate-800 mb-4">Mentions Légales</h1>
           <div className="h-1 w-20 bg-blue-600 mx-auto mb-6"></div>
           <p className="text-lg text-slate-600">
-            Informations légales concernant le site www.zenixweb.fr
+            Informations légales concernant le site zenixweb.fr
           </p>
         </div>
         <div className="prose prose-lg max-w-none">
           <div className="bg-slate-50 rounded-lg p-8 mb-8">
             <h2 className="text-2xl font-bold text-slate-800 mb-6">I. INFORMATIONS LÉGALES DE L'ÉDITEUR ET DE L'HÉBERGEUR</h2>
             <div className="space-y-3 text-slate-700">
-              <p>Le site web www.zenixweb.fr est édité et hébergé par :</p>
+              <p>Le site web zenixweb.fr est édité et hébergé par :</p>
               <p><strong>Nom et Prénom :</strong> Enzo Monnet-Mata</p>
               <p><strong>Statut juridique :</strong> Entrepreneur Individuel (Micro-Entrepreneur)</p>
-              <p><strong>Numéro d'immatriculation (SIRET) :</strong> 991 413 600</p>
-              <p><strong>Domiciliation et Lieu d'Hébergement :</strong> 69830 Saint-Georges-de-Reneins, France</p>
+              <p><strong>Numéro d'immatriculation (SIRET) :</strong> 991 413 600 00016</p>
+              <p><strong>Domiciliation et Lieu d'Hébergement :</strong> 545 chemin des Vignerons, 69830 Saint-Georges-de-Reneins, France</p>
               <p><strong>Contact :</strong></p>
               <p><strong>Adresse e-mail :</strong> contact@zenixweb.fr</p>
-              <p><strong>Site web :</strong> www.zenixweb.fr</p>
+              <p><strong>Site web :</strong> zenixweb.fr</p>
               <p><strong>Directeur de la publication :</strong> Enzo Monnet-Mata</p>
               <p><strong>Exonération de TVA :</strong></p>
               <p>TVA non applicable – article 293 B du Code Général des Impôts (CGI).</p>
@@ -68,7 +68,10 @@ const LegalMentions = () => {
             <h2 className="text-2xl font-bold text-slate-800 mb-6">V. COOKIES</h2>
             <div className="space-y-3 text-slate-700">
               <p>
-                Ce site n'utilise pas de cookies de traçage, d'analyse ou de marketing. Seuls des cookies strictement techniques, nécessaires au bon fonctionnement du site, peuvent être utilisés.
+                Ce site n'utilise aucun cookie de traçage, de publicité ou de profilage, et aucun cookie n'est déposé à des fins statistiques. Seuls des cookies strictement techniques, nécessaires au bon fonctionnement du site, peuvent être utilisés.
+              </p>
+              <p>
+                La fréquentation du site est mesurée avec <strong>Umami</strong>, une solution d'analyse d'audience auto-hébergée sur nos propres serveurs en France. Elle ne dépose aucun cookie, ne suit pas les visiteurs d'un site à l'autre et ne collecte aucune donnée permettant de vous identifier. Aucun bandeau de consentement n'est donc requis. Le détail figure dans notre <a href="/politique-confidentialite" className="text-blue-600 hover:underline">politique de confidentialité</a>.
               </p>
             </div>
           </div>
@@ -84,7 +87,7 @@ const LegalMentions = () => {
             <h2 className="text-2xl font-bold text-slate-800 mb-6">VII. DROIT APPLICABLE ET JURIDICTION</h2>
             <div className="space-y-3 text-slate-700">
               <p>
-                Tout litige en relation avec l'utilisation du site www.zenixweb.fr est soumis au droit français.
+                Tout litige en relation avec l'utilisation du site zenixweb.fr est soumis au droit français.
               </p>
               <p>
                 Compétence exclusive est attribuée aux tribunaux compétents de Lyon.

@@ -19,7 +19,10 @@ backend:
     NODE_ENV: production
     JWT_PRIVATE_KEY_PATH: /app/secrets/jwt_private_key.pem
     EMAIL_SERVICE_URL: http://email-service.email-service.svc.cluster.local:8080
-    ALLOWED_ORIGINS: "https://www.zenixweb.fr,http://localhost:5173"
+    # Apex en premier : c'est l'origine réelle vue par le navigateur, www étant
+    # redirigé vers elle. localhost n'a rien à faire dans les origines autorisées
+    # en production (il est conservé comme défaut dans server.js pour le dev).
+    ALLOWED_ORIGINS: "https://zenixweb.fr,https://www.zenixweb.fr"
   secretName: zenix-backend-secrets
   resources:
     requests:
@@ -40,7 +43,11 @@ frontend:
   imagePullPolicy: Always
   replicas: 1
   serviceType: NodePort
+  # Port exposé par le Service (inchangé : l'IngressRoute pointe dessus).
   port: 80
+  # Port écouté dans le conteneur. L'image nginx-unprivileged tourne en uid 101
+  # et ne peut donc pas se binder sur un port < 1024.
+  containerPort: 8080
   resources:
     requests:
       cpu: "50m"

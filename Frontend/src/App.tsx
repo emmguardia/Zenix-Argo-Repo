@@ -1,10 +1,12 @@
-import { Suspense, lazy, useEffect } from 'react';
+import { Suspense, lazy, useEffect, useMemo, type ReactNode } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import SEO from './components/SEO';
-import { seoConfig } from './config/seoConfig';
-import { trackEvent } from './utils/analytics';
-import { organizationSchema, websiteSchema, serviceSchema, hostingServiceSchema, vitrineServiceSchema, ecommerceServiceSchema, partnersServiceSchema, faqPageSchema } from './utils/structuredData';
 import Header from './components/Header';
+import Breadcrumbs from './components/Breadcrumbs';
+import { routes, buildBreadcrumb, type RouteDefinition } from './config/routes';
+import { breadcrumbSchema } from './utils/structuredData';
+import { trackEvent } from './utils/analytics';
+
 const Hero = lazy(() => import('./components/Hero'));
 const AboutMe = lazy(() => import('./components/AboutMe'));
 const Portfolio = lazy(() => import('./components/Portfolio'));
@@ -20,6 +22,46 @@ const TermsOfService = lazy(() => import('./components/TermsOfService'));
 const Hosting = lazy(() => import('./components/Hosting'));
 const Partners = lazy(() => import('./components/Partners'));
 const FAQ = lazy(() => import('./components/FAQ'));
+const Vitrine = lazy(() => import('./components/Vitrine'));
+const Ecommerce = lazy(() => import('./components/Ecommerce'));
+const TypesDeSites = lazy(() => import('./components/TypesDeSites'));
+const NotFound = lazy(() => import('./components/NotFound'));
+
+/**
+ * Contenu de chaque route, indexé par chemin.
+ *
+ * Les métadonnées (titre, description, JSON-LD, fil d'Ariane, sitemap) vivent
+ * dans src/config/routes.ts, qui doit rester importable depuis Node au moment
+ * du build : il ne peut donc pas référencer de composant React. C'est cette
+ * table qui fait le lien entre les deux.
+ */
+const PAGE_CONTENT: Record<string, ReactNode> = {
+  '/': (
+    <>
+      <Hero />
+      <AboutMe />
+      <Portfolio />
+      <CompanyInfo />
+    </>
+  ),
+  '/nos-services': <TypesDeSites />,
+  '/site-vitrine': <Vitrine />,
+  '/site-ecommerce': <Ecommerce />,
+  '/landing': (
+    <>
+      <LandingExplanation />
+      <PreDevisQuestions />
+    </>
+  ),
+  '/hebergement': <Hosting />,
+  '/faq': <FAQ />,
+  '/contact': <ContactPageComponent />,
+  '/partenaires': <Partners />,
+  '/mentions-legales': <LegalMentions />,
+  '/politique-confidentialite': <PrivacyPolicy />,
+  '/conditions-vente': <TermsOfService />,
+  '/confirmation': <Confirmation />
+};
 
 const PageViewTracker = () => {
   const location = useLocation();
@@ -32,221 +74,94 @@ const PageViewTracker = () => {
   }, [location.pathname]);
   return null;
 };
-const Vitrine = lazy(() => import('./components/Vitrine'));
-const Ecommerce = lazy(() => import('./components/Ecommerce'));
-const TypesDeSites = lazy(() => import('./components/TypesDeSites'));
-const HomePage = () => (
-  <>
+
+/** Gabarit commun : SEO, en-tête, fil d'Ariane, contenu, pied de page. */
+const Page = ({ route }: { route: RouteDefinition }) => {
+  const structuredData = useMemo(() => {
+    const crumb = buildBreadcrumb(route);
+    return crumb.length > 0
+      ? [...route.structuredData, breadcrumbSchema(crumb)]
+      : route.structuredData;
+  }, [route]);
+
+  const seo = (
     <SEO
-      title={seoConfig.home.title}
-      description={seoConfig.home.description}
-      keywords={seoConfig.home.keywords}
-      url={seoConfig.home.url}
-      structuredData={[organizationSchema, websiteSchema]}
+      title={route.seo.title}
+      description={route.seo.description}
+      keywords={route.seo.keywords}
+      url={route.seo.url}
+      structuredData={structuredData}
+      noindex={route.noindex}
     />
-    <Header />
-    <main>
-      <Hero />
-      <AboutMe />
-      <Portfolio />
-      <CompanyInfo />
-    </main>
-    <Footer />
-  </>
-);
-const LandingPage = () => (
-  <>
-    <SEO
-      title={seoConfig.landing.title}
-      description={seoConfig.landing.description}
-      keywords={seoConfig.landing.keywords}
-      url={seoConfig.landing.url}
-      structuredData={serviceSchema}
-    />
-    <Header />
-    <main>
-      <LandingExplanation />
-      <PreDevisQuestions />
-    </main>
-    <Footer />
-  </>
-);
-const ContactPage = () => (
-  <>
-    <SEO
-      title={seoConfig.contact.title}
-      description={seoConfig.contact.description}
-      keywords={seoConfig.contact.keywords}
-      url={seoConfig.contact.url}
-    />
-    <Header />
-    <main>
-      <ContactPageComponent />
-    </main>
-    <Footer />
-  </>
-);
+  );
+
+  const content = PAGE_CONTENT[route.path];
+
+  // Page nue (confirmation) : ni en-tête ni pied de page.
+  if (route.bare) {
+    return (
+      <>
+        {seo}
+        {content}
+      </>
+    );
+  }
+
+  return (
+    // `with-breadcrumbs` réduit le padding haut de la première section : le fil
+    // d'Ariane dégage déjà l'en-tête fixe, sans quoi les deux se cumulent.
+    <div className={route.breadcrumb ? 'with-breadcrumbs' : undefined}>
+      {seo}
+      <Header />
+      {route.breadcrumb && <Breadcrumbs current={route.breadcrumb} />}
+      <main>{content}</main>
+      <Footer />
+    </div>
+  );
+};
+
 function App() {
   return (
     <Router>
       <PageViewTracker />
       <div className="min-h-screen bg-white">
-        <Suspense fallback={<div className="h-screen flex items-center justify-center"><div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-600"></div></div>}>
+        <Suspense
+          fallback={
+            <div className="h-screen flex items-center justify-center">
+              <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-600"></div>
+            </div>
+          }
+        >
           <Routes>
-              <Route path="/" element={<HomePage />} />
-              <Route path="/landing" element={<LandingPage />} />
-              <Route path="/services" element={<Navigate to="/nos-services" replace />} />
-              <Route path="/contact" element={<ContactPage />} />
-              <Route path="/confirmation" element={
-                <>
-                  <Confirmation />
-                </>
-              } />
-              <Route path="/mentions-legales" element={
+            {routes.map((route) => (
+              <Route key={route.path} path={route.path} element={<Page route={route} />} />
+            ))}
+            <Route path="/services" element={<Navigate to="/nos-services" replace />} />
+            {/* Catch-all : toute URL inconnue rend une vraie page 404 en noindex,
+                au lieu d'une page blanche renvoyée en 200 et indexable. */}
+            <Route
+              path="*"
+              element={
                 <>
                   <SEO
-                    title={seoConfig.mentionsLegales.title}
-                    description={seoConfig.mentionsLegales.description}
-                    keywords={seoConfig.mentionsLegales.keywords}
-                    url={seoConfig.mentionsLegales.url}
+                    title="Page introuvable (404) | Zenix Web"
+                    description="La page demandée n'existe pas ou a été déplacée."
+                    url="https://zenixweb.fr/404"
+                    noindex={true}
                   />
                   <Header />
                   <main>
-                    <LegalMentions />
+                    <NotFound />
                   </main>
                   <Footer />
                 </>
-              } />
-              <Route path="/politique-confidentialite" element={
-                <>
-                  <SEO
-                    title={seoConfig.politiqueConfidentialite.title}
-                    description={seoConfig.politiqueConfidentialite.description}
-                    keywords={seoConfig.politiqueConfidentialite.keywords}
-                    url={seoConfig.politiqueConfidentialite.url}
-                  />
-                  <Header />
-                  <main>
-                    <PrivacyPolicy />
-                  </main>
-                  <Footer />
-                </>
-              } />
-              <Route path="/conditions-vente" element={
-                <>
-                  <SEO
-                    title={seoConfig.conditionsVente.title}
-                    description={seoConfig.conditionsVente.description}
-                    keywords={seoConfig.conditionsVente.keywords}
-                    url={seoConfig.conditionsVente.url}
-                  />
-                  <Header />
-                  <main>
-                    <TermsOfService />
-                  </main>
-                  <Footer />
-                </>
-              } />
-              <Route path="/hebergement" element={
-                <>
-                  <SEO
-                    title={seoConfig.hosting.title}
-                    description={seoConfig.hosting.description}
-                    keywords={seoConfig.hosting.keywords}
-                    url={seoConfig.hosting.url}
-                    structuredData={[hostingServiceSchema, organizationSchema]}
-                  />
-                  <Header />
-                  <main>
-                    <Hosting />
-                  </main>
-                  <Footer />
-                </>
-              } />
-              <Route path="/site-vitrine" element={
-                <>
-                  <SEO
-                    title={seoConfig.vitrine.title}
-                    description={seoConfig.vitrine.description}
-                    keywords={seoConfig.vitrine.keywords}
-                    url={seoConfig.vitrine.url}
-                    structuredData={[vitrineServiceSchema, organizationSchema]}
-                  />
-                  <Header />
-                  <main>
-                    <Vitrine />
-                  </main>
-                  <Footer />
-                </>
-              } />
-              <Route path="/site-ecommerce" element={
-                <>
-                  <SEO
-                    title={seoConfig.ecommerce.title}
-                    description={seoConfig.ecommerce.description}
-                    keywords={seoConfig.ecommerce.keywords}
-                    url={seoConfig.ecommerce.url}
-                    structuredData={[ecommerceServiceSchema, organizationSchema]}
-                  />
-                  <Header />
-                  <main>
-                    <Ecommerce />
-                  </main>
-                  <Footer />
-                </>
-              } />
-              <Route path="/faq" element={
-                <>
-                  <SEO
-                    title={seoConfig.faq.title}
-                    description={seoConfig.faq.description}
-                    keywords={seoConfig.faq.keywords}
-                    url={seoConfig.faq.url}
-                    structuredData={[faqPageSchema, organizationSchema]}
-                  />
-                  <Header />
-                  <main>
-                    <FAQ />
-                  </main>
-                  <Footer />
-                </>
-              } />
-              <Route path="/partenaires" element={
-                <>
-                  <SEO
-                    title={seoConfig.partners.title}
-                    description={seoConfig.partners.description}
-                    keywords={seoConfig.partners.keywords}
-                    url={seoConfig.partners.url}
-                    structuredData={[partnersServiceSchema, organizationSchema]}
-                  />
-                  <Header />
-                  <main>
-                    <Partners />
-                  </main>
-                  <Footer />
-                </>
-              } />
-              <Route path="/nos-services" element={
-                <>
-                  <SEO
-                    title={seoConfig.typesDeSites.title}
-                    description={seoConfig.typesDeSites.description}
-                    keywords={seoConfig.typesDeSites.keywords}
-                    url={seoConfig.typesDeSites.url}
-                    structuredData={[serviceSchema, organizationSchema]}
-                  />
-                  <Header />
-                  <main>
-                    <TypesDeSites />
-                  </main>
-                  <Footer />
-                </>
-              } />
+              }
+            />
           </Routes>
         </Suspense>
       </div>
     </Router>
   );
 }
+
 export default App;

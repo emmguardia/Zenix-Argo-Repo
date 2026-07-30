@@ -150,7 +150,7 @@ const FAQ = () => {
     },
     {
       q: "Mon site est hébergé ailleurs, vous le migrez ?",
-      a: "Oui. La migration depuis Wix, Squarespace, OVH, o2switch, WordPress ou autre est proposée en option à 99€ une fois. Aucune interruption visible pour vos visiteurs : le nouveau site est testé, puis le DNS est basculé.",
+      a: "Oui. La migration depuis Wix, Squarespace, OVH, o2switch, WordPress ou autre est proposée en option à 69€ une fois. Aucune interruption visible pour vos visiteurs : le nouveau site est testé, puis le DNS est basculé.",
     },
     {
       q: "Vous gérez le nom de domaine ?",
@@ -173,7 +173,7 @@ const FAQ = () => {
     },
     {
       q: "Mes sauvegardes sont-elles à jour ?",
-      a: "Oui. Sauvegarde complète quotidienne, conservée 30 jours sur un serveur séparé. Vérification automatique de l'intégrité.",
+      a: "Oui. Sauvegarde complète quotidienne, conservée 30 jours et répliquée sur mes serveurs dans deux lieux différents. Vérification automatique de l'intégrité. En option, une copie supplémentaire peut être stockée en dehors de mon infrastructure, chez un hébergeur tiers.",
     },
     {
       q: "Si mon site est piraté, vous le restaurez ?",
@@ -191,16 +191,16 @@ const FAQ = () => {
 
   const tarifs: QAItem[] = [
     {
-      q: "Tous les prix sont-ils HT ou TTC ?",
-      a: "Les tarifs affichés sont en HT. La TVA (20%) s'ajoute pour les clients particuliers et les entreprises non assujetties. Les entreprises assujetties à TVA bénéficient d'une déduction.",
+      q: "Les prix affichés sont-ils HT ou TTC ?",
+      a: "Ni l'un ni l'autre : le prix affiché est le prix que vous payez. Zenix est une micro-entreprise en franchise de TVA (article 293 B du CGI), donc aucune TVA n'est facturée ni ajoutée. Corollaire pour les entreprises assujetties : il n'y a pas de TVA à récupérer sur mes factures.",
     },
     {
       q: "Y a-t-il un engagement de durée ?",
-      a: "Non. Toutes les offres d'hébergement sont sans engagement, facturées au mois. Vous pouvez résilier à tout moment avec un préavis d'un mois.",
+      a: "Par défaut non : les offres d'hébergement sont mensuelles, sans durée minimale, résiliables avec un préavis d'un mois. Il existe aussi une option volontaire d'engagement sur 12 mois qui vous offre le 12ᵉ mois, toujours prélevée mois par mois. Vous choisissez, l'engagement n'est jamais imposé.",
     },
     {
       q: "Quels moyens de paiement acceptez-vous ?",
-      a: "Virement SEPA, prélèvement automatique, carte bancaire via Stripe. Facturation mensuelle ou annuelle au choix (réduction sur l'annuel).",
+      a: "Virement SEPA, prélèvement automatique, carte bancaire via Stripe. Le prélèvement reste mensuel dans tous les cas : si vous optez pour l'engagement 12 mois, vous n'avancez rien, le 12ᵉ mois est simplement offert.",
     },
     {
       q: "Que se passe-t-il si je résilie ?",

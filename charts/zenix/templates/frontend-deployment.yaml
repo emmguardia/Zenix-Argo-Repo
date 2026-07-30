@@ -23,18 +23,34 @@ spec:
     spec:
       imagePullSecrets:
         {{- toYaml .Values.imagePullSecrets | nindent 8 }}
+      # L'image est nginx-unprivileged : le process tourne en uid 101 et écoute
+      # sur 8080. Sans ce securityContext, rien n'empêchait le conteneur de
+      # tourner en root, contrairement à ce qu'annonce SECURITY.md.
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 101
+        runAsGroup: 101
+        fsGroup: 101
+        seccompProfile:
+          type: RuntimeDefault
       containers:
       - name: nginx
         image: {{ .Values.frontend.image }}
         imagePullPolicy: {{ .Values.frontend.imagePullPolicy }}
+        securityContext:
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: false
+          capabilities:
+            drop:
+            - ALL
         ports:
-        - containerPort: {{ .Values.frontend.port }}
+        - containerPort: {{ .Values.frontend.containerPort }}
         resources:
           {{- toYaml .Values.frontend.resources | nindent 10 }}
         readinessProbe:
           httpGet:
             path: /
-            port: {{ .Values.frontend.port }}
+            port: {{ .Values.frontend.containerPort }}
           initialDelaySeconds: 5
           periodSeconds: 5
           timeoutSeconds: 3
@@ -42,7 +58,7 @@ spec:
         livenessProbe:
           httpGet:
             path: /
-            port: {{ .Values.frontend.port }}
+            port: {{ .Values.frontend.containerPort }}
           initialDelaySeconds: 10
           periodSeconds: 10
           timeoutSeconds: 3

@@ -4,7 +4,7 @@ import jwt from 'jsonwebtoken';
 import { readFileSync } from 'fs';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
-import { isValidEmail, getProjectLabel, getTimelineLabel } from './lib/validation.js';
+import { isValidEmail, getProjectLabel, getTimelineLabel, createRateLimiter, isHoneypotTriggered, getClientIp } from './lib/validation.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -19,11 +19,19 @@ const GOTIFY_URL = process.env.GOTIFY_URL || '';
 const GOTIFY_TOKEN = process.env.GOTIFY_TOKEN || '';
 
 app.use(cors({
-  origin: process.env.ALLOWED_ORIGINS ? process.env.ALLOWED_ORIGINS.split(',') : ['https://www.zenixweb.fr', 'http://localhost:5173'],
+  origin: process.env.ALLOWED_ORIGINS ? process.env.ALLOWED_ORIGINS.split(',') : ['https://zenixweb.fr', 'https://www.zenixweb.fr', 'http://localhost:5173'],
   credentials: true
 }));
 
 app.use(express.json({ limit: '10kb' }));
+
+// `trust proxy` reste volontairement désactivé : il ferait retenir à Express
+// l'entrée la plus à gauche de X-Forwarded-For, valeur que le client contrôle.
+// L'identification du visiteur passe par getClientIp() (voir lib/validation.js).
+
+// 5 demandes de contact par heure et par IP. Un prospect légitime en envoie une,
+// éventuellement deux s'il se trompe ; au-delà c'est un script.
+const contactRateLimit = createRateLimiter({ windowMs: 60 * 60 * 1000, max: 5 });
 
 function generateJWTToken() {
   try {
@@ -94,7 +102,22 @@ async function sendGotifyNotification(title, message, priority = 5) {
 
 app.post('/api/send-contact', async (req, res) => {
   try {
-    const { from_name, from_email, phone, company, project, budget, timeline, message } = req.body;
+    const { from_name, from_email, phone, company, project, budget, timeline, message, website } = req.body;
+
+    // Honeypot : `website` est un champ invisible du formulaire. S'il est rempli,
+    // c'est un bot. On renvoie un succès factice pour ne pas lui signaler que le
+    // filtre existe, et on n'envoie évidemment aucun email.
+    if (isHoneypotTriggered(website)) {
+      console.warn('Honeypot triggered, dropping submission');
+      return res.json({ success: true });
+    }
+
+    if (!contactRateLimit(getClientIp(req))) {
+      console.warn('Rate limit exceeded for contact form');
+      return res.status(429).json({
+        error: 'Trop de demandes envoyées. Merci de réessayer dans une heure ou de m\'écrire directement à contact@zenixweb.fr.'
+      });
+    }
 
     console.log('Received contact form data:', {
       has_name: !!from_name,
@@ -118,7 +141,9 @@ app.post('/api/send-contact', async (req, res) => {
     }
 
     if (!isValidEmail(from_email)) {
-      console.error('Invalid email format:', from_email);
+      // On ne journalise pas l'adresse elle-même : c'est une donnée personnelle
+      // et les logs du cluster sont moins protégés que la boîte mail.
+      console.error('Invalid email format received');
       return res.status(400).json({ error: 'Invalid email address' });
     }
 

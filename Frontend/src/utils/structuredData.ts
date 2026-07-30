@@ -1,60 +1,103 @@
+export const SITE_URL = "https://zenixweb.fr";
+
+/** Profils officiels. `sameAs` sert à Google pour relier ces comptes à l'entité
+ *  « Zenix Web » : sans lui, chaque profil est vu comme une entité distincte. */
+const SAME_AS = [
+  "https://www.linkedin.com/in/enzo-monnet-mata-3a1888378/",
+  "https://www.instagram.com/zenix_web/"
+];
+
+/** Adresse réelle de l'entreprise (celle du SIRET et des mentions légales).
+ *  Elle indiquait auparavant « Lyon », ce qui contredisait les documents
+ *  légaux : une incohérence de NAP (Name-Address-Phone) dégrade la confiance
+ *  que Google accorde à l'entité. Lyon reste couvert par `areaServed`, qui est
+ *  la façon correcte de déclarer une zone d'intervention. La rue n'est
+ *  volontairement pas exposée ici. */
+const BUSINESS_ADDRESS = {
+  "@type": "PostalAddress",
+  "addressLocality": "Saint-Georges-de-Reneins",
+  "postalCode": "69830",
+  "addressRegion": "Auvergne-Rhône-Alpes",
+  "addressCountry": "FR"
+};
+
+const AREA_SERVED = [
+  { "@type": "City", "name": "Lyon" },
+  { "@type": "AdministrativeArea", "name": "Rhône" },
+  { "@type": "AdministrativeArea", "name": "Auvergne-Rhône-Alpes" },
+  { "@type": "Country", "name": "France" }
+];
+
+/** `ProfessionalService` plutôt qu'`Organization` : c'est un sous-type de
+ *  LocalBusiness, éligible aux résultats locaux. Sur des requêtes du type
+ *  « développeur web Lyon », c'est ce typage qui permet à Google de rattacher
+ *  le site à une zone géographique. */
 export const organizationSchema = {
   "@context": "https://schema.org",
-  "@type": "Organization",
+  "@type": "ProfessionalService",
+  "@id": `${SITE_URL}/#organization`,
   "name": "Zenix Web",
   "alternateName": "Zenix",
-  "url": "https://www.zenixweb.fr",
-  "logo": "https://www.zenixweb.fr/images/Logo.webp",
-  "description": "Services professionnels de développement web incluant la création de sites, l'hébergement, les mises à jour et la modification de sites web.",
+  "url": SITE_URL,
+  "logo": {
+    "@type": "ImageObject",
+    "url": `${SITE_URL}/images/Logo.webp`,
+    "width": 512,
+    "height": 512
+  },
+  "image": `${SITE_URL}/images/Logo.webp`,
+  "description": "Création de sites web, hébergement managé et maintenance pour les entreprises, associations et indépendants. Sites vitrine, e-commerce et landing pages, hébergés en France.",
+  "slogan": "Votre site à votre image, comme vous, unique",
   "foundingDate": "2024",
+  "email": "contact@zenixweb.fr",
+  "vatID": "TVA non applicable, art. 293 B du CGI",
+  "taxID": "99141360000016",
+  "priceRange": "€€",
+  "currenciesAccepted": "EUR",
+  "paymentAccepted": "Virement bancaire, Carte bancaire, Prélèvement SEPA",
   "founder": {
     "@type": "Person",
-    "name": "Enzo Monnet Mata",
-    "jobTitle": "Développeur Web & Étudiant Cybersécurité",
-    "alumniOf": "Guardia",
-    "address": {
-      "@type": "PostalAddress",
-      "addressLocality": "Lyon",
-      "addressCountry": "FR"
-    }
+    "@id": `${SITE_URL}/#enzo-monnet-mata`
   },
-  "address": {
-    "@type": "PostalAddress",
-    "addressLocality": "Lyon",
-    "addressCountry": "FR"
-  },
+  "address": BUSINESS_ADDRESS,
+  "areaServed": AREA_SERVED,
+  "knowsLanguage": "fr-FR",
   "contactPoint": {
     "@type": "ContactPoint",
     "contactType": "customer service",
-    "url": "https://www.zenixweb.fr/contact"
+    "email": "contact@zenixweb.fr",
+    "availableLanguage": "French",
+    "url": `${SITE_URL}/contact`
   },
-  "sameAs": [
-    "https://www.zenixweb.fr"
-  ],
-  "serviceArea": {
-    "@type": "Country",
-    "name": "France"
-  }
+  "sameAs": SAME_AS
 };
 export const personSchema = {
   "@context": "https://schema.org",
   "@type": "Person",
-  "name": "Enzo Monnet Mata",
-  "jobTitle": "Développeur Web & Étudiant Cybersécurité",
-  "description": "Étudiant en cybersécurité à Guardia, passionné par le développement web et la création d'expériences digitales uniques.",
-  "alumniOf": "Guardia",
-  "address": {
-    "@type": "PostalAddress",
-    "addressLocality": "Lyon",
-    "addressCountry": "FR"
+  "@id": `${SITE_URL}/#enzo-monnet-mata`,
+  "name": "Enzo Monnet-Mata",
+  "jobTitle": "Développeur web indépendant",
+  "description": "Développeur web indépendant basé dans le Rhône, étudiant en cybersécurité à Guardia. Création de sites vitrine, e-commerce et landing pages, avec hébergement managé en France.",
+  // `affiliation` et non `alumniOf` : Enzo est étudiant en cours de cursus,
+  // `alumniOf` désigne un établissement déjà quitté.
+  "affiliation": {
+    "@type": "EducationalOrganization",
+    "name": "Guardia Cybersecurity School",
+    "url": "https://www.guardia.school/"
   },
-  "image": "https://www.zenixweb.fr/images/profile-photo.webp",
-  "url": "https://www.zenixweb.fr",
+  "worksFor": { "@id": `${SITE_URL}/#organization` },
+  "address": BUSINESS_ADDRESS,
+  "image": `${SITE_URL}/images/profile-photo.webp`,
+  "url": SITE_URL,
+  "sameAs": SAME_AS,
   "knowsAbout": [
-    "Développement Web",
-    "Landing Pages",
-    "SEO",
-    "UI/UX Design",
+    "Développement web",
+    "Création de site vitrine",
+    "Site e-commerce",
+    "Landing page",
+    "Référencement naturel",
+    "Hébergement web",
+    "Kubernetes",
     "Cybersécurité",
     "React",
     "TypeScript",
@@ -66,16 +109,9 @@ export const serviceSchema = {
   "@type": "Service",
   "name": "Services de Développement Web",
   "description": "Services professionnels de développement web incluant la création de sites, l'hébergement, les mises à jour et la modification de sites web.",
-  "provider": {
-    "@type": "Organization",
-    "name": "Zenix Web",
-    "url": "https://www.zenixweb.fr"
-  },
+  "provider": { "@id": `${SITE_URL}/#organization` },
   "serviceType": "Développement Web",
-  "areaServed": {
-    "@type": "Country",
-    "name": "France"
-  },
+  "areaServed": AREA_SERVED,
   "hasOfferCatalog": {
     "@type": "OfferCatalog",
     "name": "Services Web",
@@ -134,58 +170,44 @@ export const serviceSchema = {
 export const websiteSchema = {
   "@context": "https://schema.org",
   "@type": "WebSite",
+  "@id": `${SITE_URL}/#website`,
   "name": "Zenix Web",
-  "url": "https://www.zenixweb.fr",
-  "description": "Services professionnels de développement web incluant la création de sites, l'hébergement, les mises à jour et la modification de sites web.",
-  "publisher": {
-    "@type": "Organization",
-    "name": "Zenix Web",
-    "url": "https://www.zenixweb.fr"
-  },
-  "potentialAction": {
-    "@type": "SearchAction",
-    "target": "https://www.zenixweb.fr/?q={search_term_string}",
-    "query-input": "required name=search_term_string"
-  }
+  "url": SITE_URL,
+  "description": "Création de sites web, hébergement managé et maintenance. Sites vitrine, e-commerce et landing pages, hébergés en France.",
+  "inLanguage": "fr-FR",
+  "publisher": { "@id": `${SITE_URL}/#organization` }
+  // Pas de `SearchAction` : le site n'a pas de moteur de recherche interne.
+  // En déclarer un que l'URL ne sait pas traiter est une donnée structurée
+  // fausse, que Google peut signaler comme telle.
 };
 export const consultationSchema = {
   "@context": "https://schema.org",
   "@type": "Service",
-  "name": "Consultation gratuite - Développement Landing Page",
-  "description": "Consultation gratuite de 15 minutes pour analyser vos besoins en développement de landing page et vous proposer une solution personnalisée.",
-  "provider": {
-    "@type": "Person",
-    "name": "Enzo Monnet Mata",
-    "jobTitle": "Développeur Web & Étudiant Cybersécurité",
-    "url": "https://www.zenixweb.fr"
-  },
+  "name": "Devis gratuit et échange sur votre projet web",
+  "description": "Échange gratuit pour analyser vos besoins et vous proposer un devis personnalisé de création ou de refonte de site web. Réponse sous 24 heures.",
+  "provider": { "@id": `${SITE_URL}/#organization` },
   "serviceType": "Consultation Web",
-  "areaServed": {
-    "@type": "Country",
-    "name": "France"
-  },
+  "areaServed": AREA_SERVED,
   "offers": {
     "@type": "Offer",
     "price": "0",
     "priceCurrency": "EUR",
-    "description": "Consultation gratuite de 15 minutes",
+    "description": "Devis gratuit et sans engagement",
     "availability": "https://schema.org/InStock",
-    "validFrom": "2024-01-01",
-    "url": "https://www.zenixweb.fr/contact"
+    "url": `${SITE_URL}/contact`
   },
+  // Le canal est le formulaire du site. La mention « Calendly » figurait ici
+  // alors qu'aucun Calendly n'est proposé nulle part sur le site.
   "availableChannel": {
     "@type": "ServiceChannel",
-    "serviceUrl": "https://www.zenixweb.fr/contact",
-    "serviceName": "Calendly - Prise de rendez-vous",
-  },
-  "hoursAvailable": {
-    "@type": "OpeningHoursSpecification",
-    "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
-    "opens": "09:00",
-    "closes": "18:00"
+    "serviceUrl": `${SITE_URL}/contact`,
+    "serviceName": "Formulaire de demande de devis"
   }
 };
-export const breadcrumbSchema = (items: Array<{name: string, url: string}>) => ({
+
+/** Fil d'Ariane. Google s'en sert pour remplacer l'URL brute par un chemin
+ *  lisible dans les résultats de recherche. */
+export const breadcrumbSchema = (items: Array<{ name: string; url: string }>) => ({
   "@context": "https://schema.org",
   "@type": "BreadcrumbList",
   "itemListElement": items.map((item, index) => ({
@@ -200,16 +222,9 @@ export const hostingServiceSchema = {
   "@type": "Service",
   "name": "Hébergement Web Haute Performance",
   "description": "Offres d'hébergement web avec cluster K3S, auto-scaling, Cloudflare et sauvegarde quotidienne. Maintenance et sécurité incluses.",
-  "provider": {
-    "@type": "Organization",
-    "name": "Zenix Web",
-    "url": "https://www.zenixweb.fr"
-  },
+  "provider": { "@id": `${SITE_URL}/#organization` },
   "serviceType": "Hébergement Web",
-  "areaServed": {
-    "@type": "Country",
-    "name": "France"
-  },
+  "areaServed": AREA_SERVED,
   "hasOfferCatalog": {
     "@type": "OfferCatalog",
     "name": "Offres d'Hébergement",
@@ -219,7 +234,7 @@ export const hostingServiceSchema = {
         "itemOffered": {
           "@type": "Service",
           "name": "Zenix Start",
-          "description": "Hébergement haute performance avec cluster K3S, auto-scaling, Cloudflare, sauvegarde quotidienne et 2 petites modifications mensuelles. 39€ HT/mois."
+          "description": "Hébergement haute performance avec cluster K3S, auto-scaling, Cloudflare, sauvegarde quotidienne et 2 petites modifications mensuelles. 39€/mois, TVA non applicable."
         },
         "price": "39",
         "priceCurrency": "EUR"
@@ -229,7 +244,7 @@ export const hostingServiceSchema = {
         "itemOffered": {
           "@type": "Service",
           "name": "Zenix Relax",
-          "description": "Hébergement avec 6 petites modifications par mois incluses et rapport trimestriel. 69€ HT/mois."
+          "description": "Hébergement avec 6 petites modifications par mois incluses et rapport trimestriel. 69€/mois, TVA non applicable."
         },
         "price": "69",
         "priceCurrency": "EUR"
@@ -239,7 +254,7 @@ export const hostingServiceSchema = {
         "itemOffered": {
           "@type": "Service",
           "name": "Zenix Pro",
-          "description": "Hébergement avec modifications illimitées (2h/mois), rapport mensuel et optimisations techniques SEO continues. 149€ HT/mois."
+          "description": "Hébergement avec modifications illimitées (2h/mois), rapport mensuel et optimisations techniques SEO continues. 149€/mois, TVA non applicable."
         },
         "price": "149",
         "priceCurrency": "EUR"
@@ -252,16 +267,9 @@ export const vitrineServiceSchema = {
   "@type": "Service",
   "name": "Création de Site Vitrine Professionnel",
   "description": "Sites vitrine modernes, sécurisés et optimisés pour le SEO. Design responsive, sécurité renforcée, structured data JSON-LD.",
-  "provider": {
-    "@type": "Organization",
-    "name": "Zenix Web",
-    "url": "https://www.zenixweb.fr"
-  },
+  "provider": { "@id": `${SITE_URL}/#organization` },
   "serviceType": "Développement Web",
-  "areaServed": {
-    "@type": "Country",
-    "name": "France"
-  },
+  "areaServed": AREA_SERVED,
   "offers": {
     "@type": "Offer",
     "description": "Création de site vitrine professionnel avec SEO et sécurité optimisés",
@@ -273,16 +281,9 @@ export const partnersServiceSchema = {
   "@type": "Service",
   "name": "Programme Partenaires Zenix - Hébergement Wholesale",
   "description": "Programme partenaires pour développeurs et agences : hébergement managé K3s en wholesale, white-label, infrastructure souveraine en France.",
-  "provider": {
-    "@type": "Organization",
-    "name": "Zenix Web",
-    "url": "https://www.zenixweb.fr"
-  },
+  "provider": { "@id": `${SITE_URL}/#organization` },
   "serviceType": "Hébergement Web Wholesale",
-  "areaServed": {
-    "@type": "Country",
-    "name": "France"
-  },
+  "areaServed": AREA_SERVED,
   "audience": {
     "@type": "BusinessAudience",
     "audienceType": "Développeurs web, agences digitales, freelances"
@@ -296,7 +297,7 @@ export const partnersServiceSchema = {
         "itemOffered": {
           "@type": "Service",
           "name": "Pack 1 à 5 sites",
-          "description": "Hébergement managé K3s en wholesale pour revente, 20€/site/mois HT."
+          "description": "Hébergement managé K3s en wholesale pour revente, 20€/site/mois, TVA non applicable."
         },
         "price": "20",
         "priceCurrency": "EUR"
@@ -306,7 +307,7 @@ export const partnersServiceSchema = {
         "itemOffered": {
           "@type": "Service",
           "name": "Pack 6 à 20 sites",
-          "description": "Hébergement managé K3s en wholesale pour revente, 17€/site/mois HT."
+          "description": "Hébergement managé K3s en wholesale pour revente, 17€/site/mois, TVA non applicable."
         },
         "price": "17",
         "priceCurrency": "EUR"
@@ -316,7 +317,7 @@ export const partnersServiceSchema = {
         "itemOffered": {
           "@type": "Service",
           "name": "Pack 21+ sites",
-          "description": "Hébergement managé K3s en wholesale pour revente, 14€/site/mois HT."
+          "description": "Hébergement managé K3s en wholesale pour revente, 14€/site/mois, TVA non applicable."
         },
         "price": "14",
         "priceCurrency": "EUR"
@@ -365,7 +366,7 @@ export const faqPageSchema = {
       "name": "Mon site est hébergé ailleurs, vous le migrez ?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Oui. La migration depuis Wix, Squarespace, OVH, o2switch, WordPress ou autre est proposée en option à 99€ une fois, sans interruption visible pour vos visiteurs."
+        "text": "Oui. La migration depuis Wix, Squarespace, OVH, o2switch, WordPress ou autre est proposée en option à 69€ une fois, sans interruption visible pour vos visiteurs."
       }
     },
     {
@@ -389,7 +390,7 @@ export const faqPageSchema = {
       "name": "Y a-t-il un engagement de durée ?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Non. Toutes les offres d'hébergement sont sans engagement, facturées au mois. Vous pouvez résilier à tout moment avec un préavis d'un mois."
+        "text": "Par défaut non : les offres d'hébergement sont mensuelles, sans durée minimale, résiliables avec un préavis d'un mois. Une option volontaire d'engagement sur 12 mois existe et offre le 12ᵉ mois."
       }
     },
     {
@@ -407,16 +408,9 @@ export const ecommerceServiceSchema = {
   "@type": "Service",
   "name": "Création de Site E-commerce Sécurisé",
   "description": "Boutiques en ligne sécurisées avec paiement intégré, gestion produits, SEO e-commerce optimisé. Conformité PCI-DSS.",
-  "provider": {
-    "@type": "Organization",
-    "name": "Zenix Web",
-    "url": "https://www.zenixweb.fr"
-  },
+  "provider": { "@id": `${SITE_URL}/#organization` },
   "serviceType": "Développement E-commerce",
-  "areaServed": {
-    "@type": "Country",
-    "name": "France"
-  },
+  "areaServed": AREA_SERVED,
   "offers": {
     "@type": "Offer",
     "description": "Création de site e-commerce sécurisé avec paiement en ligne et gestion produits",

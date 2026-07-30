@@ -1,9 +1,9 @@
 User-agent: *
 Allow: /
 
-# Sitemap
-Sitemap: https://www.zenixweb.fr/sitemap.xml
+# Page de confirmation : aucun intérêt dans les résultats de recherche, et
+# atteignable uniquement après envoi du formulaire. Elle porte déjà une balise
+# noindex ; cette règle évite en plus de la faire explorer.
+Disallow: /confirmation
 
-# Disallow admin or private areas (if any)
-# Disallow: /admin/
-# Disallow: /private/
+Sitemap: https://zenixweb.fr/sitemap.xml

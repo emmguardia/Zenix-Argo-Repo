@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { Check, ShoppingCart, Shield, CreditCard, Search, BarChart, Package, ArrowRight, Lock, TrendingUp } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { trackEvent } from '../utils/analytics';

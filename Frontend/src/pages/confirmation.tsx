@@ -1,22 +1,15 @@
 import { CheckCircle, ArrowRight } from 'lucide-react';
 import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import SEO from '../components/SEO';
-import { seoConfig } from '../config/seoConfig';
 import { trackEvent } from '../utils/analytics';
+// Les balises SEO sont posées par le gabarit Page (src/App.tsx) à partir de
+// src/config/routes.ts, pour que le pré-rendu du build voie les mêmes valeurs.
 const Confirmation = () => {
   useEffect(() => {
     trackEvent('conversion', { type: 'contact_form_success', page: 'confirmation' });
   }, []);
   return (
     <>
-      <SEO
-        title={seoConfig.confirmation.title}
-        description={seoConfig.confirmation.description}
-        url={seoConfig.confirmation.url}
-        keywords={seoConfig.confirmation.keywords}
-        noindex={true}
-      />
       <div className="min-h-screen bg-slate-50 flex items-center justify-center px-4">
       <div className="max-w-2xl w-full bg-white rounded-2xl shadow-xl p-8 md:p-12 text-center">
         <div className="mb-8">
