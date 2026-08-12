@@ -1,4 +1,6 @@
 import { useNavigate } from 'react-router-dom';
+import ProtectedValue from './ProtectedValue';
+import { CONTACT_PHONE_DISPLAY, CONTACT_PHONE_HREF, CONTACT_ADDRESS_FULL } from '../config/contact';
 const LegalMentions = () => {
   const navigate = useNavigate();
   return (
@@ -15,12 +17,28 @@ const LegalMentions = () => {
           <div className="bg-slate-50 rounded-lg p-8 mb-8">
             <h2 className="text-2xl font-bold text-slate-800 mb-6">I. INFORMATIONS LÉGALES DE L'ÉDITEUR ET DE L'HÉBERGEUR</h2>
             <div className="space-y-3 text-slate-700">
-              <p>Le site web zenixweb.fr est édité et hébergé par :</p>
+              <p>Le site web zenixweb.fr est édité par :</p>
               <p><strong>Nom et Prénom :</strong> Enzo Monnet-Mata</p>
               <p><strong>Statut juridique :</strong> Entrepreneur Individuel (Micro-Entrepreneur)</p>
               <p><strong>Numéro d'immatriculation (SIRET) :</strong> 991 413 600 00016</p>
-              <p><strong>Domiciliation et Lieu d'Hébergement :</strong> 545 chemin des Vignerons, 69830 Saint-Georges-de-Reneins, France</p>
-              <p><strong>Contact :</strong></p>
+              {/* Adresse ET téléphone : tous deux exigés par l'article 6-III-1
+                  de la LCEN, qui impose « leurs nom, prénom, domicile et numéro
+                  de téléphone » pour une personne physique éditant à titre
+                  professionnel. « Domicile » s'entend de l'adresse complète, la
+                  rue comprise — d'où sa présence ici.
+                  Les deux passent par <ProtectedValue> : la valeur n'existe pas
+                  dans le HTML servi et n'est reconstituée que par le navigateur,
+                  ce qui les soustrait aux moissonneurs sans les rendre moins
+                  accessibles à un visiteur. Voir src/config/contact.ts. */}
+              <p><strong>Siège :</strong> <ProtectedValue encoded={CONTACT_ADDRESS_FULL} /></p>
+              <p>
+                <strong>Téléphone :</strong>{' '}
+                <ProtectedValue
+                  encoded={CONTACT_PHONE_DISPLAY}
+                  hrefEncoded={CONTACT_PHONE_HREF}
+                  className="text-blue-600 hover:underline"
+                />
+              </p>
               <p><strong>Adresse e-mail :</strong> contact@zenixweb.fr</p>
               <p><strong>Site web :</strong> zenixweb.fr</p>
               <p><strong>Directeur de la publication :</strong> Enzo Monnet-Mata</p>
@@ -29,10 +47,27 @@ const LegalMentions = () => {
             </div>
           </div>
           <div className="bg-slate-50 rounded-lg p-8 mb-8">
-            <h2 className="text-2xl font-bold text-slate-800 mb-6">II. STATUT DE L'HÉBERGEMENT</h2>
+            <h2 className="text-2xl font-bold text-slate-800 mb-6">II. HÉBERGEMENT ET PRESTATAIRES TECHNIQUES</h2>
             <div className="space-y-3 text-slate-700">
               <p>
-                Enzo Monnet-Mata assure lui-même l'hébergement du site. Les coordonnées de l'hébergeur sont les mêmes que celles de l'Éditeur.
+                <strong>Hébergeur :</strong> Enzo Monnet-Mata assure lui-même l'hébergement du site, sur une
+                infrastructure qu'il détient et administre, située en France. Ses coordonnées sont celles
+                indiquées au paragraphe I.
+              </p>
+              <p>
+                <strong>Intermédiaire technique :</strong> le trafic du site transite par
+                <strong> Cloudflare, Inc.</strong>, 101 Townsend Street, San Francisco, CA 94107, États-Unis,
+                qui assure la répartition de charge, la protection contre les attaques par déni de service et
+                le pare-feu applicatif. À ce titre, Cloudflare traite les données de connexion des visiteurs
+                (adresse IP notamment). Bien que les serveurs sollicités pour la France soient situés en
+                Europe, cette société relève du droit des États-Unis. Les modalités de ce traitement et les
+                garanties encadrant ce transfert sont détaillées dans notre{' '}
+                <a href="/politique-confidentialite" className="text-blue-600 hover:underline">politique de confidentialité</a>.
+              </p>
+              <p>
+                Aucun autre prestataire tiers n'intervient dans la diffusion de ce site : la mesure d'audience
+                (Umami), l'acheminement des emails du formulaire de contact et les polices de caractères sont
+                auto-hébergés sur cette même infrastructure.
               </p>
             </div>
           </div>
@@ -89,8 +124,19 @@ const LegalMentions = () => {
               <p>
                 Tout litige en relation avec l'utilisation du site zenixweb.fr est soumis au droit français.
               </p>
+              {/* La clause « compétence exclusive attribuée aux tribunaux de Lyon »
+                  a été retirée. L'article 48 du Code de procédure civile ne rend
+                  une clause attributive de compétence valable qu'entre commerçants ;
+                  or les CGV s'adressent aussi aux associations et aux professions
+                  libérales, qui ne le sont pas. La clause était donc nulle à leur
+                  égard, tout en donnant une fausse impression de sécurité.
+                  Les règles de compétence de droit commun (art. 42 CPC) s'appliquent. */}
               <p>
-                Compétence exclusive est attribuée aux tribunaux compétents de Lyon.
+                À défaut de résolution amiable, les juridictions compétentes sont déterminées selon les règles
+                de droit commun. Les relations contractuelles avec les clients professionnels sont régies par
+                les{' '}
+                <a href="/conditions-vente" className="text-blue-600 hover:underline">conditions générales de vente</a>,
+                qui prévalent sur le présent document pour tout ce qui concerne l'exécution des prestations.
               </p>
             </div>
           </div>

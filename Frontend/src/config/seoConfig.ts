@@ -10,105 +10,99 @@
  * Ces valeurs sont aussi celles injectées en dur dans le HTML au build par
  * scripts/prerender-seo.mjs — c'est donc ici, et nulle part ailleurs, qu'on
  * modifie un titre ou une description.
+ *
+ * ANCRAGE GÉOGRAPHIQUE — Beaujolais, et non Lyon.
+ * Le site revendiquait « Lyon » dans ses titres et descriptions alors que le
+ * SIRET, les mentions légales et les CGV déclarent Saint-Georges-de-Reneins,
+ * à une trentaine de kilomètres. Pour Google, le signal le plus fort est le NAP
+ * (nom, adresse, téléphone), pas le title : demander à ranker sur une ville où
+ * l'entreprise n'est pas domiciliée revient à s'auto-contredire.
+ * L'ancrage est donc Villefranche-sur-Saône — la ville de référence du
+ * Beaujolais, à 8 km du siège, celle que les prospects tapent réellement
+ * (personne ne cherche « site web Saint-Georges-de-Reneins »).
+ * Lyon n'est pas abandonnée pour autant : elle reste déclarée en `areaServed`
+ * dans les données structurées, ce qui est la façon correcte d'annoncer une
+ * zone d'intervention sans prétendre y être établi.
+ *
+ * Plus de champ `keywords` : la balise correspondante est ignorée par Google
+ * depuis 2009 et par Bing, et ne servait qu'à publier le ciblage aux concurrents.
  */
 export const seoConfig = {
   home: {
-    title: "Création de site web à Lyon | Zenix Web",
+    title: "Création de site web à Villefranche-sur-Saône | Zenix Web",
     description:
-      "Développeur web indépendant à Lyon : sites vitrine, e-commerce et landing pages, avec hébergement managé en France. Devis gratuit sous 24 h.",
-    keywords:
-      "création site web Lyon, développeur web Lyon, site vitrine, site e-commerce, landing page, hébergement web France",
+      "Développeur web indépendant en Beaujolais : sites vitrine, e-commerce et landing pages, avec hébergement managé en France. Devis gratuit sous 24 h.",
     url: "https://zenixweb.fr/",
   },
   landing: {
     title: "Création de landing page qui convertit | Zenix Web",
     description:
       "Landing page sur mesure pensée pour la conversion : design moderne, chargement rapide, formulaire intégré. Devis gratuit sous 24 h.",
-    keywords:
-      "création landing page, landing page conversion, page d'atterrissage, landing page Lyon, générer des leads",
     url: "https://zenixweb.fr/landing",
   },
   contact: {
     title: "Devis gratuit pour votre site web | Zenix Web",
     description:
-      "Décrivez votre projet et recevez un devis personnalisé sous 24 h. Site vitrine, e-commerce ou landing page, à Lyon et partout en France.",
-    keywords:
-      "devis site web gratuit, contact développeur web, créer un site internet, devis création site Lyon",
+      "Décrivez votre projet et recevez un devis personnalisé sous 24 h. Site vitrine, e-commerce ou landing page, en Beaujolais et partout en France.",
     url: "https://zenixweb.fr/contact",
   },
   mentionsLegales: {
     title: "Mentions légales | Zenix Web",
     description:
       "Mentions légales du site zenixweb.fr : éditeur, hébergeur, propriété intellectuelle et traitement des données personnelles.",
-    keywords: "mentions légales, Zenix Web, éditeur du site, hébergeur",
     url: "https://zenixweb.fr/mentions-legales",
   },
   politiqueConfidentialite: {
     title: "Politique de confidentialité | Zenix Web",
     description:
       "Comment vos données personnelles sont collectées et protégées : finalités, durées de conservation, droits RGPD et mesure d'audience sans cookie.",
-    keywords: "politique de confidentialité, RGPD, protection des données, cookies, Umami",
     url: "https://zenixweb.fr/politique-confidentialite",
   },
   conditionsVente: {
     title: "Conditions générales de vente | Zenix Web",
     description:
-      "CGV de Zenix Web : prestations, prix, délais, propriété intellectuelle, hébergement, garantie et responsabilité. Version 3.0 en vigueur.",
-    keywords: "CGV, conditions générales de vente, contrat création site web, prestation web",
+      "CGV de Zenix Web : prestations, prix, délais, propriété intellectuelle, hébergement, garantie et responsabilité. Version 3.1 en vigueur.",
     url: "https://zenixweb.fr/conditions-vente",
   },
   confirmation: {
     title: "Message envoyé | Zenix Web",
     description: "Votre demande a bien été envoyée. Je vous réponds sous 24 heures.",
-    keywords: "confirmation, message envoyé",
     url: "https://zenixweb.fr/confirmation",
   },
   hosting: {
     title: "Hébergement web managé en France | Zenix Web",
     description:
       "Hébergement et maintenance de votre site : serveurs en France, sauvegardes quotidiennes, sécurité incluse. Dès 39 €/mois, sans engagement.",
-    keywords:
-      "hébergement web France, hébergement managé, maintenance site web, sauvegarde site, hébergement sécurisé, hébergement Kubernetes",
     url: "https://zenixweb.fr/hebergement",
   },
   vitrine: {
     title: "Création de site vitrine professionnel | Zenix Web",
     description:
       "Site vitrine sur mesure, rapide, sécurisé et optimisé pour le référencement. Design responsive et hébergement en France. Devis gratuit sous 24 h.",
-    keywords:
-      "création site vitrine, site vitrine professionnel, site vitrine Lyon, site internet entreprise, site vitrine sur mesure",
     url: "https://zenixweb.fr/site-vitrine",
   },
   ecommerce: {
     title: "Création de site e-commerce sécurisé | Zenix Web",
     description:
       "Boutique en ligne complète : catalogue produits, paiement sécurisé, gestion des commandes et référencement optimisé. Devis gratuit sous 24 h.",
-    keywords:
-      "création site e-commerce, boutique en ligne, vendre en ligne, site e-commerce Lyon, paiement sécurisé",
     url: "https://zenixweb.fr/site-ecommerce",
   },
   typesDeSites: {
     title: "Nos services de création de sites web | Zenix Web",
     description:
       "Landing page pour convertir, site vitrine pour présenter votre activité, e-commerce pour vendre en ligne. Trouvez la solution adaptée à votre projet.",
-    keywords:
-      "services création site web, types de sites internet, landing page, site vitrine, site e-commerce",
     url: "https://zenixweb.fr/nos-services",
   },
   faq: {
     title: "Questions fréquentes | Zenix Web",
     description:
       "Délais, tarifs, hébergement, sécurité, RGPD, modifications : les réponses aux questions les plus posées sur la création et l'hébergement de sites web.",
-    keywords:
-      "FAQ création site web, tarifs site internet, délai création site, questions hébergement web",
     url: "https://zenixweb.fr/faq",
   },
   partners: {
     title: "Programme partenaires revendeurs | Zenix Web",
     description:
       "Développeurs et agences : hébergement managé en wholesale dès 14 €/site, en marque blanche. Marge récurrente et infrastructure en France.",
-    keywords:
-      "hébergement revendeur, programme partenaire hébergement, white label hosting, hébergement agences web",
     url: "https://zenixweb.fr/partenaires",
   },
 };

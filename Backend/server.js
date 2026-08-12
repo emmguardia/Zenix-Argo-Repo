@@ -85,14 +85,18 @@ async function sendGotifyNotification(title, message, priority = 5) {
     console.warn('Gotify not configured (GOTIFY_URL or GOTIFY_TOKEN missing), skipping notification');
     return;
   }
-  const url = `${GOTIFY_URL.replace(/\/$/, '')}/message?token=${GOTIFY_TOKEN}`;
-  const formData = new FormData();
-  formData.append('title', title);
-  formData.append('message', message);
-  formData.append('priority', String(priority));
+  // Le token passe par l'en-tête X-Gotify-Key, pas par la query string.
+  // En query string il se retrouvait en clair dans les journaux d'accès nginx,
+  // ceux de Traefik, et dans tout outil d'observabilité sur le chemin — un
+  // secret ne doit jamais transiter dans une URL.
+  const url = `${GOTIFY_URL.replace(/\/$/, '')}/message`;
   const response = await fetch(url, {
     method: 'POST',
-    body: formData,
+    headers: {
+      'Content-Type': 'application/json',
+      'X-Gotify-Key': GOTIFY_TOKEN,
+    },
+    body: JSON.stringify({ title, message, priority }),
   });
   if (!response.ok) {
     console.error('Gotify notification failed:', response.status, await response.text());

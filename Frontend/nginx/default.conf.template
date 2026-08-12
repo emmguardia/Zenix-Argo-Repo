@@ -33,6 +33,19 @@ server {
     resolver ${NGINX_LOCAL_RESOLVERS} valid=30s ipv6=off;
     resolver_timeout 5s;
 
+    # /.well-known/ doit rester accessible malgré la règle anti-dotfiles qui
+    # suit : c'est là que vit security.txt (RFC 9116), et c'est aussi le chemin
+    # utilisé par les validations ACME et les futurs fichiers d'association
+    # d'application mobile.
+    # Le préfixe `^~` est indispensable : sans lui, la location par expression
+    # régulière `~ /\.` ci-dessous l'emporterait et renverrait 404.
+    location ^~ /.well-known/ {
+        include /etc/nginx/snippets/security-headers.conf;
+        default_type text/plain;
+        add_header Cache-Control "public, max-age=86400" always;
+        try_files $uri =404;
+    }
+
     # Bloque l'accès aux fichiers et dossiers commençant par un point
     # (.env, .git, .htaccess...). On renvoie 404 plutôt que 403 pour ne pas
     # confirmer leur existence.
@@ -76,6 +89,11 @@ server {
     # il faut donc la passer explicitement — $request_uri conserve le chemin
     # complet et la query string.
     location /api/ {
+        # Ce bloc ne servait aucun en-tête de sécurité : les réponses de l'API
+        # partaient sans nosniff ni Referrer-Policy. Le backend Node n'en pose
+        # aucun de son côté (pas de helmet), il n'y a donc pas de doublon.
+        include /etc/nginx/snippets/security-headers.conf;
+
         set $zenix_backend "zenix-backend.zenix.svc.cluster.local";
         proxy_pass http://$zenix_backend:3000$request_uri;
         proxy_http_version 1.1;

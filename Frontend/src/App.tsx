@@ -88,7 +88,6 @@ const Page = ({ route }: { route: RouteDefinition }) => {
     <SEO
       title={route.seo.title}
       description={route.seo.description}
-      keywords={route.seo.keywords}
       url={route.seo.url}
       structuredData={structuredData}
       noindex={route.noindex}

@@ -1,5 +1,10 @@
 # ── Secrets en clair (NE JAMAIS PUSHER) ──────────────────────────────────────
-.pem
+# `*.pem` et non `.pem` : sans l'astérisque, le motif ne correspondait qu'à un
+# fichier littéralement nommé « .pem ». Un jwt_private_key.pem déposé dans le
+# dépôt n'était donc PAS ignoré, alors que c'est précisément le fichier que
+# cette section est censée protéger (vérifié avec `git check-ignore -v`).
+*.pem
+*.key
 *-plain.yaml
 *-Secrets.yaml
 charts/zenix/secrets/*-secrets.yaml
@@ -50,3 +55,4 @@ docs/SPEC-ESPACE-CLIENT.md
 # ── Outillage local (non publié) ─────────────────────────────────────────────
 scripts/fetch-sealed-cert.ps1
 scripts/seal-secrets.ps1
+.claude/

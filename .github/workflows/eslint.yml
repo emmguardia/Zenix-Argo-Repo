@@ -94,7 +94,7 @@ jobs:
             --output-file eslint-results.sarif || true
 
       - name: Upload analysis results to GitHub
-        if: steps.check_ghas.outputs.available == 'true' && github.actor != 'dependabot[bot]'
+        if: steps.check_ghas.outputs.available == 'true'
         uses: github/codeql-action/upload-sarif@v4
         with:
           sarif_file: ./Frontend/eslint-results.sarif

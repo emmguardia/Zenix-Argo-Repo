@@ -81,18 +81,22 @@ const FAQ = () => {
     return () => observer.unobserve(el);
   }, []);
 
+  // Ces réponses sont reprises mot pour mot dans `faqPageSchema`
+  // (src/utils/structuredData.ts). Google exige que le contenu d'un FAQPage
+  // soit visible à l'identique sur la page : toute modification ici doit être
+  // reportée là-bas, et inversement.
   const general: QAItem[] = [
     {
       q: "Qui se cache derrière Zenix ?",
-      a: "Zenix est portée par Enzo Monnet Mata, développeur web freelance basé à Lyon, étudiant en cybersécurité à Guardia. Vous traitez directement avec moi, pas un commercial intermédiaire.",
+      a: "Zenix est portée par Enzo Monnet Mata, développeur web indépendant établi en Beaujolais, étudiant en cybersécurité à Guardia. Vous traitez directement avec moi, pas un commercial intermédiaire.",
     },
     {
       q: "Où êtes-vous basé ?",
-      a: "À Lyon, en France. Les serveurs sont également hébergés en France, ce qui garantit la souveraineté des données et la conformité RGPD.",
+      a: "À Saint-Georges-de-Reneins, en Beaujolais, entre Villefranche-sur-Saône et Lyon. J'interviens dans tout le Rhône et, à distance, partout en France. Les serveurs sont eux aussi situés en France.",
     },
     {
-      q: "Travaillez-vous avec des clients en dehors de Lyon ?",
-      a: "Oui, partout en France et en Europe francophone. Les échanges se font par visio, email et Calendly. Pas besoin de se déplacer.",
+      q: "Travaillez-vous avec des clients en dehors du Beaujolais ?",
+      a: "Oui, partout en France et en Europe francophone. Les échanges se font par visioconférence, téléphone et email. Pas besoin de se déplacer.",
     },
     {
       q: "Combien de temps pour mettre en ligne un site ?",
@@ -181,7 +185,7 @@ const FAQ = () => {
     },
     {
       q: "Mes données sont-elles bien en Europe ?",
-      a: "Oui. Hébergement physique en France, sauvegardes en UE. Pas de transfert vers les États-Unis pour les données client.",
+      a: "Vos données et celles de vos visiteurs sont hébergées sur nos serveurs en France, et les sauvegardes restent dans l'Union européenne. Une seule exception, que nous préférons annoncer : le trafic transite par Cloudflare, société américaine, qui assure la protection anti-DDoS et le pare-feu. Le détail figure dans notre politique de confidentialité.",
     },
     {
       q: "Vos analytics sont-elles RGPD ?",

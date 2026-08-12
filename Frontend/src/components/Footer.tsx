@@ -47,7 +47,12 @@ const Footer = () => {
               </p>
               <p className="flex items-center text-slate-400">
                 <MapPin className="w-5 h-5 mr-2" />
-                <span>Lyon, France</span>
+                {/* Doit rester identique à l'adresse déclarée dans le JSON-LD
+                    (structuredData.ts) et dans les mentions légales : le footer
+                    apparaît sur toutes les pages, c'est le signal d'ancrage
+                    local le plus lourd du site. Il affichait « Lyon, France »,
+                    ce que contredisaient les documents légaux. */}
+                <span>Saint-Georges-de-Reneins, 69830</span>
               </p>
             </div>
           </div>

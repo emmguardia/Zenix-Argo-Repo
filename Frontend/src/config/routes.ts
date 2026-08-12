@@ -35,7 +35,7 @@ export interface RouteDefinition {
   /** Chemin exact, tel que déclaré dans React Router. */
   path: string;
   /** Bloc SEO correspondant dans seoConfig. */
-  seo: { title: string; description: string; keywords: string; url: string };
+  seo: { title: string; description: string; url: string };
   /** Données structurées JSON-LD propres à la page. */
   structuredData: object[];
   /** Libellé du fil d'Ariane. `null` = page racine, pas de fil d'Ariane. */

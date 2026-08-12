@@ -6,38 +6,25 @@
     <link rel="icon" type="image/webp" href="/images/Logo.webp" />
     <link rel="preload" as="image" href="/images/Logo.webp" fetchpriority="high" />
 
-    <!-- Interception des requêtes Umami vers api.umami.is (doit être en premier) -->
-    <script>
-    (function() {
-        if (window._umamiBlocked) return;
-        window._umamiBlocked = true;
+    <!--
+      Aucun script inline ici — c'est ce qui permet à la CSP de se passer de
+      `script-src 'unsafe-inline'` (voir nginx/security-headers.conf).
 
-        var originalFetch = window.fetch;
-        window.fetch = function(url, options) {
-            if (typeof url === 'string' && url.includes('api.umami.is')) {
-                return Promise.reject(new Error('Blocked'));
-            }
-            return originalFetch.apply(this, arguments);
-        };
-
-        var originalXHROpen = XMLHttpRequest.prototype.open;
-        XMLHttpRequest.prototype.open = function(method, url, async, user, password) {
-            if (typeof url === 'string' && url.includes('api.umami.is')) {
-                this._blocked = true;
-                return;
-            }
-            return originalXHROpen.apply(this, arguments);
-        };
-
-        var originalXHRSend = XMLHttpRequest.prototype.send;
-        XMLHttpRequest.prototype.send = function(data) {
-            if (this._blocked) {
-                return;
-            }
-            return originalXHRSend.apply(this, arguments);
-        };
-    })();
-    </script>
+      Un correctif maison interceptait auparavant `fetch` et `XMLHttpRequest`
+      pour bloquer les appels vers api.umami.is. Il a été retiré :
+        - il remplaçait `XMLHttpRequest.prototype.open` par une fonction qui
+          n'appelait jamais l'originale, laissant l'objet en readyState 0 :
+          toute bibliothèque enchaînant sur setRequestHeader() aurait levé une
+          InvalidStateError, et `send()` sortait sans jamais émettre load,
+          error ni timeout — un appelant serait resté en attente indéfiniment ;
+        - les patches étaient globaux et permanents, donc appliqués à toute
+          dépendance future de la page ;
+        - la CSP fait déjà ce travail au niveau du navigateur, via
+          `connect-src 'self' https://umami.zenixweb.fr`, sans toucher aux
+          prototypes JavaScript.
+      Si des appels à api.umami.is réapparaissent, la cause est côté serveur
+      Umami (télémétrie de l'instance), pas ici.
+    -->
 
     <!--
       Tout ce qui se trouve entre SEO:START et SEO:END est REMPLACÉ page par page
@@ -55,13 +42,10 @@
     <link rel="canonical" href="https://zenixweb.fr/">
     <!--SEO:END-->
 
-    <!-- Préconnexion aux polices : le DNS et le TLS sont négociés en parallèle
-         du rendu, pas au moment où la feuille de style est demandée. -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <!-- Police chargée en asynchrone pour ne pas bloquer le premier rendu (LCP) -->
-    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"></noscript>
+    <!-- Aucune référence à Google Fonts : Inter est auto-hébergée et importée
+         depuis src/index.css, donc incluse dans le bundle CSS servi par notre
+         origine. Plus de preconnect, plus de résolution DNS tierce, plus
+         d'adresse IP visiteur transmise hors UE. -->
 
     <!-- Umami Analytics — auto-hébergé, sans cookie -->
     <script async defer data-website-id="d7c3ac5d-03ad-4ce3-8f0c-07706489b71d"

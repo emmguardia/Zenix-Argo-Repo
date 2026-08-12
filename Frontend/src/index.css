@@ -1,13 +1,30 @@
+/* Inter, servie depuis notre origine.
+   Elle venait auparavant de fonts.googleapis.com : l'adresse IP de chaque
+   visiteur partait alors chez Google, aux États-Unis, avant tout consentement
+   (cf. jugement LG München I du 20 janvier 2022). Un site qui met en avant
+   l'hébergement en France et l'absence de traceurs tiers ne peut pas se le
+   permettre.
+   Version variable : un seul fichier de 48 Ko couvre les graisses 100 à 900,
+   là où Google en servait quatre. Les sous-ensembles non latins ne sont jamais
+   téléchargés grâce aux `unicode-range` déclarés par fontsource, et
+   `font-display: swap` est déjà posé par le paquet.
+
+   L'import du paquet lui-même est fait dans src/main.tsx, PAS ici : Tailwind v4
+   inline les `@import` au niveau PostCSS, avant la réécriture d'URL de Vite,
+   ce qui laissait les `url(./files/*.woff2)` pointer dans le vide sans émettre
+   le moindre fichier de police. Voir le commentaire dans main.tsx. */
 @import "tailwindcss";
 
 /* Thème Tailwind v4.
    v4 ne lit plus tailwind.config.js sauf directive @config explicite : l'ancien
    fichier de config était donc totalement ignoré, et la police Inter — pourtant
    préchargée puis téléchargée à chaque visite — n'était jamais appliquée.
-   Le thème vit désormais ici, à l'endroit où v4 va effectivement le chercher. */
+   Le thème vit désormais ici, à l'endroit où v4 va effectivement le chercher.
+   Le nom de famille est « Inter Variable » : c'est celui que déclare fontsource,
+   « Inter » seul ne correspondrait à rien et retomberait sur la pile système. */
 @theme {
-  --font-sans: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
-    "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-sans: "Inter Variable", Inter, ui-sans-serif, system-ui, -apple-system,
+    BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 }
 
 @media (min-width: 768px) and (max-width: 1024px) {

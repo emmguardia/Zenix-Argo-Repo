@@ -3,7 +3,6 @@ import React, { useEffect } from 'react';
 interface SEOProps {
   title?: string;
   description?: string;
-  keywords?: string;
   image?: string;
   url?: string;
   type?: 'website' | 'article' | 'profile';
@@ -14,7 +13,10 @@ interface SEOProps {
 const SEO: React.FC<SEOProps> = ({
   title = "Zenix | Services de Développement Web Expert",
   description = "Services professionnels de développement web incluant la création de sites, l'hébergement, les mises à jour et la modification de sites web. Obtenez un site web beau et fonctionnel pour votre entreprise.",
-  keywords = "développement web, création site web, landing page, hébergement web, SEO, design web, Lyon, France, Enzo Monnet Mata",
+  // Plus de `keywords` : la balise est ignorée par Google depuis 2009 et par
+  // Bing. Elle est aussi retirée du pré-rendu (scripts/prerender-seo.mjs) — les
+  // deux chemins doivent produire le même <head>, sinon le HTML brut et la page
+  // hydratée divergent.
   // Visuel de partage dédié au format 1200x630 attendu par les réseaux sociaux.
   // Le logo était utilisé auparavant alors qu'il est carré (2048x2048), tout en
   // étant déclaré en 1200x630 : les plateformes le recadraient mal.
@@ -24,19 +26,26 @@ const SEO: React.FC<SEOProps> = ({
   structuredData,
   noindex = false
 }) => {
-  const sanitizeMetaContent = (content: string): string => {
-    return content
-      .replace(/[<>"']/g, '')
-      .replace(/\r\n/g, ' ')
-      .trim();
-  };
+  // Normalise les retours à la ligne, rien de plus.
+  //
+  // Cette fonction retirait auparavant `<`, `>`, `"` et `'` de tous les titres
+  // et descriptions. C'était à la fois inutile et nuisible :
+  //   - inutile, parce que les valeurs sont affectées via les propriétés DOM
+  //     (`element.content`, `document.title`), jamais via innerHTML — le
+  //     navigateur ne les interprète donc jamais comme du balisage ;
+  //   - nuisible, parce qu'elle mutilait le français. « l'hébergement »
+  //     devenait « lhébergement » dans la meta description servie après
+  //     hydratation, alors que le HTML pré-rendu, lui, était correct : les deux
+  //     versions du même <head> ne coïncidaient pas.
+  const normalizeMetaContent = (content: string): string =>
+    content.replace(/\s*[\r\n]+\s*/g, ' ').trim();
 
   const fullTitle = title.includes("Zenix") ? title : `${title} | Zenix Web`;
   const robotsContent = noindex ? "noindex, nofollow" : "index, follow";
   const canonicalUrl = url && url.startsWith('http') ? url : `https://zenixweb.fr${url.startsWith('/') ? url : '/' + url}`;
 
   useEffect(() => {
-    document.title = sanitizeMetaContent(fullTitle);
+    document.title = normalizeMetaContent(fullTitle);
 
     const updateMetaTag = (name: string, content: string, attribute: string = 'name') => {
       let element = document.querySelector(`meta[${attribute}="${name}"]`) as HTMLMetaElement;
@@ -45,7 +54,7 @@ const SEO: React.FC<SEOProps> = ({
         element.setAttribute(attribute, name);
         document.head.appendChild(element);
       }
-      element.content = sanitizeMetaContent(content);
+      element.content = normalizeMetaContent(content);
     };
 
     const updateLinkTag = (rel: string, href: string) => {
@@ -68,11 +77,11 @@ const SEO: React.FC<SEOProps> = ({
     };
 
     updateMetaTag('description', description);
-    updateMetaTag('keywords', keywords);
     updateMetaTag('author', 'Enzo Monnet Mata');
     updateMetaTag('robots', robotsContent);
-    updateMetaTag('language', 'fr');
-    updateMetaTag('revisit-after', '7 days');
+    // Ni `language` ni `revisit-after` : aucun moteur ne les lit. La langue est
+    // portée par l'attribut `lang` de <html>, la fréquence de passage par le
+    // sitemap.
 
     updateMetaTag('og:type', type, 'property');
     updateMetaTag('og:url', canonicalUrl, 'property');
@@ -85,14 +94,14 @@ const SEO: React.FC<SEOProps> = ({
     updateMetaTag('og:locale', 'fr_FR', 'property');
 
     updateMetaTag('twitter:card', 'summary_large_image');
-    updateMetaTag('twitter:url', canonicalUrl);
+    // Pas de `twitter:url` : la balise n'existe pas dans la spécification
+    // Twitter Cards, `og:url` fait déjà le travail.
     updateMetaTag('twitter:title', fullTitle);
     updateMetaTag('twitter:description', description);
     updateMetaTag('twitter:image', image);
     // Pas de twitter:creator : aucun compte X n'est rattaché à Zenix.
 
-    const safeCanonicalUrl = canonicalUrl.replace(/[<>"']/g, '');
-    updateLinkTag('canonical', safeCanonicalUrl);
+    updateLinkTag('canonical', canonicalUrl);
 
     removeScripts('application/ld+json');
 
@@ -103,15 +112,17 @@ const SEO: React.FC<SEOProps> = ({
           const script = document.createElement('script');
           script.type = 'application/ld+json';
           script.setAttribute('data-seo-dynamic', 'true');
-          const sanitizedData = JSON.parse(JSON.stringify(data).replace(/[<>]/g, ''));
-          script.textContent = JSON.stringify(sanitizedData);
+          // `textContent` n'est jamais interprété comme du balisage : inutile de
+          // filtrer `<` et `>` au préalable, et le faire corromprait
+          // silencieusement toute donnée qui en contiendrait légitimement.
+          script.textContent = JSON.stringify(data);
           document.head.appendChild(script);
         } catch (err) {
           console.error('Error adding structured data:', err);
         }
       });
     }
-  }, [fullTitle, description, keywords, image, canonicalUrl, type, robotsContent, structuredData]);
+  }, [fullTitle, description, image, canonicalUrl, type, robotsContent, structuredData]);
 
   return null;
 };

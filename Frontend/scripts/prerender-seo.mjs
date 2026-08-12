@@ -56,7 +56,7 @@ const attr = (value) =>
 const jsonLd = (data) => JSON.stringify(data).replace(/</g, '\\u003c');
 
 function buildHead(route) {
-  const { title, description, keywords } = route.seo;
+  const { title, description } = route.seo;
   const canonical = `${SITE_URL}${route.path === '/' ? '/' : route.path}`;
   const robots = route.noindex ? 'noindex, nofollow' : 'index, follow';
 
@@ -68,7 +68,8 @@ function buildHead(route) {
   const tags = [
     `<title>${attr(title)}</title>`,
     `<meta name="description" content="${attr(description)}">`,
-    `<meta name="keywords" content="${attr(keywords)}">`,
+    // Pas de `meta keywords` : ignorée par Google depuis 2009 et par Bing, elle
+    // ne servait qu'à publier notre ciblage aux concurrents.
     `<meta name="author" content="Enzo Monnet-Mata">`,
     `<meta name="robots" content="${robots}">`,
     `<link rel="canonical" href="${attr(canonical)}">`,
@@ -83,7 +84,8 @@ function buildHead(route) {
     `<meta property="og:image:height" content="${OG_IMAGE_HEIGHT}">`,
     `<meta property="og:image:alt" content="${attr('Zenix Web — ' + title.split('|')[0].trim())}">`,
     `<meta name="twitter:card" content="summary_large_image">`,
-    `<meta name="twitter:url" content="${attr(canonical)}">`,
+    // Pas de `twitter:url` : cette balise n'existe pas dans la spécification
+    // Twitter Cards. `og:url`, juste au-dessus, fait déjà le travail.
     `<meta name="twitter:title" content="${attr(title)}">`,
     `<meta name="twitter:description" content="${attr(description)}">`,
     `<meta name="twitter:image" content="${OG_IMAGE}">`
@@ -164,8 +166,7 @@ const notFound = inject(template, {
   path: '/404',
   seo: {
     title: 'Page introuvable (404) | Zenix Web',
-    description: "La page demandée n'existe pas ou a été déplacée.",
-    keywords: 'page introuvable, 404, Zenix Web'
+    description: "La page demandée n'existe pas ou a été déplacée."
   },
   structuredData: [],
   breadcrumb: null,

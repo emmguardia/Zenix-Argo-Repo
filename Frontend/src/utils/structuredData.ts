@@ -10,9 +10,18 @@ const SAME_AS = [
 /** Adresse réelle de l'entreprise (celle du SIRET et des mentions légales).
  *  Elle indiquait auparavant « Lyon », ce qui contredisait les documents
  *  légaux : une incohérence de NAP (Name-Address-Phone) dégrade la confiance
- *  que Google accorde à l'entité. Lyon reste couvert par `areaServed`, qui est
- *  la façon correcte de déclarer une zone d'intervention. La rue n'est
- *  volontairement pas exposée ici. */
+ *  que Google accorde à l'entité. La rue n'est volontairement pas exposée ici :
+ *  ville et code postal suffisent à Google pour rattacher l'entité, et
+ *  l'adresse complète figure déjà au Registre National des Entreprises.
+ *
+ *  PAS DE `telephone` ICI, ET C'EST DÉLIBÉRÉ. Le JSON-LD est pré-rendu dans le
+ *  HTML brut : y placer le numéro le servirait en clair à tout ce qui télécharge
+ *  la page, ce qui annulerait la protection mise en place dans les mentions
+ *  légales (cf. src/config/contact.ts et le composant ProtectedValue).
+ *  Le NAP reste donc incomplet et le référencement local un peu moins fort :
+ *  c'est le prix assumé pour ne pas exposer un numéro personnel aux
+ *  moissonneurs. À rouvrir le jour où une ligne professionnelle dédiée existe —
+ *  elle pourra alors figurer ici sans réserve. */
 const BUSINESS_ADDRESS = {
   "@type": "PostalAddress",
   "addressLocality": "Saint-Georges-de-Reneins",
@@ -21,7 +30,14 @@ const BUSINESS_ADDRESS = {
   "addressCountry": "FR"
 };
 
+/** Zone d'intervention, du plus proche au plus large.
+ *  L'ordre compte : Villefranche-sur-Saône et le Beaujolais viennent en tête
+ *  parce que c'est là que l'entreprise est établie et où elle peut réellement
+ *  se classer. Lyon reste déclarée — c'est la bonne façon d'annoncer qu'on y
+ *  intervient sans prétendre y être domicilié. */
 const AREA_SERVED = [
+  { "@type": "City", "name": "Villefranche-sur-Saône" },
+  { "@type": "AdministrativeArea", "name": "Beaujolais" },
   { "@type": "City", "name": "Lyon" },
   { "@type": "AdministrativeArea", "name": "Rhône" },
   { "@type": "AdministrativeArea", "name": "Auvergne-Rhône-Alpes" },
@@ -48,9 +64,18 @@ export const organizationSchema = {
   "image": `${SITE_URL}/images/Logo.webp`,
   "description": "Création de sites web, hébergement managé et maintenance pour les entreprises, associations et indépendants. Sites vitrine, e-commerce et landing pages, hébergés en France.",
   "slogan": "Votre site à votre image, comme vous, unique",
-  "foundingDate": "2024",
+  // Format ISO partiel accepté. Indiquait « 2024 », alors que l'entreprise a
+  // été créée en septembre 2025 : une divergence avec les données publiques du
+  // RNE n'apporte rien et fragilise l'entité aux yeux de Google.
+  "foundingDate": "2025-09",
   "email": "contact@zenixweb.fr",
-  "vatID": "TVA non applicable, art. 293 B du CGI",
+  // Pas de `vatID` : cette propriété attend un numéro d'identification TVA au
+  // format FRXX999999999. Elle contenait « TVA non applicable, art. 293 B du
+  // CGI », qui est une mention de facture, pas un numéro — un validateur le
+  // signale en erreur. L'entreprise étant en franchise en base, elle n'a
+  // simplement pas de numéro de TVA : la propriété n'a pas lieu d'être.
+  // La mention légale, elle, figure bien sur les factures, dans les mentions
+  // légales et à l'article 5 des CGV.
   "taxID": "99141360000016",
   "priceRange": "€€",
   "currenciesAccepted": "EUR",
@@ -325,6 +350,11 @@ export const partnersServiceSchema = {
     ]
   }
 };
+/** ATTENTION — ce schéma doit rester le miroir EXACT des questions/réponses
+ *  affichées dans FAQ.tsx. Google exige que le contenu d'un FAQPage soit
+ *  visible à l'identique sur la page ; un texte présent ici mais absent de
+ *  l'écran est une donnée structurée trompeuse, susceptible d'une action
+ *  manuelle. Toute modification ici doit être reportée là-bas, et inversement. */
 export const faqPageSchema = {
   "@context": "https://schema.org",
   "@type": "FAQPage",
@@ -334,7 +364,7 @@ export const faqPageSchema = {
       "name": "Qui se cache derrière Zenix ?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Zenix est portée par Enzo Monnet Mata, développeur web freelance basé à Lyon, étudiant en cybersécurité à Guardia."
+        "text": "Zenix est portée par Enzo Monnet Mata, développeur web indépendant établi en Beaujolais, étudiant en cybersécurité à Guardia. Vous traitez directement avec moi, pas un commercial intermédiaire."
       }
     },
     {
@@ -342,7 +372,7 @@ export const faqPageSchema = {
       "name": "Où êtes-vous basé ?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "À Lyon, en France. Les serveurs sont également hébergés en France, ce qui garantit la souveraineté des données et la conformité RGPD."
+        "text": "À Saint-Georges-de-Reneins, en Beaujolais, entre Villefranche-sur-Saône et Lyon. J'interviens dans tout le Rhône et, à distance, partout en France. Les serveurs sont eux aussi situés en France."
       }
     },
     {
@@ -382,7 +412,7 @@ export const faqPageSchema = {
       "name": "Mes données sont-elles bien en Europe ?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Oui. Hébergement physique en France, sauvegardes en UE. Pas de transfert vers les États-Unis pour les données client."
+        "text": "Vos données et celles de vos visiteurs sont hébergées sur nos serveurs en France, et les sauvegardes restent dans l'Union européenne. Une seule exception, que nous préférons annoncer : le trafic transite par Cloudflare, société américaine, qui assure la protection anti-DDoS et le pare-feu. Le détail figure dans notre politique de confidentialité."
       }
     },
     {
@@ -407,7 +437,10 @@ export const ecommerceServiceSchema = {
   "@context": "https://schema.org",
   "@type": "Service",
   "name": "Création de Site E-commerce Sécurisé",
-  "description": "Boutiques en ligne sécurisées avec paiement intégré, gestion produits, SEO e-commerce optimisé. Conformité PCI-DSS.",
+  // « Conformité PCI-DSS » a été retiré : c'est une certification, et elle est
+  // portée par le prestataire de paiement (Stripe), pas par nous. Se l'attribuer
+  // revient à revendiquer une qualification qu'on ne détient pas.
+  "description": "Boutiques en ligne sécurisées avec paiement intégré via un prestataire certifié PCI-DSS, gestion produits et SEO e-commerce optimisé.",
   "provider": { "@id": `${SITE_URL}/#organization` },
   "serviceType": "Développement E-commerce",
   "areaServed": AREA_SERVED,

@@ -1,4 +1,6 @@
 import { useNavigate } from 'react-router-dom';
+import ProtectedValue from './ProtectedValue';
+import { CONTACT_PHONE_DISPLAY, CONTACT_PHONE_HREF, CONTACT_ADDRESS_FULL } from '../config/contact';
 
 const Article = ({ title, children }: { title: string; children: React.ReactNode }) => (
   <div>
@@ -18,7 +20,7 @@ const TermsOfService = () => {
           <p className="text-lg text-slate-600">
             et de Prestation de Services — Création de sites web · Hébergement · Maintenance
           </p>
-          <p className="text-sm text-slate-500 mt-2">Version 3.0 — en vigueur au 8 juillet 2026</p>
+          <p className="text-sm text-slate-500 mt-2">Version 3.1 — en vigueur au 12 août 2026</p>
         </div>
 
         <div className="prose prose-lg max-w-none">
@@ -27,9 +29,18 @@ const TermsOfService = () => {
             <h2 className="text-2xl font-bold text-slate-800 mb-6">Identification du Prestataire</h2>
             <div className="space-y-3 text-slate-700">
               <p><strong>Prestataire :</strong> Zenix Web — Enzo Monnet-Mata, entrepreneur individuel (micro-entreprise)</p>
-              <p><strong>Siège :</strong> 545 chemin des Vignerons, 69830 Saint-Georges-de-Reneins, France</p>
+              {/* Affichage protégé du moissonnage, voir src/config/contact.ts. */}
+              <p><strong>Siège :</strong> <ProtectedValue encoded={CONTACT_ADDRESS_FULL} /></p>
               <p><strong>SIRET :</strong> 991 413 600 00016 · TVA non applicable, art. 293 B du CGI</p>
-              <p><strong>Contact :</strong> contact@zenixweb.fr · zenixweb.fr</p>
+              <p>
+                <strong>Contact :</strong> contact@zenixweb.fr ·{' '}
+                <ProtectedValue
+                  encoded={CONTACT_PHONE_DISPLAY}
+                  hrefEncoded={CONTACT_PHONE_HREF}
+                  className="text-blue-600 hover:underline"
+                />{' '}
+                · zenixweb.fr
+              </p>
             </div>
           </div>
 
@@ -61,6 +72,21 @@ const TermsOfService = () => {
               </Article>
               <Article title="Article 4 — Devis, commande et formation du contrat">
                 <p>Sauf mention contraire, les devis sont valables trente (30) jours à compter de leur émission. Le contrat est réputé formé à la réception cumulative, par le Prestataire, du devis daté et signé par le Client et du paiement de l'acompte prévu. Le Prestataire débute les travaux après encaissement de l'acompte et réception de l'ensemble des éléments nécessaires (textes, images, accès, identifiants, etc.).</p>
+              </Article>
+              {/* Article ajouté : les CGV étaient totalement muettes sur ce point.
+                  L'article L221-3 du Code de la consommation étend le droit de
+                  rétractation de 14 jours aux professionnels de 5 salariés au plus
+                  quand le contrat sort de leur activité principale — ce qui est le
+                  cas de la quasi-totalité des artisans, commerçants et petites
+                  associations qui commandent un site. Sans clause ni renonciation
+                  expresse recueillie, un client pouvait se rétracter APRÈS
+                  livraison. Numéroté « bis » pour ne pas décaler les 27 articles
+                  suivants, déjà cités dans les devis émis. */}
+              <Article title="Article 4 bis — Droit de rétractation applicable à certains professionnels">
+                <p>Conformément à l'article L221-3 du Code de la consommation, le Client professionnel qui emploie <strong>cinq (5) salariés au maximum</strong> et dont l'objet du contrat n'entre pas dans le champ de son activité principale bénéficie, lorsque le contrat est conclu hors établissement ou à distance, d'un <strong>droit de rétractation de quatorze (14) jours</strong> à compter de la conclusion du contrat, sans avoir à motiver sa décision ni à supporter de pénalité.</p>
+                <p>Ce droit s'exerce par toute déclaration écrite dénuée d'ambiguïté adressée à contact@zenixweb.fr. Le formulaire type de rétractation est joint au devis et communiqué sur simple demande.</p>
+                <p><strong>Exécution anticipée.</strong> Le Client qui souhaite que les prestations débutent avant l'expiration de ce délai en fait la demande expresse, sur le devis ou par écrit, et reconnaît qu'il perd son droit de rétractation une fois la prestation pleinement exécutée. Si le Client se rétracte alors que l'exécution a commencé à sa demande, il règle le montant correspondant aux prestations effectivement fournies au jour de la rétractation, au prorata de leur avancement.</p>
+                <p>À défaut de demande expresse d'exécution anticipée, le Prestataire ne débute les travaux qu'à l'expiration du délai de quatorze (14) jours.</p>
               </Article>
             </div>
           </div>
@@ -147,7 +173,7 @@ const TermsOfService = () => {
             <div className="space-y-6 text-slate-700">
               <Article title="Article 16 — Hébergement et maintenance (Abonnements)">
                 <ul className="list-disc list-inside ml-4 space-y-1">
-                  <li><strong>Infrastructure :</strong> l'hébergement est assuré sur des serveurs détenus et administrés par le Prestataire, situés en France. Le Prestataire a la qualité d'hébergeur au sens de la loi n° 2004-575 (LCEN).</li>
+                  <li><strong>Infrastructure :</strong> l'hébergement est assuré sur des serveurs détenus et administrés par le Prestataire, situés en France. Le Prestataire a la qualité d'hébergeur au sens de la loi n° 2004-575 (LCEN). Le trafic transite par Cloudflare, Inc. (États-Unis), qui assure la protection contre les attaques par déni de service et le pare-feu applicatif ; ce recours constitue une sous-traitance ultérieure au sens de l'article 21, encadrée par les clauses contractuelles types de la Commission européenne.</li>
                   <li><strong>Durée et reconduction :</strong> les Abonnements mensuels sont conclus sans engagement et reconduits tacitement chaque mois. L'option annuelle est conclue avec engagement de douze (12) mois.</li>
                   <li><strong>Résiliation :</strong> l'Abonnement est résiliable par écrit moyennant un préavis de trente (30) jours, avec effet à la fin de la période en cours (aucun remboursement au prorata).</li>
                   <li><strong>Disponibilité :</strong> le Prestataire vise une disponibilité de 99 % (obligation de moyens), hors opérations de maintenance planifiées, cas de force majeure et incidents imputables à un tiers.</li>
@@ -177,7 +203,11 @@ const TermsOfService = () => {
                 <p>Le Prestataire accorde une garantie contractuelle gratuite d'un (1) mois à compter de la livraison, couvrant les bugs, erreurs d'affichage et dysfonctionnements résultant d'un défaut de développement. Sont exclus : les modifications réalisées par le Client ou un tiers, les problèmes liés aux contenus fournis par le Client, à un hébergement tiers ou à des services tiers mal configurés. La garantie cesse à l'expiration du mois ou au transfert du Site vers un hébergement tiers. Au-delà, le support est assuré dans le cadre d'un Abonnement de maintenance ou facturé sur devis.</p>
               </Article>
               <Article title="Article 21 — Données personnelles (RGPD)">
-                <p>Lorsqu'il traite des données personnelles pour le compte du Client, le Prestataire agit en qualité de sous-traitant au sens de l'article 28 du RGPD : il traite les données sur instructions documentées du Client, veille à leur sécurité et à leur confidentialité, n'a recours à des sous-traitants ultérieurs qu'avec information du Client, et supprime ou restitue les données en fin de contrat. Le Client, responsable de traitement, garantit la licéité des traitements et assure ses propres obligations (mentions légales, consentements, cookies). Les données propres du Client (facturation, contact) sont traitées par le Prestataire en qualité de responsable et conservées pour la durée légale.</p>
+                <p>Lorsqu'il traite des données personnelles pour le compte du Client, le Prestataire agit en qualité de <strong>sous-traitant</strong> au sens de l'article 28 du RGPD. Il traite les données sur instructions documentées du Client, veille à leur sécurité et à leur confidentialité, met en œuvre les mesures techniques et organisationnelles de l'article 32, assiste le Client dans le traitement des demandes d'exercice de droits, lui notifie toute violation de données dans les meilleurs délais, et supprime ou restitue les données en fin de contrat au choix du Client.</p>
+                <p><strong>Sous-traitance ultérieure.</strong> Le Client donne au Prestataire une autorisation générale et écrite de recourir à des sous-traitants ultérieurs pour l'exécution des prestations d'hébergement et de maintenance. Le Prestataire tient à jour la liste de ces sous-traitants, la communique au Client sur simple demande et l'informe préalablement, avec un préavis de trente (30) jours, de tout ajout ou remplacement. Le Client dispose de ce même délai pour s'y opposer par écrit pour un motif légitime tenant à la protection des données ; à défaut d'accord entre les Parties, le Client peut résilier les prestations concernées sans pénalité. Le Prestataire demeure pleinement responsable, à l'égard du Client, de l'exécution par ses sous-traitants ultérieurs des obligations du présent article.</p>
+                <p><strong>Audit.</strong> Le Prestataire met à disposition du Client, sur demande écrite et dans un délai raisonnable, les informations nécessaires pour démontrer le respect des obligations du présent article.</p>
+                <p>Le Client, responsable de traitement, garantit la licéité des traitements qu'il met en œuvre et assure ses propres obligations (mentions légales, information des personnes, consentements, cookies). Les données propres du Client (facturation, contact) sont traitées par le Prestataire en qualité de responsable de traitement et conservées pour la durée légale.</p>
+                <p>Les modalités détaillées du traitement — catégories de données et de personnes concernées, nature, finalité et durée — font l'objet d'une annexe au contrat d'hébergement, qui vaut accord de sous-traitance au sens de l'article 28.3 du RGPD.</p>
               </Article>
               <Article title="Article 22 — Confidentialité">
                 <p>Chaque Partie s'engage à ne pas divulguer les informations confidentielles échangées, pendant la durée du contrat et pendant trois (3) ans après son terme, sauf information déjà publique ou obligation légale de divulgation.</p>
@@ -196,7 +226,7 @@ const TermsOfService = () => {
                 <p>Aucune des Parties ne pourra être tenue responsable d'un manquement résultant d'un cas de force majeure au sens de l'article 1218 du Code civil (notamment catastrophe naturelle, incendie, panne généralisée, défaillance d'un fournisseur d'accès ou d'énergie). Les obligations sont suspendues pendant la durée de l'événement ; s'il se prolonge au-delà de trente (30) jours, le contrat pourra être résilié de plein droit.</p>
               </Article>
               <Article title="Article 25 — Sous-traitance">
-                <p>Le Prestataire se réserve la faculté de confier, sous sa responsabilité, tout ou partie des prestations à des sous-traitants de son choix.</p>
+                <p>Le Prestataire se réserve la faculté de confier, sous sa responsabilité et sans que cela ne modifie ses engagements envers le Client, tout ou partie des prestations à des sous-traitants de son choix. Lorsque cette sous-traitance emporte un traitement de données personnelles pour le compte du Client, elle s'exerce dans les conditions et sous les garanties prévues à l'article 21, qui prévaut sur le présent article.</p>
               </Article>
               <Article title="Article 26 — Résiliation">
                 <p>En cas de manquement grave de l'une des Parties, non réparé dans un délai de quinze (15) jours après mise en demeure restée sans effet, l'autre Partie pourra résilier le contrat de plein droit. En cas de résiliation à l'initiative du Client sans faute du Prestataire, l'acompte reste acquis au Prestataire et les prestations déjà réalisées sont facturées au prorata de leur avancement.</p>
@@ -211,7 +241,16 @@ const TermsOfService = () => {
                 <p>Les CGV applicables sont celles en vigueur à la date de la commande. Pour les Abonnements, toute modification des CGV est notifiée moyennant un préavis d'un (1) mois ; le refus du Client vaut demande de résiliation à l'échéance.</p>
               </Article>
               <Article title="Article 30 — Droit applicable et litiges">
-                <p>Les présentes CGV sont soumises au droit français. En cas de litige, les Parties s'efforceront de trouver une solution amiable. À défaut d'accord dans un délai raisonnable, le litige sera porté devant les tribunaux compétents du ressort de Lyon, y compris en cas de pluralité de défendeurs ou d'appel en garantie.</p>
+                <p>Les présentes CGV sont soumises au droit français. En cas de litige, les Parties s'efforceront de trouver une solution amiable avant toute action contentieuse.</p>
+                {/* La clause attributive de compétence au ressort de Lyon a été
+                    restreinte. L'article 48 du Code de procédure civile ne la rend
+                    valable qu'entre commerçants ; or l'article 1er ouvre les CGV
+                    aux associations et aux professions libérales, qui n'ont pas
+                    cette qualité. La clause était donc nulle à leur égard, tout en
+                    laissant croire le contraire. Elle est désormais limitée aux
+                    seuls cas où la loi l'autorise. */}
+                <p>À défaut d'accord dans un délai raisonnable, et <strong>lorsque les deux Parties ont la qualité de commerçant</strong> au sens de l'article 48 du Code de procédure civile, compétence est attribuée aux tribunaux du ressort de Lyon, y compris en cas de pluralité de défendeurs ou d'appel en garantie.</p>
+                <p>Dans tous les autres cas — notamment lorsque le Client est une association, une profession libérale ou tout autre professionnel non commerçant — les règles de compétence de droit commun s'appliquent.</p>
               </Article>
               <Article title="Article 31 — Acceptation">
                 <p>L'acceptation du devis et/ou le paiement de l'acompte vaut acceptation pleine et entière des présentes Conditions Générales de Vente et de Prestation de Services.</p>

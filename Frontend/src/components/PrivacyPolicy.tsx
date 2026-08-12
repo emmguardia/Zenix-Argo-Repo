@@ -1,4 +1,6 @@
 import { useNavigate } from 'react-router-dom';
+import ProtectedValue from './ProtectedValue';
+import { CONTACT_PHONE_DISPLAY, CONTACT_PHONE_HREF, CONTACT_ADDRESS_FULL } from '../config/contact';
 const PrivacyPolicy = () => {
   const navigate = useNavigate();
   return (
@@ -16,9 +18,20 @@ const PrivacyPolicy = () => {
             <h2 className="text-2xl font-bold text-slate-800 mb-6">Responsable du traitement</h2>
             <div className="space-y-3 text-slate-700">
               <p><strong>Nom :</strong> Enzo Monnet-Mata</p>
-              <p><strong>Adresse :</strong> 545 chemin des Vignerons, 69830 Saint-Georges-de-Reneins, France</p>
+              {/* Coordonnées complètes du responsable de traitement : l'article
+                  13.1.a du RGPD impose de fournir son identité ET ses
+                  coordonnées. Affichage protégé, voir src/config/contact.ts. */}
+              <p><strong>Adresse :</strong> <ProtectedValue encoded={CONTACT_ADDRESS_FULL} /></p>
               <p><strong>SIRET :</strong> 991 413 600 00016</p>
               <p><strong>Email :</strong> contact@zenixweb.fr</p>
+              <p>
+                <strong>Téléphone :</strong>{' '}
+                <ProtectedValue
+                  encoded={CONTACT_PHONE_DISPLAY}
+                  hrefEncoded={CONTACT_PHONE_HREF}
+                  className="text-blue-600 hover:underline"
+                />
+              </p>
               <p><strong>Statut :</strong> Entrepreneur Individuel (Micro-Entrepreneur), exerçant sous l'enseigne Zenix Web</p>
             </div>
           </div>
@@ -28,13 +41,18 @@ const PrivacyPolicy = () => {
               <div>
                 <h3 className="text-lg font-semibold text-slate-800 mb-2">Via le formulaire de contact :</h3>
                 <ul className="list-disc list-inside space-y-1 ml-4">
-                  <li>Nom complet</li>
-                  <li>Adresse email</li>
-                  <li>Numéro de téléphone (optionnel)</li>
-                  <li>Type de projet</li>
-                  <li>Budget estimé</li>
-                  <li>Délai souhaité</li>
-                  <li>Message détaillé</li>
+                  {/* Le téléphone était annoncé « optionnel » alors que le champ
+                      est `required` côté formulaire ET rejeté en 400 par le
+                      backend s'il manque : le document décrivait une collecte
+                      différente de la réalité. */}
+                  <li>Nom complet <em>(obligatoire)</em></li>
+                  <li>Adresse email <em>(obligatoire)</em></li>
+                  <li>Numéro de téléphone <em>(obligatoire)</em></li>
+                  <li>Type de projet <em>(obligatoire)</em></li>
+                  <li>Délai souhaité <em>(obligatoire)</em></li>
+                  <li>Message détaillé <em>(obligatoire)</em></li>
+                  <li>Nom de l'entreprise <em>(facultatif)</em></li>
+                  <li>Budget estimé <em>(facultatif)</em></li>
                 </ul>
               </div>
               <div>
@@ -101,20 +119,101 @@ const PrivacyPolicy = () => {
             </div>
           </div>
           <div className="bg-slate-50 rounded-lg p-8 mb-8">
-            <h2 className="text-2xl font-bold text-slate-800 mb-6">Destinataires des données</h2>
-            <div className="space-y-3 text-slate-700">
-              <p>Vos données personnelles sont accessibles uniquement à :</p>
+            <h2 className="text-2xl font-bold text-slate-800 mb-6">Destinataires et sous-traitants</h2>
+            <div className="space-y-4 text-slate-700">
+              {/* Cette section listait « les prestataires techniques » sans en
+                  nommer aucun. L'article 13.1.e du RGPD impose d'indiquer les
+                  destinataires ou les catégories de destinataires ; nommer les
+                  sous-traitants réels est la seule façon de rendre l'information
+                  vérifiable. */}
+              <p>Vos données personnelles sont accessibles à :</p>
               <ul className="list-disc list-inside space-y-1 ml-4">
-                <li>Enzo Monnet-Mata (responsable du traitement)</li>
-                <li>Les prestataires techniques (hébergement, maintenance)</li>
-                <li>Les autorités compétentes si requis par la loi</li>
+                <li>Enzo Monnet-Mata (responsable du traitement), seul à consulter le contenu de vos demandes</li>
+                <li>Les autorités compétentes, sur réquisition et dans le cadre prévu par la loi</li>
               </ul>
+
+              <p className="pt-2">
+                Les outils qui interviennent dans le traitement sont les suivants. Trois d'entre eux sont
+                auto-hébergés sur notre propre infrastructure en France : ils ne constituent donc pas des
+                transferts vers un tiers.
+              </p>
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm border-collapse">
+                  <thead>
+                    <tr className="bg-slate-100 text-left">
+                      <th className="p-3 border border-slate-200">Outil</th>
+                      <th className="p-3 border border-slate-200">Rôle</th>
+                      <th className="p-3 border border-slate-200">Localisation</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td className="p-3 border border-slate-200"><strong>Umami</strong></td>
+                      <td className="p-3 border border-slate-200">Mesure d'audience, sans cookie</td>
+                      <td className="p-3 border border-slate-200">Auto-hébergé, France</td>
+                    </tr>
+                    <tr>
+                      <td className="p-3 border border-slate-200"><strong>Service d'emails interne</strong></td>
+                      <td className="p-3 border border-slate-200">Acheminement des messages du formulaire de contact</td>
+                      <td className="p-3 border border-slate-200">Auto-hébergé, France</td>
+                    </tr>
+                    <tr>
+                      <td className="p-3 border border-slate-200"><strong>Gotify</strong></td>
+                      <td className="p-3 border border-slate-200">Notification interne d'une nouvelle demande</td>
+                      <td className="p-3 border border-slate-200">Auto-hébergé, France</td>
+                    </tr>
+                    <tr className="bg-amber-50">
+                      <td className="p-3 border border-slate-200"><strong>Cloudflare, Inc.</strong></td>
+                      <td className="p-3 border border-slate-200">Répartition de charge, protection anti-DDoS, pare-feu applicatif</td>
+                      <td className="p-3 border border-slate-200">Société de droit américain, serveurs européens pour la France</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
               <p className="mt-4">
-                <strong>Important :</strong> Vos données ne sont jamais vendues, louées ou transmises 
-                à des tiers à des fins commerciales.
+                <strong>Important :</strong> vos données ne sont jamais vendues, louées ou transmises
+                à des tiers à des fins commerciales. Aucun réseau publicitaire, aucun traceur tiers,
+                aucun outil d'analyse externe n'est présent sur ce site.
               </p>
             </div>
           </div>
+          {/* Section absente jusqu'ici, alors que l'article 13.1.f du RGPD la
+              rend obligatoire dès qu'un transfert hors UE existe — et il en
+              existe un, structurel, dès lors que Cloudflare est en frontal.
+              Le site affirmait au contraire « aucune transmission hors UE », ce
+              que le fonctionnement réel contredisait. */}
+          <div className="bg-amber-50 border border-amber-200 rounded-lg p-8 mb-8">
+            <h2 className="text-2xl font-bold text-slate-800 mb-6">Transferts hors de l'Union européenne</h2>
+            <div className="space-y-3 text-slate-700">
+              <p>
+                Nous avons fait le choix d'auto-héberger l'essentiel de notre infrastructure en France :
+                les serveurs, la mesure d'audience, l'acheminement des emails et jusqu'aux polices de
+                caractères du site. Une exception subsiste, et nous préférons l'annoncer clairement plutôt
+                que de la passer sous silence.
+              </p>
+              <p>
+                <strong>Cloudflare, Inc.</strong> (États-Unis) assure la protection du site contre les
+                attaques par déni de service et filtre le trafic malveillant. À ce titre, l'adresse IP et
+                les données de connexion de chaque visiteur transitent par son réseau. Les serveurs
+                sollicités pour le trafic français sont situés en Europe, mais la société relève du droit
+                des États-Unis.
+              </p>
+              <p>
+                Ce transfert est encadré par les <strong>clauses contractuelles types</strong> adoptées par
+                la Commission européenne (décision d'exécution UE 2021/914), intégrées à l'accord de
+                traitement des données conclu avec Cloudflare. Vous pouvez en obtenir une copie en écrivant
+                à <a href="mailto:contact@zenixweb.fr" className="text-blue-600 hover:underline">contact@zenixweb.fr</a>.
+              </p>
+              <p>
+                <strong>Aucun autre transfert hors Union européenne n'a lieu.</strong> En particulier, ce
+                site ne charge aucune police, aucun script et aucune image depuis un service tiers : la
+                police Inter, autrefois appelée depuis Google Fonts — ce qui transmettait l'adresse IP de
+                chaque visiteur à Google — est désormais servie depuis nos propres serveurs.
+              </p>
+            </div>
+          </div>
+
           <div className="bg-slate-50 rounded-lg p-8 mb-8">
             <h2 className="text-2xl font-bold text-slate-800 mb-6">Vos droits</h2>
             <div className="space-y-3 text-slate-700">
@@ -196,7 +295,7 @@ const PrivacyPolicy = () => {
                   quotidiennement, ce qui vide la mention de tout sens et n'est
                   pas défendable pour un document opposable.
                   À modifier à la main lors d'une vraie révision. */}
-              <p><strong>Dernière mise à jour :</strong> 30 juillet 2026</p>
+              <p><strong>Dernière mise à jour :</strong> 12 août 2026</p>
             </div>
           </div>
         </div>

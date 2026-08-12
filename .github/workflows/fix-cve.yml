@@ -1,0 +1,320 @@
+# « Corriger les CVE et redéployer » — déclenché À LA MAIN depuis l'onglet
+# Actions de GitHub. C'est le bouton à cliquer quand un scan signale une CVE.
+#
+# CE QUE ÇA FAIT, EN UN CLIC
+#   1. met à jour les dépendances npm selon la stratégie choisie ;
+#   2. reconstruit les images en retéléchargeant les images de base
+#      (`--pull`), ce qui récupère les correctifs Alpine et Node ;
+#   3. rejoue audit, lint, typecheck et tests ;
+#   4. scanne avec Trivy AVANT toute publication ;
+#   5. ne publie et ne déploie que si tout est propre.
+#
+# POURQUOI UN WORKFLOW SÉPARÉ DU BUILD HABITUEL
+# Une image construite aujourd'hui sans aucune CVE en aura dans deux mois, sans
+# qu'une seule ligne de code ait bougé : les vulnérabilités arrivent par les
+# images de base et les dépendances transitives, pas par vos commits. Rien ne
+# reconstruit tant que vous ne poussez pas. Ce workflow est le rattrapage
+# manuel de ce décalage.
+#
+# POURQUOI TOUT EST FAIT ICI PLUTÔT QUE DE LAISSER build-and-push PRENDRE LE RELAI
+# Un commit poussé par github-actions[bot] avec le GITHUB_TOKEN ne déclenche pas
+# d'autre workflow (protection anti-boucle de GitHub). Se reposer sur le workflow
+# de build aurait donc exigé un Personal Access Token à créer et à faire tourner.
+# Le pipeline est dupliqué ici pour n'avoir aucun secret supplémentaire à gérer.
+
+name: Corriger les CVE et redéployer
+
+on:
+  workflow_dispatch:
+    inputs:
+      strategie:
+        description: "Ampleur de la mise à jour des dépendances"
+        required: true
+        default: patch-et-mineur
+        type: choice
+        options:
+          # Respecte les plages semver déclarées dans package.json.
+          # Couvre l'immense majorité des correctifs de sécurité, sans risque
+          # de rupture d'API.
+          - patch-et-mineur
+          # `pnpm update --latest` : franchit les versions majeures. À utiliser
+          # quand le correctif n'existe que dans une majeure supérieure.
+          # Peut casser le build — c'est justement pour ça que les tests tournent.
+          - majeures-incluses
+          # Ne touche à aucune dépendance : reconstruit seulement les images
+          # depuis des bases fraîches. Le bon choix quand la CVE vient d'Alpine,
+          # de nginx ou de Node, pas d'un paquet npm.
+          - images-de-base-seules
+      deployer:
+        description: "Déployer si tout est propre (décocher pour un essai à blanc)"
+        required: true
+        default: true
+        type: boolean
+
+env:
+  REGISTRY: ghcr.io
+  TRIVY_IMAGE: aquasec/trivy:0.73.0
+  PNPM_VERSION: 10.33.4
+  NODE_VERSION: '26'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: fix-cve-${{ github.ref_name }}
+  cancel-in-progress: false
+
+jobs:
+  corriger:
+    name: Corriger, tester, scanner, déployer
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    permissions:
+      contents: write
+      packages: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      # ── 1. Mise à jour des dépendances ──────────────────────────────────────
+      # `pnpm update` respecte .npmrc, donc minimum-release-age=1440 : aucune
+      # version publiée depuis moins de 24 h n'est retenue, y compris ici.
+      - name: Mettre à jour les dépendances
+        id: maj
+        run: |
+          set -euo pipefail
+          STRAT="${{ inputs.strategie }}"
+          if [ "$STRAT" = "images-de-base-seules" ]; then
+            echo "Stratégie « images-de-base-seules » : aucune dépendance touchée."
+            echo "changed=false" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+
+          FLAGS=""
+          [ "$STRAT" = "majeures-incluses" ] && FLAGS="--latest"
+
+          for dir in Backend Frontend; do
+            echo "::group::$dir — pnpm update $FLAGS"
+            (cd "$dir" && pnpm install --frozen-lockfile && pnpm update $FLAGS)
+            echo "::endgroup::"
+          done
+
+          if git diff --quiet -- '*/package.json' '*/pnpm-lock.yaml'; then
+            echo "Aucune mise à jour disponible."
+            echo "changed=false" >> $GITHUB_OUTPUT
+          else
+            echo "changed=true" >> $GITHUB_OUTPUT
+            {
+              echo "### Dépendances mises à jour"
+              echo '```diff'
+              git diff --stat -- '*/package.json' '*/pnpm-lock.yaml'
+              echo '```'
+            } >> $GITHUB_STEP_SUMMARY
+          fi
+
+      # ── 2. Contrôles qualité et sécurité ────────────────────────────────────
+      - name: Backend – install
+        working-directory: Backend
+        run: pnpm install --no-frozen-lockfile
+
+      - name: Backend – audit (prod, high+)
+        working-directory: Backend
+        run: pnpm audit --prod --audit-level high
+
+      - name: Backend – tests
+        working-directory: Backend
+        run: pnpm run --if-present test
+
+      - name: Frontend – install
+        working-directory: Frontend
+        run: pnpm install --no-frozen-lockfile
+
+      - name: Frontend – audit (prod, high+)
+        working-directory: Frontend
+        run: pnpm audit --prod --audit-level high
+
+      - name: Frontend – lint
+        working-directory: Frontend
+        run: pnpm lint
+
+      - name: Frontend – typecheck
+        working-directory: Frontend
+        run: pnpm typecheck
+
+      - name: Frontend – tests
+        working-directory: Frontend
+        run: pnpm run --if-present test
+
+      # ── 3. Version et build des images ──────────────────────────────────────
+      - name: Bump version
+        id: tag
+        run: |
+          set -euo pipefail
+          CONTENT=$(cat version.txt | tr -d '\r\n ')
+          MAJOR=$(echo "$CONTENT" | cut -d. -f1)
+          MINOR=$(echo "$CONTENT" | cut -d. -f2)
+          PATCH=$(echo "$CONTENT" | cut -d. -f3)
+          if ! [[ "$MAJOR" =~ ^[0-9]+$ ]] || ! [[ "$MINOR" =~ ^[0-9]+$ ]] || ! [[ "$PATCH" =~ ^[0-9]+$ ]]; then
+            echo "version.txt invalide: $CONTENT (attendu X.Y.Z)"; exit 1
+          fi
+          if [ "$PATCH" -lt 9 ]; then PATCH=$((PATCH + 1)); else PATCH=0; MINOR=$((MINOR + 1)); fi
+          NEW_VERSION="${MAJOR}.${MINOR}.${PATCH}"
+          echo "$NEW_VERSION" > version.txt
+          echo "tag=v${NEW_VERSION}" >> $GITHUB_OUTPUT
+
+      - name: Frontend – build (dist/ requis par le Dockerfile)
+        working-directory: Frontend
+        env:
+          VITE_BACKEND_URL: /api
+        run: pnpm run build
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      # `pull: true` est le cœur du sujet quand la CVE vient de l'image de base :
+      # sans lui, Docker réutiliserait la couche node/nginx en cache, correctifs
+      # Alpine compris… c'est-à-dire non compris.
+      - name: Build backend (local — pour scan Trivy)
+        uses: docker/build-push-action@v7
+        with:
+          context: ./Backend
+          load: true
+          push: false
+          tags: scan-backend:latest
+          pull: true
+          no-cache: true
+
+      - name: Build frontend (local — pour scan Trivy)
+        uses: docker/build-push-action@v7
+        with:
+          context: ./Frontend
+          load: true
+          push: false
+          tags: scan-frontend:latest
+          pull: true
+          no-cache: true
+
+      # ── 4. Scan Trivy AVANT publication ─────────────────────────────────────
+      # En cas d'échec, le rapport complet est écrit dans le résumé du job pour
+      # être lisible sans dérouler les logs.
+      - name: Trivy — backend et frontend
+        id: trivy
+        run: |
+          set -uo pipefail
+          FAIL=0
+          for img in scan-backend scan-frontend; do
+            echo "::group::Trivy $img"
+            docker run --rm -v /var/run/docker.sock:/var/run/docker.sock \
+              ${{ env.TRIVY_IMAGE }} image --exit-code 1 --severity CRITICAL,HIGH \
+              --ignore-unfixed --skip-version-check --format table \
+              "$img:latest" | tee "/tmp/$img.txt" || FAIL=1
+            echo "::endgroup::"
+          done
+
+          {
+            echo "### Scan Trivy"
+            if [ "$FAIL" = "0" ]; then
+              echo "Aucune vulnérabilité CRITICAL ou HIGH corrigeable."
+            else
+              echo "**Vulnérabilités restantes — publication annulée.**"
+              echo '```'
+              grep -hE "CRITICAL|HIGH" /tmp/scan-*.txt | head -40 || true
+              echo '```'
+              echo "Relancez en « majeures-incluses » si le correctif exige une version majeure."
+            fi
+          } >> $GITHUB_STEP_SUMMARY
+
+          exit "$FAIL"
+
+      # ── 5. Publication et déploiement ───────────────────────────────────────
+      - name: Log in to GHCR
+        if: ${{ inputs.deployer }}
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Push backend
+        if: ${{ inputs.deployer }}
+        id: push-backend
+        uses: docker/build-push-action@v7
+        with:
+          context: ./Backend
+          push: true
+          tags: ${{ env.REGISTRY }}/${{ github.repository_owner }}/zenix-backend:${{ steps.tag.outputs.tag }}
+          pull: true
+
+      - name: Push frontend
+        if: ${{ inputs.deployer }}
+        id: push-frontend
+        uses: docker/build-push-action@v7
+        with:
+          context: ./Frontend
+          push: true
+          tags: ${{ env.REGISTRY }}/${{ github.repository_owner }}/zenix-front:${{ steps.tag.outputs.tag }}
+          pull: true
+
+      # Le pin du digest est ce qu'ArgoCD observe : c'est cette étape, et pas le
+      # push GHCR, qui déclenche réellement le déploiement.
+      - name: Pin digest + commit
+        if: ${{ inputs.deployer }}
+        run: |
+          set -euo pipefail
+          TAG="${{ steps.tag.outputs.tag }}"
+          REG="${{ env.REGISTRY }}"; OWNER="${{ github.repository_owner }}"
+          DB="${{ steps.push-backend.outputs.digest }}"
+          DF="${{ steps.push-frontend.outputs.digest }}"
+
+          BACKEND_IMAGE="${REG}/${OWNER}/zenix-backend@${DB:-}"
+          [ -z "${DB:-}" ] && BACKEND_IMAGE="${REG}/${OWNER}/zenix-backend:${TAG}"
+          FRONTEND_IMAGE="${REG}/${OWNER}/zenix-front@${DF:-}"
+          [ -z "${DF:-}" ] && FRONTEND_IMAGE="${REG}/${OWNER}/zenix-front:${TAG}"
+
+          VALUES_PATH="charts/zenix/values.yaml"
+          sed -i "s|  image: ghcr.io/.*zenix-backend.*|  image: ${BACKEND_IMAGE}|" "$VALUES_PATH"
+          sed -i "s|  image: ghcr.io/.*zenix-front.*|  image: ${FRONTEND_IMAGE}|" "$VALUES_PATH"
+
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add version.txt "$VALUES_PATH" Backend/package.json Backend/pnpm-lock.yaml \
+                  Frontend/package.json Frontend/pnpm-lock.yaml 2>/dev/null || true
+
+          if git diff --staged --quiet; then
+            echo "Rien à commiter."
+          else
+            git commit -m "fix(sécurité): correction CVE et rebuild $TAG [skip ci]"
+            git pull --rebase origin ${{ github.ref_name }}
+            git push origin ${{ github.ref_name }}
+          fi
+
+          {
+            echo "### Déploiement"
+            echo "- Version : \`$TAG\`"
+            echo "- Backend : \`$BACKEND_IMAGE\`"
+            echo "- Frontend : \`$FRONTEND_IMAGE\`"
+            echo ""
+            echo "ArgoCD synchronise le cluster dans les minutes qui suivent."
+          } >> $GITHUB_STEP_SUMMARY
+
+      - name: Essai à blanc — rien n'a été publié
+        if: ${{ !inputs.deployer }}
+        run: |
+          {
+            echo "### Essai à blanc"
+            echo "Tests et scan Trivy passés. Aucune image publiée, aucun déploiement."
+            echo "Relancez avec « deployer » coché pour appliquer."
+          } >> $GITHUB_STEP_SUMMARY

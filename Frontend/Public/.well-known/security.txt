@@ -1,0 +1,8 @@
+# Politique de divulgation des vulnérabilités — Zenix Web
+# RFC 9116. Détail complet : https://github.com/emmguardia/Zenix-Argo-Repo/blob/main/SECURITY.md
+
+Contact: mailto:contact@zenixweb.fr
+Expires: 2027-08-12T00:00:00.000Z
+Preferred-Languages: fr, en
+Canonical: https://zenixweb.fr/.well-known/security.txt
+Policy: https://github.com/emmguardia/Zenix-Argo-Repo/blob/main/SECURITY.md

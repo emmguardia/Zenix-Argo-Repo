@@ -7,13 +7,27 @@ metadata:
     {{- include "zenix.labels" . | nindent 4 }}
 spec:
   headers:
+    # ATTENTION — dérive connue : Cloudflare pose son propre HSTS en bordure et
+    # écrase celui-ci. La production sert « max-age=15552000; includeSubDomains »
+    # (6 mois, sans preload), pas les valeurs ci-dessous. Pour obtenir réellement
+    # un an + preload, le réglage est dans Cloudflare (SSL/TLS → Edge
+    # Certificates → HSTS), pas ici.
+    # Avant d'activer `preload` : il est quasi irréversible et couvre TOUS les
+    # sous-domaines de zenixweb.fr (umami, app, et tout futur sous-domaine).
+    # Chacun devra être joignable en HTTPS, sans exception.
     stsSeconds: 31536000
     stsIncludeSubdomains: true
     stsPreload: true
     contentTypeNosniff: true
-    customFrameOptionsValue: "SAMEORIGIN"
-    browserXssFilter: true
+    # DENY et non SAMEORIGIN : le site ne contient aucune iframe et n'est
+    # embarqué nulle part. Aligné sur `frame-ancestors 'none'` de la CSP nginx.
+    customFrameOptionsValue: "DENY"
+    # `browserXssFilter` a été retiré : il produisait « X-XSS-Protection: 1;
+    # mode=block », un en-tête déprécié que les navigateurs modernes ignorent et
+    # dont les implémentations historiques ont elles-mêmes introduit des failles.
+    # La recommandation actuelle est de ne pas l'envoyer — la CSP fait le travail.
     referrerPolicy: "strict-origin-when-cross-origin"
     customResponseHeaders:
       Permissions-Policy: "geolocation=(), microphone=(), camera=()"
       X-Powered-By: ""
+      X-XSS-Protection: ""

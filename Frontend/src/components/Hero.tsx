@@ -27,7 +27,7 @@ const Hero = () => {
             }`}
           >
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white mb-4 leading-tight">
-              Développement Web Professionnel à Lyon | Création de Sites Web Modernes
+              Création de sites web en Beaujolais — Villefranche-sur-Saône et Lyon
             </h1>
             {}
             <div className="text-2xl sm:text-3xl lg:text-4xl font-semibold text-blue-200 mb-6 leading-tight">

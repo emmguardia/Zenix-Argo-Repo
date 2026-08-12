@@ -1,7 +1,9 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Mail, MapPin, Calendar, User, GraduationCap, Shield } from 'lucide-react';
+import { Mail, MapPin, Calendar, User, GraduationCap, Shield, Phone } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { trackEvent } from '../utils/analytics';
+import ProtectedValue from './ProtectedValue';
+import { CONTACT_PHONE_DISPLAY, CONTACT_PHONE_HREF } from '../config/contact';
 const ContactPage = () => {
   const formStartTracked = useRef(false);
   const formRef = useRef<HTMLFormElement>(null);
@@ -36,9 +38,22 @@ const ContactPage = () => {
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
 
+  /**
+   * Neutralise l'injection de balises et borne la longueur.
+   *
+   * Les guillemets et apostrophes ne sont plus retirés. Ils l'étaient
+   * auparavant, ce qui mutilait les données légitimes : « O'Brien » arrivait en
+   * « OBrien », « L'Atelier d'Émile » en « LAtelier dÉmile ». En français,
+   * l'apostrophe est une lettre du quotidien, pas une charge utile.
+   *
+   * `<` et `>` restent filtrés : les valeurs sont interpolées dans un gabarit
+   * d'email HTML côté email-service, dont on ne maîtrise pas l'échappement
+   * depuis ce dépôt. Tant que ce n'est pas vérifié, on garde cette barrière —
+   * elle ne coûte rien, aucun champ du formulaire n'ayant besoin de chevrons.
+   */
   const sanitizeInput = (value: string, maxLength: number = 1000): string => {
     return value
-      .replace(/[<>"']/g, '')
+      .replace(/[<>]/g, '')
       .replace(/\r\n/g, '\n')
       .trim()
       .substring(0, maxLength);
@@ -181,7 +196,7 @@ const ContactPage = () => {
           <div className="h-1 w-20 bg-blue-600 mx-auto mb-6"></div>
           <p className="text-lg text-slate-600 max-w-2xl mx-auto">
             Décrivez votre projet en quelques lignes : je vous réponds sous 24 heures avec un devis
-            personnalisé et sans engagement. Site vitrine, e-commerce ou landing page, à Lyon et partout en France.
+            personnalisé et sans engagement. Site vitrine, e-commerce ou landing page, en Beaujolais, à Lyon et partout en France.
           </p>
         </div>
         <div className="grid lg:grid-cols-2 gap-12 max-w-6xl mx-auto">
@@ -219,7 +234,7 @@ const ContactPage = () => {
                 </div>
                 <div className="flex items-center justify-center text-slate-600">
                   <MapPin className="w-4 h-4 mr-2 text-amber-600" />
-                  Lyon, France
+                  Saint-Georges-de-Reneins, Beaujolais
                 </div>
               </div>
             </div>
@@ -261,6 +276,20 @@ const ContactPage = () => {
                     contact@zenixweb.fr
                   </a>
                 </div>
+                {/* Beaucoup de TPE appellent plutôt qu'elles n'écrivent : ne pas
+                    proposer de numéro sur la page de devis coûte des conversions.
+                    Affichage protégé du moissonnage, voir src/config/contact.ts. */}
+                <div
+                  className="flex items-center"
+                  onClick={() => trackEvent('contact_click', { source: 'contact_page', method: 'phone' })}
+                >
+                  <Phone className="w-5 h-5 text-blue-600 mr-3" />
+                  <ProtectedValue
+                    encoded={CONTACT_PHONE_DISPLAY}
+                    hrefEncoded={CONTACT_PHONE_HREF}
+                    className="text-slate-600 hover:text-blue-600"
+                  />
+                </div>
               </div>
             </div>
           </div>
@@ -295,7 +324,9 @@ const ContactPage = () => {
                     id="name"
                     required
                     value={formData.name}
-                    onChange={(e) => setFormData({ ...formData, name: e.target.value.replace(/[<>"']/g, '') })}
+                    // Seuls les chevrons sont filtrés à la frappe : retirer aussi
+                    // l'apostrophe rendait « O'Brien » impossible à saisir.
+                    onChange={(e) => setFormData({ ...formData, name: e.target.value.replace(/[<>]/g, '') })}
                     maxLength={100}
                     className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     placeholder="Votre nom"
@@ -341,7 +372,7 @@ const ContactPage = () => {
                     type="text"
                     id="company"
                     value={formData.company}
-                    onChange={(e) => setFormData({ ...formData, company: e.target.value.replace(/[<>"']/g, '') })}
+                    onChange={(e) => setFormData({ ...formData, company: e.target.value.replace(/[<>]/g, '') })}
                     maxLength={100}
                     className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     placeholder="Nom de votre entreprise"
@@ -367,7 +398,7 @@ const ContactPage = () => {
                   <option value="refonte">Refonte (Site Vitrine ou Landing Page)</option>
                   <option value="optimisation-seo">Optimisation SEO</option>
                   <option value="support-technique">Support technique</option>
-                  <option value="autre">Autre project</option>
+                  <option value="autre">Autre projet</option>
                 </select>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -407,7 +438,7 @@ const ContactPage = () => {
                     <option value="">Sélectionnez un délai</option>
                     <option value="urgent">Rapide (4-6 jours)</option>
                     <option value="rapide">Normal (7 jours)</option>
-                    <option value="normal">Detendu (2 semaines tarif réduit)</option>
+                    <option value="normal">Détendu (2 semaines tarif réduit)</option>
                     <option value="flexible">Pas pressé (1 mois tarif réduit)</option>
                   </select>
                 </div>
@@ -432,6 +463,36 @@ const ContactPage = () => {
                   {error}
                 </div>
               )}
+
+              {/* Information RGPD (articles 13 et 14) — obligatoire AU MOMENT de
+                  la collecte. Le formulaire n'en portait aucune : avoir une
+                  politique de confidentialité atteignable depuis le pied de page
+                  ne suffit pas, rien ne la rattachait à cette collecte.
+                  Pas de case à cocher : la base légale est l'intérêt légitime à
+                  répondre à une demande entrante, pas le consentement — une case
+                  laisserait croire le contraire et créerait un consentement
+                  factice, retirable, pour un traitement qui n'en dépend pas.
+                  Le lien s'ouvre dans un onglet pour ne pas vider le formulaire. */}
+              <p className="text-xs text-slate-500 leading-relaxed">
+                Les informations saisies sont utilisées uniquement pour répondre à votre demande et
+                établir un devis. Elles sont destinées à Enzo Monnet-Mata (Zenix Web), responsable du
+                traitement, et conservées 3 ans après notre dernier échange. Vous disposez d'un droit
+                d'accès, de rectification, d'effacement, d'opposition et de portabilité, à exercer à{' '}
+                <a href="mailto:contact@zenixweb.fr" className="text-blue-600 hover:underline">
+                  contact@zenixweb.fr
+                </a>
+                , ainsi que du droit d'introduire une réclamation auprès de la CNIL. Détail dans la{' '}
+                <a
+                  href="/politique-confidentialite"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-600 hover:underline"
+                >
+                  politique de confidentialité
+                </a>
+                .
+              </p>
+
               <button
                 type="submit"
                 disabled={isSubmitting}

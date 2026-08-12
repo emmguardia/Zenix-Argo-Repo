@@ -65,7 +65,7 @@ const AboutMe = () => {
             <h3 className="text-2xl font-bold text-slate-800 mb-2">Enzo Monnet Mata</h3>
             <p className="text-slate-600 mb-4">Développeur Web & Étudiant Cybersécurité</p>
             <div className="space-y-2 text-sm text-slate-500">
-              <p>📍 Lyon, France</p>
+              <p>📍 Saint-Georges-de-Reneins, Beaujolais</p>
               <p>🎓 Guardia - Cybersécurité</p>
               <p>💻 Auto-Entrepreneur et Développeur Web</p>
             </div>

@@ -1,3 +1,24 @@
+# ATTENTION — CE FICHIER N'EST PAS CELUI QUE SERT LA PRODUCTION.
+#
+# Cloudflare est configuré avec sa fonction « AI Crawl Control » (Content
+# Signals Policy) : il PRÉFIXE le contenu ci-dessous d'un bloc « Cloudflare
+# Managed content » qui pose `Content-Signal: ai-train=no` et un `Disallow: /`
+# sur ClaudeBot, GPTBot, CCBot, Bytespider, Amazonbot, Applebot-Extended,
+# Google-Extended et meta-externalagent.
+#
+# Deux conséquences :
+#   1. Le site est explicitement interdit aux assistants IA. C'est un arbitrage
+#      défendable, mais il doit être conscient — il n'a pas été fait ici.
+#      L'indexation Google classique n'est PAS affectée (Googlebot n'est pas
+#      dans la liste), seules les réponses génératives le sont.
+#   2. Le fichier servi contient alors DEUX groupes `User-agent: *`, celui de
+#      Cloudflare puis celui-ci. Le comportement face à des groupes dupliqués
+#      n'est pas garanti par la spécification : le `Disallow: /confirmation`
+#      ci-dessous peut être ignoré selon le crawler.
+#
+# Le réglage se trouve dans le tableau de bord Cloudflare, pas dans ce dépôt.
+# Vérifier l'état réel avec : curl -s https://zenixweb.fr/robots.txt
+
 User-agent: *
 Allow: /
 
