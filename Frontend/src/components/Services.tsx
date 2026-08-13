@@ -10,11 +10,11 @@ interface ServiceCardProps {
 const ServiceCard = ({ icon, title, description, delayValue }: ServiceCardProps) => {
   return (
     <div className={`bg-white rounded-xl p-6 shadow-lg transition-all hover:shadow-xl hover:scale-105 duration-300 group data-[animate=true]:animate-fadeInUp animate-delay-${delayValue}`} data-animate="false">
-      <div className="bg-blue-600 text-white p-3 rounded-lg inline-flex group-hover:bg-indigo-600 transition-colors duration-300 mb-4">
+      <div className="bg-brand-600 text-white p-3 rounded-lg inline-flex group-hover:bg-brand-600 transition-colors duration-300 mb-4">
         {icon}
       </div>
-      <h3 className="text-xl font-bold mb-3 text-slate-800">{title}</h3>
-      <p className="text-slate-600">{description}</p>
+      <h3 className="text-xl font-bold mb-3 text-ink-900">{title}</h3>
+      <p className="text-ink-600">{description}</p>
     </div>
   );
 };
@@ -80,12 +80,12 @@ const Services = () => {
     },
   ];
   return (
-    <section id="services" className="py-20 bg-slate-50 pt-32" ref={sectionRef}>
+    <section id="services" className="py-20 bg-ink-50 pt-32" ref={sectionRef}>
       <div className="container mx-auto px-6">
         <div className="text-center mb-16">
-          <h2 className="text-3xl font-bold text-slate-800 mb-4">Mes Services</h2>
-          <div className="h-1 w-20 bg-blue-600 mx-auto mb-6"></div>
-          <p className="text-lg text-slate-600 max-w-2xl mx-auto">
+          <h2 className="text-3xl font-bold text-ink-900 mb-4">Mes Services</h2>
+          <div className="h-1 w-20 bg-brand-600 mx-auto mb-6"></div>
+          <p className="text-lg text-ink-600 max-w-2xl mx-auto">
             Des solutions complètes de développement web pour aider votre entreprise à établir une présence en ligne forte.
           </p>
         </div>

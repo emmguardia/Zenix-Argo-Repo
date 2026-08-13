@@ -15,8 +15,6 @@ const PORT = process.env.PORT || 3000;
 const JWT_PRIVATE_KEY_PATH = process.env.JWT_PRIVATE_KEY_PATH || (process.env.NODE_ENV === 'production' ? '/app/secrets/jwt_private_key.pem' : join(__dirname, '..', '..', 'Email-Service', 'secrets', 'jwt_private_key.pem'));
 const EMAIL_SERVICE_URL = process.env.EMAIL_SERVICE_URL || 'http://email-service.email-service.svc.cluster.local:8080';
 const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'enzomonnetmata@gmail.com';
-const GOTIFY_URL = process.env.GOTIFY_URL || '';
-const GOTIFY_TOKEN = process.env.GOTIFY_TOKEN || '';
 
 app.use(cors({
   origin: process.env.ALLOWED_ORIGINS ? process.env.ALLOWED_ORIGINS.split(',') : ['https://zenixweb.fr', 'https://www.zenixweb.fr', 'http://localhost:5173'],
@@ -80,30 +78,6 @@ async function sendEmailToService(templateId, toEmail, toName, variables) {
   return await response.json();
 }
 
-async function sendGotifyNotification(title, message, priority = 5) {
-  if (!GOTIFY_URL || !GOTIFY_TOKEN) {
-    console.warn('Gotify not configured (GOTIFY_URL or GOTIFY_TOKEN missing), skipping notification');
-    return;
-  }
-  // Le token passe par l'en-tête X-Gotify-Key, pas par la query string.
-  // En query string il se retrouvait en clair dans les journaux d'accès nginx,
-  // ceux de Traefik, et dans tout outil d'observabilité sur le chemin — un
-  // secret ne doit jamais transiter dans une URL.
-  const url = `${GOTIFY_URL.replace(/\/$/, '')}/message`;
-  const response = await fetch(url, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'X-Gotify-Key': GOTIFY_TOKEN,
-    },
-    body: JSON.stringify({ title, message, priority }),
-  });
-  if (!response.ok) {
-    console.error('Gotify notification failed:', response.status, await response.text());
-    throw new Error(`Gotify HTTP ${response.status}`);
-  }
-}
-
 app.post('/api/send-contact', async (req, res) => {
   try {
     const { from_name, from_email, phone, company, project, budget, timeline, message, website } = req.body;
@@ -132,11 +106,14 @@ app.post('/api/send-contact', async (req, res) => {
       has_timeline: !!timeline
     });
 
-    if (!from_name || !from_email || !phone || !message || !project || !timeline) {
+    // Le téléphone n'est plus exigé : beaucoup de prospects renoncent à un
+    // formulaire qui l'impose, et une adresse email suffit à répondre. Le champ
+    // reste proposé, en facultatif — le formulaire et la politique de
+    // confidentialité doivent rester alignés sur ce point.
+    if (!from_name || !from_email || !message || !project || !timeline) {
       console.error('Missing required fields:', {
         from_name: !!from_name,
         from_email: !!from_email,
-        phone: !!phone,
         message: !!message,
         project: !!project,
         timeline: !!timeline
@@ -154,7 +131,7 @@ app.post('/api/send-contact', async (req, res) => {
     const adminVariables = {
       from_name,
       from_email,
-      phone,
+      phone: phone || 'Non renseigné',
       company: company || '',
       project_label: getProjectLabel(project),
       budget: budget || '',
@@ -176,13 +153,10 @@ app.post('/api/send-contact', async (req, res) => {
       message: 'Votre demande a bien été reçue.'
     });
 
-    try {
-      const gotifyMessage = `${from_name} (${from_email}) - ${getProjectLabel(project)} - ${getTimelineLabel(timeline)}`;
-      await sendGotifyNotification('Nouveau Contact ZenixWeb', gotifyMessage, 5);
-    } catch (err) {
-      console.error('Gotify notification error (emails sent successfully):', err.message);
-    }
-
+    // Une notification Gotify partait aussi ici. Le service a été arrêté : le
+    // code, les variables d'environnement et la mention dans la politique de
+    // confidentialité ont été retirés ensemble. L'email envoyé à ADMIN_EMAIL
+    // juste au-dessus reste le canal d'alerte d'une nouvelle demande.
     res.json({ success: true });
   } catch (error) {
     console.error('Error sending contact email:', error);

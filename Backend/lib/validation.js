@@ -1,22 +1,40 @@
 /**
  * Validation et constantes partagées (testables sans dépendances runtime).
  */
+/**
+ * Types de projet proposés dans le formulaire de contact.
+ *
+ * La liste en comptait huit, dont deux variantes de landing page et deux
+ * intitulés qui décrivaient un service plutôt qu'un projet (« Optimisation
+ * SEO », « Support technique »). Un menu déroulant de huit entrées fait hésiter
+ * plus qu'il ne guide : le visiteur cherche laquelle est « la bonne » au lieu
+ * de décrire son besoin. Six entrées, formulées du point de vue du client.
+ *
+ * ATTENTION — ces clés sont dupliquées côté formulaire
+ * (Frontend/src/components/ContactPage.tsx). Toute modification ici doit y être
+ * reportée, sinon l'email d'alerte affiche la clé brute au lieu du libellé.
+ */
 export const projectLabels = {
-  'landing-page-devis': 'Landing Page (devis personnalisé)',
-  'landing-page-standard': 'Landing Page Standard (100€)',
-  'site-vitrine': 'Site Vitrine Multi-pages',
-  'hebergement': 'Hébergement (Site Vitrine ou Landing Page)',
-  'refonte': 'Refonte (Site Vitrine ou Landing Page)',
-  'optimisation-seo': 'Optimisation SEO',
-  'support-technique': 'Support technique',
+  'site-vitrine': 'Un site vitrine',
+  'landing-page': 'Une landing page',
+  'ecommerce': 'Une boutique en ligne',
+  'refonte': 'La refonte d’un site existant',
+  'hebergement': 'L’hébergement d’un site existant',
   'autre': 'Autre projet'
 };
 
+/**
+ * Délai souhaité.
+ *
+ * Les durées chiffrées ont été retirées : « Rapide (4-6 jours) » ou
+ * « Détendu (2 semaines tarif réduit) » annonçaient un engagement de délai et
+ * une remise avant même d'avoir lu le projet. Le délai réel se discute au devis.
+ */
 export const timelineLabels = {
-  'urgent': 'Rapide (4-6 jours)',
-  'rapide': 'Normal (7 jours)',
-  'normal': 'Détendu (2 semaines tarif réduit)',
-  'flexible': 'Pas pressé (1 mois tarif réduit)'
+  'rapide': 'Rapide',
+  'normal': 'Normal',
+  'presse': 'Pressé',
+  'ne-sais-pas': 'Je ne sais pas'
 };
 
 const EMAIL_REGEX = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;

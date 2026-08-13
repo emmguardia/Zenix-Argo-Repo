@@ -1,103 +1,128 @@
 import { useEffect, useState } from 'react';
-import { ChevronDown, Code, Layout, Rocket } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { trackEvent } from '../utils/analytics';
+
+/**
+ * Ce qui est compris dans une prestation.
+ *
+ * Formulé pour un artisan ou une association, pas pour un administrateur
+ * système. Les termes métier ont été retirés un par un : « intégration »,
+ * « pare-feu applicatif », « supervision », « restaurations testées » ne
+ * disaient rien à la cible. On décrit le résultat, pas la technique.
+ */
+const INCLUS = [
+  { titre: 'La création du site', detail: 'Design, mise en page, mise en ligne' },
+  { titre: 'L’hébergement', detail: 'Sur mes serveurs, en France' },
+  { titre: 'La sécurité', detail: 'Site protégé et tenu à jour' },
+  { titre: 'Les sauvegardes', detail: 'Chaque jour, et je vérifie qu’elles fonctionnent' },
+  { titre: 'Le suivi', detail: 'Vos modifications, toute l’année' }
+];
+
 const Hero = () => {
   const [fadeIn, setFadeIn] = useState(false);
   const navigate = useNavigate();
+
   useEffect(() => {
     const id = requestAnimationFrame(() => setFadeIn(true));
     return () => cancelAnimationFrame(id);
   }, []);
-  const goToServices = () => {
-    navigate('/nos-services');
-  };
+
   return (
-    <section className="relative min-h-screen flex items-center bg-gradient-to-br from-slate-900 via-slate-800 to-blue-900 overflow-hidden pt-20 md:min-h-[80vh] lg:min-h-screen hero-compact">
-      <div className="absolute w-full h-full">
-        <div className="absolute top-1/4 right-1/4 w-72 h-72 bg-blue-600/30 rounded-full blur-3xl animate-blob"></div>
-        <div className="absolute bottom-1/4 left-1/3 w-64 h-64 bg-violet-600/20 rounded-full blur-3xl animate-blob animation-delay-2000"></div>
-        <div className="absolute top-1/3 left-1/4 w-80 h-80 bg-indigo-600/20 rounded-full blur-3xl animate-blob animation-delay-4000"></div>
+    <section className="relative flex min-h-screen items-center overflow-hidden bg-ink-950 pt-20 md:min-h-[80vh] lg:min-h-screen hero-compact">
+      {/* Un seul halo, bleu, très diffus. Le fond portait auparavant trois
+          taches animées — bleue, violette, indigo — qui introduisaient à elles
+          seules deux couleurs hors palette. */}
+      <div aria-hidden="true" className="pointer-events-none absolute inset-0">
+        <div className="absolute -top-32 right-0 h-[32rem] w-[32rem] rounded-full bg-brand-600/20 blur-[120px]" />
+        <div className="absolute bottom-0 left-1/4 h-80 w-80 rounded-full bg-brand-500/10 blur-[100px]" />
       </div>
-      <div className="container mx-auto px-6 py-12 relative z-10">
-        <div className="grid md:grid-cols-2 gap-12 items-center">
-          <div 
-            className={`transition-all duration-1000 ${
-              fadeIn ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
+
+      <div className="container relative z-10 mx-auto px-6 py-16">
+        <div className="grid items-center gap-14 lg:grid-cols-[1.05fr_0.95fr]">
+          <div
+            className={`transition-all duration-700 ${
+              fadeIn ? 'translate-y-0 opacity-100' : 'translate-y-6 opacity-0'
             }`}
           >
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white mb-4 leading-tight">
-              Création de sites web en Beaujolais — Villefranche-sur-Saône et Lyon
+            <p className="eyebrow eyebrow--dark mb-5">Villefranche-sur-Saône · Lyon · Partout en France</p>
+
+            <h1 className="mb-6 text-4xl font-bold leading-[1.08] tracking-tight text-white sm:text-5xl lg:text-6xl">
+              Création de sites web en Beaujolais,{' '}
+              <span className="text-brand-300">hébergement compris</span>
             </h1>
-            {}
-            <div className="text-2xl sm:text-3xl lg:text-4xl font-semibold text-blue-200 mb-6 leading-tight">
-              Votre site à votre image, comme vous, unique
-            </div>
-            <p className="text-lg text-slate-300 mb-8 max-w-xl">
-              Spécialiste des <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-violet-500">Landing Pages</span> rapides, modernes et orientées conversion. Configurez votre page et obtenez un devis gratuit en quelques clics.
+
+            {/* Trois lignes, pas dix. Le paragraphe expliquait auparavant en
+                quatre phrases ce que font « la plupart des prestataires » avant
+                d'en venir au sujet : un visiteur ne lit pas un éditorial, il
+                cherche à savoir ce qu'on lui vend. */}
+            <p className="mb-8 max-w-lg text-lg leading-relaxed text-ink-300">
+              Je crée votre site et je l’héberge sur mes propres serveurs, en France. Une seule
+              personne à joindre, du premier devis au dépannage.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4">
+
+            <div className="flex flex-col gap-3 sm:flex-row">
               <button
-                onClick={() => { trackEvent('contact_click', { source: 'hero', cta: 'devis_gratuit' }); navigate('/contact'); }}
-                className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-8 rounded-full transition-all shadow-lg hover:shadow-blue-500/20 active:scale-95"
+                onClick={() => {
+                  trackEvent('contact_click', { source: 'hero', cta: 'devis_gratuit' });
+                  navigate('/contact');
+                }}
+                className="rounded-lg bg-brand-600 px-7 py-3.5 font-semibold whitespace-nowrap text-white transition-colors hover:bg-brand-700 active:scale-[0.98]"
               >
-                Faire un Devis Gratuit
+                Demander un devis
               </button>
               <button
-                onClick={() => { trackEvent('nav_click', { destination: '/nos-services', source: 'hero', cta: 'decouvrir_services' }); navigate('/nos-services'); }}
-                className="bg-white/10 hover:bg-white/20 backdrop-blur-sm text-white font-semibold py-3 px-8 rounded-full transition-all border border-white/20 active:scale-95"
+                onClick={() => {
+                  trackEvent('nav_click', { destination: '/hebergement', source: 'hero', cta: 'hebergement' });
+                  navigate('/hebergement');
+                }}
+                className="rounded-lg border border-white/15 bg-white/[0.06] px-7 py-3.5 font-semibold whitespace-nowrap text-white transition-colors hover:bg-white/[0.12] active:scale-[0.98]"
               >
-                Découvrir Mes Services
+                Voir les offres d’hébergement
               </button>
             </div>
+
+            <p className="mt-5 text-sm text-ink-400">
+              Réponse sous 24 h. Devis gratuit et sans engagement.
+            </p>
           </div>
-          <div 
-            className={`relative hidden md:block transition-all duration-1000 delay-300 ${
-              fadeIn ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'
+
+          {/* Ce qui remplace la maquette de navigateur : la liste de ce qui est
+              réellement compris. Elle dit quelque chose du service, là où trois
+              pastilles rouge/jaune/verte et des blocs gris ne disaient rien —
+              et ramenaient trois couleurs de plus. */}
+          <div
+            className={`transition-all delay-150 duration-700 ${
+              fadeIn ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
             }`}
           >
-            <div className="relative bg-gradient-to-br from-slate-900 to-slate-800 p-6 rounded-xl shadow-2xl border border-slate-700/50 backdrop-blur-sm">
-              <div className="flex items-center mb-3">
-                <div className="flex space-x-2">
-                  <div className="w-3 h-3 rounded-full bg-red-400"></div>
-                  <div className="w-3 h-3 rounded-full bg-yellow-400"></div>
-                  <div className="w-3 h-3 rounded-full bg-green-400"></div>
-                </div>
-                <div className="ml-4 text-sm text-slate-400">zenixweb.fr</div>
-              </div>
-              <div className="space-y-3">
-                <div className="h-2 bg-gradient-to-r from-blue-500 to-violet-500 rounded w-3/4"></div>
-                <div className="h-2 bg-slate-700 rounded w-full"></div>
-                <div className="h-2 bg-slate-700 rounded w-5/6"></div>
-                <div className="h-2 bg-slate-700 rounded w-4/6"></div>
-                <div className="h-8 bg-slate-700 rounded w-full mt-6"></div>
-                <div className="grid grid-cols-2 gap-2 mt-4">
-                  <div className="h-24 bg-slate-700 rounded"></div>
-                  <div className="h-24 bg-slate-700 rounded"></div>
-                  <div className="h-24 bg-slate-700 rounded"></div>
-                  <div className="h-24 bg-slate-700 rounded"></div>
-                </div>
-              </div>
-            </div>
-            <div className="absolute -bottom-5 -right-5 bg-blue-600 text-white p-4 rounded-lg shadow-lg animate-bounce-slow">
-              <Layout className="w-6 h-6" />
-            </div>
-            <div className="absolute -top-5 -left-5 bg-violet-600 text-white p-4 rounded-lg shadow-lg animate-pulse">
-              <Code className="w-6 h-6" />
-            </div>
-            <div className="absolute top-1/2 -right-5 transform -translate-y-1/2 bg-amber-500 text-white p-4 rounded-lg shadow-lg animate-float">
-              <Rocket className="w-6 h-6" />
+            <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-7 backdrop-blur-sm sm:p-8">
+              {/* « Périmètre de la prestation » était du vocabulaire de devis.
+                  Le titre dit maintenant la même chose en français courant. */}
+              <p className="eyebrow eyebrow--dark mb-1">Ce qui est compris</p>
+              <p className="mb-6 font-display text-xl font-bold text-white">
+                Tout, du devis au dépannage
+              </p>
+
+              <ul className="divide-y divide-white/[0.08]">
+                {INCLUS.map((item) => (
+                  <li key={item.titre} className="flex gap-4 py-3.5 first:pt-0 last:pb-0">
+                    <span
+                      aria-hidden="true"
+                      className="mt-[0.55rem] h-1.5 w-1.5 shrink-0 rounded-full bg-brand-400"
+                    />
+                    <div>
+                      <p className="font-medium text-white">{item.titre}</p>
+                      <p className="text-sm text-ink-400">{item.detail}</p>
+                    </div>
+                  </li>
+                ))}
+              </ul>
             </div>
           </div>
-        </div>
-        <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 text-white animate-bounce hidden sm:block">
-          <button onClick={() => { trackEvent('nav_click', { destination: '/nos-services', source: 'hero', cta: 'decouvrir_services_bas' }); goToServices(); }} className="flex flex-col items-center group">
-            <span className="text-sm font-medium mb-2 group-hover:text-blue-400 transition-colors">Découvrez mes services</span>
-            <ChevronDown className="w-6 h-6 group-hover:text-blue-400 transition-colors" />
-          </button>
         </div>
       </div>
     </section>
   );
 };
+
 export default Hero;

@@ -84,7 +84,7 @@ const TypesDeSites = () => {
         'Vendre des produits en ligne',
         'Gérer un catalogue de produits',
         'Accepter les paiements en ligne',
-        'Gérer les commandes et livraisons',
+        'Suivre les commandes depuis l’administration',
         'Créer un compte client',
         'Gérer les stocks et inventaire'
       ],
@@ -105,22 +105,22 @@ const TypesDeSites = () => {
   const getColorClasses = (color: string) => {
     const colors: { [key: string]: { bg: string; text: string; border: string; hover: string } } = {
       blue: {
-        bg: 'bg-blue-600',
-        text: 'text-blue-600',
-        border: 'border-blue-600',
-        hover: 'hover:bg-blue-700'
+        bg: 'bg-brand-600',
+        text: 'text-brand-600',
+        border: 'border-brand-600',
+        hover: 'hover:bg-brand-700'
       },
       violet: {
-        bg: 'bg-violet-600',
-        text: 'text-violet-600',
-        border: 'border-violet-600',
-        hover: 'hover:bg-violet-700'
+        bg: 'bg-brand-600',
+        text: 'text-brand-600',
+        border: 'border-brand-600',
+        hover: 'hover:bg-brand-700'
       },
       green: {
-        bg: 'bg-green-600',
-        text: 'text-green-600',
-        border: 'border-green-600',
-        hover: 'hover:bg-green-700'
+        bg: 'bg-brand-600',
+        text: 'text-brand-600',
+        border: 'border-brand-600',
+        hover: 'hover:bg-brand-700'
       }
     };
     return colors[color] || colors.blue;
@@ -130,9 +130,9 @@ const TypesDeSites = () => {
     <section className="py-20 bg-white pt-32" ref={sectionRef}>
       <div className="container mx-auto px-6">
         <div className="text-center mb-16">
-          <h1 className="text-4xl font-bold text-slate-800 mb-4">Nos Services</h1>
-          <div className="h-1 w-20 bg-blue-600 mx-auto mb-6"></div>
-          <p className="text-lg text-slate-600 max-w-3xl mx-auto">
+          <h1 className="text-4xl font-bold text-ink-900 mb-4">Nos Services</h1>
+          <div className="h-1 w-20 bg-brand-600 mx-auto mb-6"></div>
+          <p className="text-lg text-ink-600 max-w-3xl mx-auto">
             Je crée 3 types de sites web. Chaque type a un objectif précis. Découvrez lequel correspond le mieux à vos besoins.
           </p>
         </div>
@@ -141,7 +141,7 @@ const TypesDeSites = () => {
           {siteTypes.map((site, index) => {
             const colors = getColorClasses(site.color);
             return (
-              <div key={index} className="bg-white rounded-2xl shadow-xl border-2 border-slate-200 hover:border-slate-300 transition-all duration-300 overflow-hidden">
+              <div key={index} className="bg-white rounded-2xl shadow-xl border-2 border-ink-200 hover:border-ink-300 transition-all duration-300 overflow-hidden">
                 <div className={`${colors.bg} text-white p-6 text-center`}>
                   <div className="inline-flex p-4 bg-white/20 rounded-full mb-4">
                     {site.icon}
@@ -151,13 +151,13 @@ const TypesDeSites = () => {
                 </div>
                 <div className="p-6">
                   <div className="mb-6">
-                    <h3 className="font-semibold text-slate-800 mb-3 flex items-center">
+                    <h3 className="font-semibold text-ink-900 mb-3 flex items-center">
                       <Zap className={`w-5 h-5 ${colors.text} mr-2`} />
                       Idéal pour :
                     </h3>
                     <ul className="space-y-2">
                       {site.useCases.slice(0, 3).map((useCase, idx) => (
-                        <li key={idx} className="flex items-start text-slate-600 text-sm">
+                        <li key={idx} className="flex items-start text-ink-600 text-sm">
                           <Check className={`w-4 h-4 ${colors.text} mr-2 mt-0.5 flex-shrink-0`} />
                           <span>{useCase}</span>
                         </li>
@@ -165,21 +165,21 @@ const TypesDeSites = () => {
                     </ul>
                   </div>
                   <div className="mb-6">
-                    <h3 className="font-semibold text-slate-800 mb-3 flex items-center">
+                    <h3 className="font-semibold text-ink-900 mb-3 flex items-center">
                       <Shield className={`w-5 h-5 ${colors.text} mr-2`} />
                       Fonctionnalités :
                     </h3>
                     <ul className="space-y-2">
                       {site.features.slice(0, 4).map((feature, idx) => (
-                        <li key={idx} className="flex items-start text-slate-600 text-sm">
+                        <li key={idx} className="flex items-start text-ink-600 text-sm">
                           <Check className={`w-4 h-4 ${colors.text} mr-2 mt-0.5 flex-shrink-0`} />
                           <span>{feature}</span>
                         </li>
                       ))}
                     </ul>
                   </div>
-                  <div className="border-t border-slate-200 pt-4 mb-4">
-                    <p className="text-sm text-slate-500 mb-2">Prix indicatif :</p>
+                  <div className="border-t border-ink-200 pt-4 mb-4">
+                    <p className="text-sm text-ink-500 mb-2">Prix indicatif :</p>
                     <p className={`text-xl font-bold ${colors.text}`}>{site.price}</p>
                   </div>
                   <button
@@ -198,8 +198,8 @@ const TypesDeSites = () => {
           })}
         </div>
 
-        <div className="bg-gradient-to-br from-slate-50 to-blue-50 rounded-2xl p-8 md:p-12 mb-16">
-          <h2 className="text-3xl font-bold text-slate-800 mb-8 text-center">Comment choisir ?</h2>
+        <div className="bg-ink-50 rounded-2xl p-8 md:p-12 mb-16">
+          <h2 className="text-3xl font-bold text-ink-900 mb-8 text-center">Comment choisir ?</h2>
           <div className="grid md:grid-cols-3 gap-8">
             {siteTypes.map((site, index) => {
               const colors = getColorClasses(site.color);
@@ -208,8 +208,8 @@ const TypesDeSites = () => {
                   <div className={`${colors.bg} text-white p-3 rounded-lg inline-flex mb-4`}>
                     {site.icon}
                   </div>
-                  <h3 className="text-xl font-bold text-slate-800 mb-2">{site.name}</h3>
-                  <p className="text-slate-600">{site.bestFor}</p>
+                  <h3 className="text-xl font-bold text-ink-900 mb-2">{site.name}</h3>
+                  <p className="text-ink-600">{site.bestFor}</p>
                 </div>
               );
             })}
@@ -217,50 +217,50 @@ const TypesDeSites = () => {
         </div>
 
         <div className="bg-white rounded-2xl shadow-lg p-8 md:p-12 max-w-4xl mx-auto mb-16">
-          <h2 className="text-3xl font-bold text-slate-800 mb-8 text-center">Tous mes sites incluent</h2>
+          <h2 className="text-3xl font-bold text-ink-900 mb-8 text-center">Tous mes sites incluent</h2>
           <div className="grid md:grid-cols-2 gap-6">
             <div className="flex items-start space-x-4">
-              <div className="bg-blue-100 p-3 rounded-lg">
-                <Shield className="w-6 h-6 text-blue-600" />
+              <div className="bg-brand-100 p-3 rounded-lg">
+                <Shield className="w-6 h-6 text-brand-600" />
               </div>
               <div>
-                <h3 className="font-semibold text-slate-800 mb-2">Sécurité Renforcée</h3>
-                <p className="text-slate-600 text-sm">Protection contre les attaques, HTTPS, validation des formulaires</p>
+                <h3 className="font-semibold text-ink-900 mb-2">Sécurité Renforcée</h3>
+                <p className="text-ink-600 text-sm">Protection contre les attaques, HTTPS, validation des formulaires</p>
               </div>
             </div>
             <div className="flex items-start space-x-4">
-              <div className="bg-violet-100 p-3 rounded-lg">
-                <Search className="w-6 h-6 text-violet-600" />
+              <div className="bg-brand-100 p-3 rounded-lg">
+                <Search className="w-6 h-6 text-brand-600" />
               </div>
               <div>
-                <h3 className="font-semibold text-slate-800 mb-2">SEO Optimisé</h3>
-                <p className="text-slate-600 text-sm">Référencement naturel, meta tags, structured data</p>
+                <h3 className="font-semibold text-ink-900 mb-2">SEO Optimisé</h3>
+                <p className="text-ink-600 text-sm">Référencement naturel, meta tags, structured data</p>
               </div>
             </div>
             <div className="flex items-start space-x-4">
-              <div className="bg-green-100 p-3 rounded-lg">
-                <Zap className="w-6 h-6 text-green-600" />
+              <div className="bg-brand-100 p-3 rounded-lg">
+                <Zap className="w-6 h-6 text-brand-600" />
               </div>
               <div>
-                <h3 className="font-semibold text-slate-800 mb-2">Performance Maximale</h3>
-                <p className="text-slate-600 text-sm">Chargement rapide, optimisé pour mobile</p>
+                <h3 className="font-semibold text-ink-900 mb-2">Performance Maximale</h3>
+                <p className="text-ink-600 text-sm">Chargement rapide, optimisé pour mobile</p>
               </div>
             </div>
             <div className="flex items-start space-x-4">
-              <div className="bg-amber-100 p-3 rounded-lg">
-                <TrendingUp className="w-6 h-6 text-amber-600" />
+              <div className="bg-brand-100 p-3 rounded-lg">
+                <TrendingUp className="w-6 h-6 text-brand-600" />
               </div>
               <div>
-                <h3 className="font-semibold text-slate-800 mb-2">Design Moderne</h3>
-                <p className="text-slate-600 text-sm">Interface élégante et professionnelle</p>
+                <h3 className="font-semibold text-ink-900 mb-2">Design Moderne</h3>
+                <p className="text-ink-600 text-sm">Interface élégante et professionnelle</p>
               </div>
             </div>
           </div>
         </div>
 
         <div className="text-center">
-          <h2 className="text-2xl font-bold text-slate-800 mb-4">Vous hésitez entre plusieurs types ?</h2>
-          <p className="text-slate-600 mb-6 max-w-2xl mx-auto">
+          <h2 className="text-2xl font-bold text-ink-900 mb-4">Vous hésitez entre plusieurs types ?</h2>
+          <p className="text-ink-600 mb-6 max-w-2xl mx-auto">
             Contactez-moi pour discuter de votre projet. Je vous aiderai à choisir la solution qui correspond le mieux à vos objectifs.
           </p>
           <button
@@ -268,7 +268,7 @@ const TypesDeSites = () => {
               trackEvent('contact_click', { source: 'types_sites', cta: 'me_contacter' });
               navigate('/contact');
             }}
-            className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-8 rounded-full transition-all shadow-lg hover:shadow-blue-500/20 active:scale-95 inline-flex items-center"
+            className="bg-brand-600 hover:bg-brand-700 text-white font-semibold py-3 px-8 rounded-full transition-all shadow-lg hover:shadow-brand-500/20 active:scale-95 inline-flex items-center"
           >
             Demander un devis gratuit
             <ArrowRight className="w-5 h-5 ml-2" />

@@ -27,7 +27,7 @@ describe('validation', () => {
 
   describe('getProjectLabel', () => {
     it('retourne le libellé pour une clé connue', () => {
-      assert.ok(getProjectLabel('site-vitrine').includes('Vitrine'));
+      assert.ok(getProjectLabel('site-vitrine').includes('vitrine'));
       assert.strictEqual(getProjectLabel('autre'), 'Autre projet');
     });
     it('retourne la clé si inconnue', () => {
@@ -37,10 +37,31 @@ describe('validation', () => {
 
   describe('getTimelineLabel', () => {
     it('retourne le libellé pour une clé connue', () => {
-      assert.ok(getTimelineLabel('urgent').includes('Rapide'));
+      assert.strictEqual(getTimelineLabel('rapide'), 'Rapide');
+      assert.strictEqual(getTimelineLabel('ne-sais-pas'), 'Je ne sais pas');
     });
     it('retourne la clé si inconnue', () => {
       assert.strictEqual(getTimelineLabel('unknown'), 'unknown');
+    });
+    // Les libellés ne doivent plus annoncer de durée : un délai chiffré dans le
+    // formulaire vaut engagement avant même la lecture du projet.
+    it('ne contient aucune durée chiffrée', () => {
+      for (const label of Object.values(timelineLabels)) {
+        assert.ok(!/\d/.test(label), `« ${label} » contient un chiffre`);
+      }
+    });
+  });
+
+  // Les clés du formulaire (Frontend) et celles du backend doivent coïncider,
+  // sinon l'email d'alerte affiche la clé brute au lieu du libellé.
+  describe('cohérence avec le formulaire', () => {
+    it('expose les clés attendues par ContactPage.tsx', () => {
+      for (const k of ['site-vitrine', 'landing-page', 'ecommerce', 'refonte', 'hebergement', 'autre']) {
+        assert.ok(k in projectLabels, `clé projet manquante : ${k}`);
+      }
+      for (const k of ['rapide', 'normal', 'presse', 'ne-sais-pas']) {
+        assert.ok(k in timelineLabels, `clé délai manquante : ${k}`);
+      }
     });
   });
 

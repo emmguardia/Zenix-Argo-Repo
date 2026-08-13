@@ -15,19 +15,19 @@ const TermsOfService = () => {
     <section className="py-20 bg-white pt-32">
       <div className="container mx-auto px-6 max-w-4xl">
         <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-slate-800 mb-4">Conditions Générales de Vente</h1>
-          <div className="h-1 w-20 bg-blue-600 mx-auto mb-6"></div>
-          <p className="text-lg text-slate-600">
+          <h1 className="text-4xl font-bold text-ink-900 mb-4">Conditions Générales de Vente</h1>
+          <div className="h-1 w-20 bg-brand-600 mx-auto mb-6"></div>
+          <p className="text-lg text-ink-600">
             et de Prestation de Services — Création de sites web · Hébergement · Maintenance
           </p>
-          <p className="text-sm text-slate-500 mt-2">Version 3.1 — en vigueur au 12 août 2026</p>
+          <p className="text-sm text-ink-500 mt-2">Version 3.1 — en vigueur au 12 août 2026</p>
         </div>
 
         <div className="prose prose-lg max-w-none">
           {/* Identification */}
-          <div className="bg-blue-50 rounded-lg p-8 mb-8">
-            <h2 className="text-2xl font-bold text-slate-800 mb-6">Identification du Prestataire</h2>
-            <div className="space-y-3 text-slate-700">
+          <div className="bg-brand-50 rounded-lg p-8 mb-8">
+            <h2 className="text-2xl font-bold text-ink-900 mb-6">Identification du Prestataire</h2>
+            <div className="space-y-3 text-ink-700">
               <p><strong>Prestataire :</strong> Zenix Web — Enzo Monnet-Mata, entrepreneur individuel (micro-entreprise)</p>
               {/* Affichage protégé du moissonnage, voir src/config/contact.ts. */}
               <p><strong>Siège :</strong> <ProtectedValue encoded={CONTACT_ADDRESS_FULL} /></p>
@@ -37,7 +37,7 @@ const TermsOfService = () => {
                 <ProtectedValue
                   encoded={CONTACT_PHONE_DISPLAY}
                   hrefEncoded={CONTACT_PHONE_HREF}
-                  className="text-blue-600 hover:underline"
+                  className="text-brand-600 hover:underline"
                 />{' '}
                 · zenixweb.fr
               </p>
@@ -45,9 +45,9 @@ const TermsOfService = () => {
           </div>
 
           {/* Objet, définitions, documents, commande */}
-          <div className="bg-slate-50 rounded-lg p-8 mb-8">
-            <h2 className="text-2xl font-bold text-slate-800 mb-6">Objet, Définitions et Formation du Contrat</h2>
-            <div className="space-y-6 text-slate-700">
+          <div className="bg-ink-50 rounded-lg p-8 mb-8">
+            <h2 className="text-2xl font-bold text-ink-900 mb-6">Objet, Définitions et Formation du Contrat</h2>
+            <div className="space-y-6 text-ink-700">
               <Article title="Article 1 — Objet et champ d'application">
                 <p>Les présentes Conditions Générales de Vente (« CGV ») régissent l'ensemble des relations contractuelles entre le Prestataire, Enzo Monnet-Mata exerçant sous l'enseigne « Zenix Web », et tout client professionnel, entreprise ou association (le « Client »). Elles couvrent deux grandes familles de prestations : (i) la création, refonte et intégration de sites web (sites vitrine, e-commerce, landing pages) et (ii) l'hébergement et la maintenance de ces sites. Elles ne s'adressent pas aux consommateurs au sens du Code de la consommation.</p>
                 <p>Toute commande emporte acceptation pleine et entière des présentes CGV, qui prévalent sur tout document du Client (conditions générales d'achat, bon de commande), sauf accord écrit exprès du Prestataire. Conformément à l'article L441-1 du Code de commerce, les CGV sont communiquées à tout client professionnel qui en fait la demande.</p>
@@ -92,9 +92,9 @@ const TermsOfService = () => {
           </div>
 
           {/* Prix et paiement */}
-          <div className="bg-slate-50 rounded-lg p-8 mb-8">
-            <h2 className="text-2xl font-bold text-slate-800 mb-6">Prix et Paiement</h2>
-            <div className="space-y-6 text-slate-700">
+          <div className="bg-ink-50 rounded-lg p-8 mb-8">
+            <h2 className="text-2xl font-bold text-ink-900 mb-6">Prix et Paiement</h2>
+            <div className="space-y-6 text-ink-700">
               <Article title="Article 5 — Prix">
                 <p>Les prix sont exprimés en euros (€) et nets de taxe : en application de l'article 293 B du CGI, la TVA n'est pas applicable. Ils s'entendent hors frais de services tiers (nom de domaine, licences logicielles, thèmes, extensions, polices, API, régies publicitaires), qui restent à la charge du Client et peuvent lui être refacturés au coût réel. Aucun escompte n'est accordé en cas de paiement anticipé.</p>
               </Article>
@@ -115,9 +115,9 @@ const TermsOfService = () => {
           </div>
 
           {/* Exécution */}
-          <div className="bg-slate-50 rounded-lg p-8 mb-8">
-            <h2 className="text-2xl font-bold text-slate-800 mb-6">Exécution des Prestations</h2>
-            <div className="space-y-6 text-slate-700">
+          <div className="bg-ink-50 rounded-lg p-8 mb-8">
+            <h2 className="text-2xl font-bold text-ink-900 mb-6">Exécution des Prestations</h2>
+            <div className="space-y-6 text-ink-700">
               <Article title="Article 8 — Obligations et collaboration du Client">
                 <p>La bonne exécution des prestations suppose une collaboration active du Client, qui s'engage à :</p>
                 <ul className="list-disc list-inside ml-4 space-y-1">
@@ -144,9 +144,9 @@ const TermsOfService = () => {
           </div>
 
           {/* Propriété intellectuelle */}
-          <div className="bg-slate-50 rounded-lg p-8 mb-8">
-            <h2 className="text-2xl font-bold text-slate-800 mb-6">Propriété Intellectuelle</h2>
-            <div className="space-y-6 text-slate-700">
+          <div className="bg-ink-50 rounded-lg p-8 mb-8">
+            <h2 className="text-2xl font-bold text-ink-900 mb-6">Propriété Intellectuelle</h2>
+            <div className="space-y-6 text-ink-700">
               <Article title="Article 13 — Propriété intellectuelle et licence d'utilisation">
                 <p>Conformément à l'article L131-3 du Code de la propriété intellectuelle, les droits sont définis comme suit :</p>
                 <ul className="list-disc list-inside ml-4 space-y-1">
@@ -156,7 +156,7 @@ const TermsOfService = () => {
                   <li><strong>Contenus du Client :</strong> les textes, images, marques et logos fournis par le Client restent sa propriété.</li>
                   <li><strong>Composants tiers :</strong> les composants tiers (CMS, extensions, thèmes, polices, images sous licence) restent soumis aux conditions de leurs éditeurs et sont exclus de la présente licence.</li>
                 </ul>
-                <p className="bg-blue-50 rounded-lg p-4 mt-3"><strong>En clair</strong> — Le Client est pleinement libre d'utiliser son Site : il peut l'héberger où il veut, l'exploiter, le faire évoluer et le confier à un autre prestataire de son choix, y compris récupérer et réutiliser le code pour son propre Site. De son côté, le Prestataire, en tant qu'auteur, en conserve la propriété et peut réutiliser ses briques techniques génériques pour d'autres clients. Personne n'est prisonnier de l'autre.</p>
+                <p className="bg-brand-50 rounded-lg p-4 mt-3"><strong>En clair</strong> — Le Client est pleinement libre d'utiliser son Site : il peut l'héberger où il veut, l'exploiter, le faire évoluer et le confier à un autre prestataire de son choix, y compris récupérer et réutiliser le code pour son propre Site. De son côté, le Prestataire, en tant qu'auteur, en conserve la propriété et peut réutiliser ses briques techniques génériques pour d'autres clients. Personne n'est prisonnier de l'autre.</p>
               </Article>
               <Article title="Article 14 — Signature du Prestataire">
                 <p>Une mention discrète « Réalisé par Zenix Web », avec lien vers le site du Prestataire, figure en pied de page du Site. Le Client s'engage à la conserver pendant toute la durée de l'hébergement du Site par le Prestataire. En cas de migration du Site vers un autre hébergeur, cette obligation cesse et le Client est libre de retirer la mention.</p>
@@ -168,9 +168,9 @@ const TermsOfService = () => {
           </div>
 
           {/* Hébergement et abonnements */}
-          <div className="bg-slate-50 rounded-lg p-8 mb-8">
-            <h2 className="text-2xl font-bold text-slate-800 mb-6">Hébergement, Maintenance et Abonnements</h2>
-            <div className="space-y-6 text-slate-700">
+          <div className="bg-ink-50 rounded-lg p-8 mb-8">
+            <h2 className="text-2xl font-bold text-ink-900 mb-6">Hébergement, Maintenance et Abonnements</h2>
+            <div className="space-y-6 text-ink-700">
               <Article title="Article 16 — Hébergement et maintenance (Abonnements)">
                 <ul className="list-disc list-inside ml-4 space-y-1">
                   <li><strong>Infrastructure :</strong> l'hébergement est assuré sur des serveurs détenus et administrés par le Prestataire, situés en France. Le Prestataire a la qualité d'hébergeur au sens de la loi n° 2004-575 (LCEN). Le trafic transite par Cloudflare, Inc. (États-Unis), qui assure la protection contre les attaques par déni de service et le pare-feu applicatif ; ce recours constitue une sous-traitance ultérieure au sens de l'article 21, encadrée par les clauses contractuelles types de la Commission européenne.</li>
@@ -196,9 +196,9 @@ const TermsOfService = () => {
           </div>
 
           {/* Garantie, données, confidentialité */}
-          <div className="bg-slate-50 rounded-lg p-8 mb-8">
-            <h2 className="text-2xl font-bold text-slate-800 mb-6">Garantie, Données Personnelles et Confidentialité</h2>
-            <div className="space-y-6 text-slate-700">
+          <div className="bg-ink-50 rounded-lg p-8 mb-8">
+            <h2 className="text-2xl font-bold text-ink-900 mb-6">Garantie, Données Personnelles et Confidentialité</h2>
+            <div className="space-y-6 text-ink-700">
               <Article title="Article 20 — Garantie et support">
                 <p>Le Prestataire accorde une garantie contractuelle gratuite d'un (1) mois à compter de la livraison, couvrant les bugs, erreurs d'affichage et dysfonctionnements résultant d'un défaut de développement. Sont exclus : les modifications réalisées par le Client ou un tiers, les problèmes liés aux contenus fournis par le Client, à un hébergement tiers ou à des services tiers mal configurés. La garantie cesse à l'expiration du mois ou au transfert du Site vers un hébergement tiers. Au-delà, le support est assuré dans le cadre d'un Abonnement de maintenance ou facturé sur devis.</p>
               </Article>
@@ -216,9 +216,9 @@ const TermsOfService = () => {
           </div>
 
           {/* Responsabilité et dispositions générales */}
-          <div className="bg-slate-50 rounded-lg p-8 mb-8">
-            <h2 className="text-2xl font-bold text-slate-800 mb-6">Responsabilité et Dispositions Générales</h2>
-            <div className="space-y-6 text-slate-700">
+          <div className="bg-ink-50 rounded-lg p-8 mb-8">
+            <h2 className="text-2xl font-bold text-ink-900 mb-6">Responsabilité et Dispositions Générales</h2>
+            <div className="space-y-6 text-ink-700">
               <Article title="Article 23 — Responsabilité">
                 <p>Le Prestataire est tenu d'une obligation de moyens. Sa responsabilité contractuelle est limitée aux dommages directs et prouvés, dans la limite du montant total effectivement payé par le Client au titre de la prestation concernée (ou, pour un Abonnement, des douze derniers mois). Le Prestataire ne saurait être tenu responsable des dommages indirects (perte d'exploitation, de données, de clientèle, préjudice commercial). Cette limitation ne s'applique pas en cas de faute lourde ou dolosive. En l'absence d'Abonnement de sauvegarde, le Client demeure responsable de la conservation de ses propres contenus.</p>
               </Article>
@@ -261,7 +261,7 @@ const TermsOfService = () => {
           <div className="text-center">
             <button
               onClick={() => navigate('/')}
-              className="bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-all"
+              className="bg-brand-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-brand-700 transition-all"
             >
               Retour à l'accueil
             </button>

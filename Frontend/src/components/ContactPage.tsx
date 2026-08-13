@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Mail, MapPin, Calendar, User, GraduationCap, Shield, Phone } from 'lucide-react';
+import { Mail, MapPin, Calendar, User, Server, Shield, Phone } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { trackEvent } from '../utils/analytics';
 import ProtectedValue from './ProtectedValue';
@@ -92,8 +92,9 @@ const ContactPage = () => {
       return;
     }
 
-    if (!formData.phone || !validatePhone(formData.phone)) {
-      setError('Veuillez entrer un numéro de téléphone valide.');
+    // Le téléphone est facultatif : on ne le valide que s'il a été saisi.
+    if (formData.phone && !validatePhone(formData.phone)) {
+      setError('Le numéro de téléphone saisi ne semble pas valide.');
       setIsSubmitting(false);
       return;
     }
@@ -190,11 +191,11 @@ const ContactPage = () => {
         <div className="text-center mb-16">
           {/* h1 : cette page n'en avait aucun, Google n'avait donc aucun titre
               principal pour comprendre son sujet. */}
-          <h1 className="text-3xl md:text-4xl font-bold text-slate-800 mb-4">
+          <h1 className="text-3xl md:text-4xl font-bold text-ink-900 mb-4">
             Demandez votre devis gratuit pour votre site web
           </h1>
-          <div className="h-1 w-20 bg-blue-600 mx-auto mb-6"></div>
-          <p className="text-lg text-slate-600 max-w-2xl mx-auto">
+          <div className="h-1 w-20 bg-brand-600 mx-auto mb-6"></div>
+          <p className="text-lg text-ink-600 max-w-2xl mx-auto">
             Décrivez votre projet en quelques lignes : je vous réponds sous 24 heures avec un devis
             personnalisé et sans engagement. Site vitrine, e-commerce ou landing page, en Beaujolais, à Lyon et partout en France.
           </p>
@@ -202,7 +203,7 @@ const ContactPage = () => {
         <div className="grid lg:grid-cols-2 gap-12 max-w-6xl mx-auto">
           {}
           <div className="space-y-8">
-            <div className="bg-gradient-to-br from-blue-50 to-violet-50 rounded-2xl p-8 text-center">
+            <div className="bg-brand-50 rounded-2xl p-8 text-center">
               <div className="w-32 h-32 rounded-full mx-auto mb-6 overflow-hidden border-4 border-white shadow-lg">
                 <img 
                   src="/images/profile-photo.webp" 
@@ -217,62 +218,62 @@ const ContactPage = () => {
                     if (fallback) fallback.style.display = 'flex';
                   }}
                 />
-                <div className="w-full h-full bg-gradient-to-br from-blue-600 to-violet-600 flex items-center justify-center" style={{display: 'none'}}>
+                <div className="w-full h-full bg-brand-600 flex items-center justify-center" style={{display: 'none'}}>
                   <User className="w-16 h-16 text-white" />
                 </div>
               </div>
-              <h3 className="text-2xl font-bold text-slate-800 mb-2">Enzo Monnet Mata</h3>
-              <p className="text-slate-600 mb-4">Développeur Web & Étudiant Cybersécurité</p>
+              <h3 className="text-2xl font-bold text-ink-950 mb-2">Enzo Monnet-Mata</h3>
+              <p className="text-ink-500 mb-4">Développeur web et administrateur d'infrastructure</p>
               <div className="space-y-3 text-sm">
-                <div className="flex items-center justify-center text-slate-600">
-                  <GraduationCap className="w-4 h-4 mr-2 text-blue-600" />
-                  Étudiant à Guardia - Cybersécurité
+                <div className="flex items-center justify-center text-ink-600">
+                  <Server className="w-4 h-4 mr-2 text-brand-600" />
+                  Hébergement opéré en propre, en France
                 </div>
-                <div className="flex items-center justify-center text-slate-600">
-                  <Shield className="w-4 h-4 mr-2 text-green-600" />
-                  Spécialiste Landing Pages
+                <div className="flex items-center justify-center text-ink-600">
+                  <Shield className="w-4 h-4 mr-2 text-brand-600" />
+                  Sécurité et sauvegardes incluses
                 </div>
-                <div className="flex items-center justify-center text-slate-600">
-                  <MapPin className="w-4 h-4 mr-2 text-amber-600" />
+                <div className="flex items-center justify-center text-ink-600">
+                  <MapPin className="w-4 h-4 mr-2 text-brand-600" />
                   Saint-Georges-de-Reneins, Beaujolais
                 </div>
               </div>
             </div>
             <div className="bg-white rounded-xl shadow-lg p-6">
-              <h4 className="text-xl font-bold text-slate-800 mb-4 flex items-center">
-                <Calendar className="w-5 h-5 text-blue-600 mr-2" />
+              <h4 className="text-xl font-bold text-ink-900 mb-4 flex items-center">
+                <Calendar className="w-5 h-5 text-brand-600 mr-2" />
                 Comment ça marche ?
               </h4>
               <div className="space-y-4">
                 <div className="flex items-start">
-                  <div className="bg-blue-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold mr-3 mt-0.5">1</div>
+                  <div className="bg-brand-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold mr-3 mt-0.5">1</div>
                   <div>
-                    <h5 className="font-semibold text-slate-800">Vous remplissez le formulaire</h5>
-                    <p className="text-slate-600 text-sm">Décrivez votre projet en quelques mots</p>
+                    <h5 className="font-semibold text-ink-900">Vous remplissez le formulaire</h5>
+                    <p className="text-ink-600 text-sm">Décrivez votre projet en quelques mots</p>
                   </div>
                 </div>
                 <div className="flex items-start">
-                  <div className="bg-blue-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold mr-3 mt-0.5">2</div>
+                  <div className="bg-brand-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold mr-3 mt-0.5">2</div>
                   <div>
-                    <h5 className="font-semibold text-slate-800">Je vous recontacte sous 24h</h5>
-                    <p className="text-slate-600 text-sm">Par téléphone ou email selon votre préférence</p>
+                    <h5 className="font-semibold text-ink-900">Je vous recontacte sous 24h</h5>
+                    <p className="text-ink-600 text-sm">Par téléphone ou email selon votre préférence</p>
                   </div>
                 </div>
                 <div className="flex items-start">
-                  <div className="bg-blue-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold mr-3 mt-0.5">3</div>
+                  <div className="bg-brand-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold mr-3 mt-0.5">3</div>
                   <div>
-                    <h5 className="font-semibold text-slate-800">Devis gratuit et personnalisé</h5>
-                    <p className="text-slate-600 text-sm">Basé sur vos besoins spécifiques</p>
+                    <h5 className="font-semibold text-ink-900">Devis gratuit et personnalisé</h5>
+                    <p className="text-ink-600 text-sm">Basé sur vos besoins spécifiques</p>
                   </div>
                 </div>
               </div>
             </div>
-            <div className="bg-slate-50 rounded-xl p-6">
-              <h4 className="text-lg font-semibold text-slate-800 mb-3">Informations de contact</h4>
+            <div className="bg-ink-50 rounded-xl p-6">
+              <h4 className="text-lg font-semibold text-ink-900 mb-3">Informations de contact</h4>
               <div className="space-y-3">
                 <div className="flex items-center">
-                  <Mail className="w-5 h-5 text-blue-600 mr-3" />
-                  <a href="mailto:contact@zenixweb.fr" className="text-slate-600 hover:text-blue-600" onClick={() => trackEvent('contact_click', { source: 'contact_page', method: 'email' })}>
+                  <Mail className="w-5 h-5 text-brand-600 mr-3" />
+                  <a href="mailto:contact@zenixweb.fr" className="text-ink-600 hover:text-brand-600" onClick={() => trackEvent('contact_click', { source: 'contact_page', method: 'email' })}>
                     contact@zenixweb.fr
                   </a>
                 </div>
@@ -283,11 +284,11 @@ const ContactPage = () => {
                   className="flex items-center"
                   onClick={() => trackEvent('contact_click', { source: 'contact_page', method: 'phone' })}
                 >
-                  <Phone className="w-5 h-5 text-blue-600 mr-3" />
+                  <Phone className="w-5 h-5 text-brand-600 mr-3" />
                   <ProtectedValue
                     encoded={CONTACT_PHONE_DISPLAY}
                     hrefEncoded={CONTACT_PHONE_HREF}
-                    className="text-slate-600 hover:text-blue-600"
+                    className="text-ink-600 hover:text-brand-600"
                   />
                 </div>
               </div>
@@ -295,8 +296,8 @@ const ContactPage = () => {
           </div>
           {}
           <div className="bg-white rounded-xl shadow-lg p-8">
-            <h3 className="text-2xl font-bold text-slate-800 mb-2">Formulaire de contact</h3>
-            <p className="text-slate-600 mb-6">Quelques questions pour mieux comprendre votre projet</p>
+            <h3 className="text-2xl font-bold text-ink-900 mb-2">Formulaire de contact</h3>
+            <p className="text-ink-600 mb-6">Quelques questions pour mieux comprendre votre projet</p>
             <form ref={formRef} onSubmit={handleSubmit} className="space-y-6">
               {/* Honeypot anti-spam : masqué visuellement, retiré de l'ordre de
                   tabulation et des lecteurs d'écran. Un visiteur ne le voit ni
@@ -316,7 +317,7 @@ const ContactPage = () => {
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label htmlFor="name" className="block text-sm font-medium text-slate-700 mb-1">
+                  <label htmlFor="name" className="block text-sm font-medium text-ink-700 mb-1">
                     Nom complet *
                   </label>
                   <input
@@ -328,12 +329,12 @@ const ContactPage = () => {
                     // l'apostrophe rendait « O'Brien » impossible à saisir.
                     onChange={(e) => setFormData({ ...formData, name: e.target.value.replace(/[<>]/g, '') })}
                     maxLength={100}
-                    className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full px-4 py-2 border border-ink-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500"
                     placeholder="Votre nom"
                   />
                 </div>
                 <div>
-                  <label htmlFor="email" className="block text-sm font-medium text-slate-700 mb-1">
+                  <label htmlFor="email" className="block text-sm font-medium text-ink-700 mb-1">
                     Email *
                   </label>
                   <input
@@ -343,29 +344,32 @@ const ContactPage = () => {
                     value={formData.email}
                     onChange={(e) => setFormData({ ...formData, email: e.target.value.toLowerCase().trim() })}
                     maxLength={255}
-                    className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full px-4 py-2 border border-ink-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500"
                     placeholder="votre@email.com"
                   />
                 </div>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label htmlFor="phone" className="block text-sm font-medium text-slate-700 mb-1">
-                    Téléphone *
+                  {/* Facultatif : un numéro exigé fait renoncer une partie des
+                      prospects, et l'email suffit à répondre. Le backend a été
+                      aligné (server.js) ainsi que la politique de
+                      confidentialité, qui décrit les champs collectés. */}
+                  <label htmlFor="phone" className="block text-sm font-medium text-ink-700 mb-1">
+                    Téléphone <span className="font-normal text-ink-500">(facultatif)</span>
                   </label>
                   <input
                     type="tel"
-                    required
                     id="phone"
                     value={formData.phone}
                     onChange={(e) => setFormData({ ...formData, phone: e.target.value.replace(/[^0-9\s\-+()]/g, '') })}
                     maxLength={20}
-                    className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full px-4 py-2 border border-ink-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500"
                     placeholder="Votre numéro"
                   />
                 </div>
                 <div>
-                  <label htmlFor="company" className="block text-sm font-medium text-slate-700 mb-1">
+                  <label htmlFor="company" className="block text-sm font-medium text-ink-700 mb-1">
                     Entreprise
                   </label>
                   <input
@@ -374,13 +378,13 @@ const ContactPage = () => {
                     value={formData.company}
                     onChange={(e) => setFormData({ ...formData, company: e.target.value.replace(/[<>]/g, '') })}
                     maxLength={100}
-                    className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full px-4 py-2 border border-ink-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500"
                     placeholder="Nom de votre entreprise"
                   />
                 </div>
               </div>
               <div>
-                <label htmlFor="project" className="block text-sm font-medium text-slate-700 mb-1">
+                <label htmlFor="project" className="block text-sm font-medium text-ink-700 mb-1">
                   Quel type de projet souhaitez-vous ? *
                 </label>
                 <select
@@ -388,22 +392,20 @@ const ContactPage = () => {
                   required
                   value={formData.project}
                   onChange={(e) => setFormData({ ...formData, project: e.target.value })}
-                  className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full px-4 py-2 border border-ink-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500"
                 >
-                  <option value="">Sélectionnez votre projet</option>
-                  <option value="landing-page-devis">Landing Page (devis personnalisé)</option>
-                  <option value="landing-page-standard">Landing Page Standard (100€)</option>
-                  <option value="site-vitrine">Site Vitrine Multi-pages</option>
-                  <option value="hebergement">Hébergement (Site Vitrine ou Landing Page)</option>
-                  <option value="refonte">Refonte (Site Vitrine ou Landing Page)</option>
-                  <option value="optimisation-seo">Optimisation SEO</option>
-                  <option value="support-technique">Support technique</option>
+                  <option value="">Sélectionnez</option>
+                  <option value="site-vitrine">Un site vitrine</option>
+                  <option value="landing-page">Une landing page</option>
+                  <option value="ecommerce">Une boutique en ligne</option>
+                  <option value="refonte">La refonte d’un site existant</option>
+                  <option value="hebergement">L’hébergement d’un site existant</option>
                   <option value="autre">Autre projet</option>
                 </select>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label htmlFor="budget" className="block text-sm font-medium text-slate-700 mb-1">
+                  <label htmlFor="budget" className="block text-sm font-medium text-ink-700 mb-1">
                     Budget estimé (€)
                   </label>
                   <input
@@ -416,35 +418,38 @@ const ContactPage = () => {
                         setFormData({ ...formData, budget: value });
                       }
                     }}
-                    className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full px-4 py-2 border border-ink-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500"
                     placeholder="Ex: 180"
                     min="0"
                     max="100000"
                     step="1"
                   />
-                  <p className="text-xs text-slate-500 mt-1">Laissez vide si vous ne savez pas</p>
+                  <p className="text-xs text-ink-500 mt-1">Laissez vide si vous ne savez pas</p>
                 </div>
                 <div>
-                  <label htmlFor="timeline" className="block text-sm font-medium text-slate-700 mb-1">
-                    Quand souhaitez-vous votre site ?
+                  <label htmlFor="timeline" className="block text-sm font-medium text-ink-700 mb-1">
+                    {/* L'astérisque manquait alors que le champ est `required` :
+                        le visiteur ne comprenait pas pourquoi l'envoi était
+                        bloqué. */}
+                    Quand souhaitez-vous votre site ? *
                   </label>
                   <select
                     id="timeline"
                     required
                     value={formData.timeline}
                     onChange={(e) => setFormData({ ...formData, timeline: e.target.value })}
-                    className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full px-4 py-2 border border-ink-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500"
                   >
-                    <option value="">Sélectionnez un délai</option>
-                    <option value="urgent">Rapide (4-6 jours)</option>
-                    <option value="rapide">Normal (7 jours)</option>
-                    <option value="normal">Détendu (2 semaines tarif réduit)</option>
-                    <option value="flexible">Pas pressé (1 mois tarif réduit)</option>
+                    <option value="">Sélectionnez</option>
+                    <option value="rapide">Rapide</option>
+                    <option value="normal">Normal</option>
+                    <option value="presse">Pressé</option>
+                    <option value="ne-sais-pas">Je ne sais pas</option>
                   </select>
                 </div>
               </div>
               <div>
-                <label htmlFor="message" className="block text-sm font-medium text-slate-700 mb-1">
+                <label htmlFor="message" className="block text-sm font-medium text-ink-700 mb-1">
                   Décrivez votre projet en quelques mots *
                 </label>
                 <textarea
@@ -454,7 +459,7 @@ const ContactPage = () => {
                   onChange={(e) => setFormData({ ...formData, message: e.target.value.replace(/[<>]/g, '') })}
                   rows={4}
                   maxLength={2000}
-                  className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full px-4 py-2 border border-ink-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500"
                   placeholder="Ex: Je veux une landing page pour promouvoir mon nouveau service de coaching. J'aimerais inclure des témoignages clients et un formulaire de contact..."
                 />
               </div>
@@ -473,12 +478,12 @@ const ContactPage = () => {
                   laisserait croire le contraire et créerait un consentement
                   factice, retirable, pour un traitement qui n'en dépend pas.
                   Le lien s'ouvre dans un onglet pour ne pas vider le formulaire. */}
-              <p className="text-xs text-slate-500 leading-relaxed">
+              <p className="text-xs text-ink-500 leading-relaxed">
                 Les informations saisies sont utilisées uniquement pour répondre à votre demande et
                 établir un devis. Elles sont destinées à Enzo Monnet-Mata (Zenix Web), responsable du
                 traitement, et conservées 3 ans après notre dernier échange. Vous disposez d'un droit
                 d'accès, de rectification, d'effacement, d'opposition et de portabilité, à exercer à{' '}
-                <a href="mailto:contact@zenixweb.fr" className="text-blue-600 hover:underline">
+                <a href="mailto:contact@zenixweb.fr" className="text-brand-600 hover:underline">
                   contact@zenixweb.fr
                 </a>
                 , ainsi que du droit d'introduire une réclamation auprès de la CNIL. Détail dans la{' '}
@@ -486,7 +491,7 @@ const ContactPage = () => {
                   href="/politique-confidentialite"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-blue-600 hover:underline"
+                  className="text-brand-600 hover:underline"
                 >
                   politique de confidentialité
                 </a>
@@ -497,10 +502,10 @@ const ContactPage = () => {
                 type="submit"
                 disabled={isSubmitting}
                 onClick={() => trackEvent('form_submit_click', { page: 'contact' })}
-                className={`w-full py-3 px-6 bg-blue-600 text-white rounded-lg font-semibold transition-all ${
+                className={`w-full py-3 px-6 bg-brand-600 text-white rounded-lg font-semibold transition-all ${
                   isSubmitting 
                     ? 'opacity-50 cursor-not-allowed' 
-                    : 'hover:bg-blue-700 active:scale-95'
+                    : 'hover:bg-brand-700 active:scale-95'
                 }`}
               >
                 {isSubmitting ? 'Envoi en cours...' : 'Envoyer ma demande'}

@@ -7,16 +7,16 @@ const LegalMentions = () => {
     <section className="py-20 bg-white pt-32">
       <div className="container mx-auto px-6 max-w-4xl">
         <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-slate-800 mb-4">Mentions Légales</h1>
-          <div className="h-1 w-20 bg-blue-600 mx-auto mb-6"></div>
-          <p className="text-lg text-slate-600">
+          <h1 className="text-4xl font-bold text-ink-900 mb-4">Mentions Légales</h1>
+          <div className="h-1 w-20 bg-brand-600 mx-auto mb-6"></div>
+          <p className="text-lg text-ink-600">
             Informations légales concernant le site zenixweb.fr
           </p>
         </div>
         <div className="prose prose-lg max-w-none">
-          <div className="bg-slate-50 rounded-lg p-8 mb-8">
-            <h2 className="text-2xl font-bold text-slate-800 mb-6">I. INFORMATIONS LÉGALES DE L'ÉDITEUR ET DE L'HÉBERGEUR</h2>
-            <div className="space-y-3 text-slate-700">
+          <div className="bg-ink-50 rounded-lg p-8 mb-8">
+            <h2 className="text-2xl font-bold text-ink-900 mb-6">I. INFORMATIONS LÉGALES DE L'ÉDITEUR ET DE L'HÉBERGEUR</h2>
+            <div className="space-y-3 text-ink-700">
               <p>Le site web zenixweb.fr est édité par :</p>
               <p><strong>Nom et Prénom :</strong> Enzo Monnet-Mata</p>
               <p><strong>Statut juridique :</strong> Entrepreneur Individuel (Micro-Entrepreneur)</p>
@@ -36,7 +36,7 @@ const LegalMentions = () => {
                 <ProtectedValue
                   encoded={CONTACT_PHONE_DISPLAY}
                   hrefEncoded={CONTACT_PHONE_HREF}
-                  className="text-blue-600 hover:underline"
+                  className="text-brand-600 hover:underline"
                 />
               </p>
               <p><strong>Adresse e-mail :</strong> contact@zenixweb.fr</p>
@@ -46,9 +46,9 @@ const LegalMentions = () => {
               <p>TVA non applicable – article 293 B du Code Général des Impôts (CGI).</p>
             </div>
           </div>
-          <div className="bg-slate-50 rounded-lg p-8 mb-8">
-            <h2 className="text-2xl font-bold text-slate-800 mb-6">II. HÉBERGEMENT ET PRESTATAIRES TECHNIQUES</h2>
-            <div className="space-y-3 text-slate-700">
+          <div className="bg-ink-50 rounded-lg p-8 mb-8">
+            <h2 className="text-2xl font-bold text-ink-900 mb-6">II. HÉBERGEMENT ET PRESTATAIRES TECHNIQUES</h2>
+            <div className="space-y-3 text-ink-700">
               <p>
                 <strong>Hébergeur :</strong> Enzo Monnet-Mata assure lui-même l'hébergement du site, sur une
                 infrastructure qu'il détient et administre, située en France. Ses coordonnées sont celles
@@ -62,7 +62,7 @@ const LegalMentions = () => {
                 (adresse IP notamment). Bien que les serveurs sollicités pour la France soient situés en
                 Europe, cette société relève du droit des États-Unis. Les modalités de ce traitement et les
                 garanties encadrant ce transfert sont détaillées dans notre{' '}
-                <a href="/politique-confidentialite" className="text-blue-600 hover:underline">politique de confidentialité</a>.
+                <a href="/politique-confidentialite" className="text-brand-600 hover:underline">politique de confidentialité</a>.
               </p>
               <p>
                 Aucun autre prestataire tiers n'intervient dans la diffusion de ce site : la mesure d'audience
@@ -71,9 +71,9 @@ const LegalMentions = () => {
               </p>
             </div>
           </div>
-          <div className="bg-slate-50 rounded-lg p-8 mb-8">
-            <h2 className="text-2xl font-bold text-slate-800 mb-6">III. PROPRIÉTÉ INTELLECTUELLE</h2>
-            <div className="space-y-3 text-slate-700">
+          <div className="bg-ink-50 rounded-lg p-8 mb-8">
+            <h2 className="text-2xl font-bold text-ink-900 mb-6">III. PROPRIÉTÉ INTELLECTUELLE</h2>
+            <div className="space-y-3 text-ink-700">
               <p>
                 L'ensemble de ce site (structure, contenu, images) est soumis à la législation française et internationale sur le droit d'auteur et la propriété intellectuelle.
               </p>
@@ -82,9 +82,9 @@ const LegalMentions = () => {
               </p>
             </div>
           </div>
-          <div className="bg-slate-50 rounded-lg p-8 mb-8">
-            <h2 className="text-2xl font-bold text-slate-800 mb-6">IV. COLLECTE ET TRAITEMENT DES DONNÉES PERSONNELLES (RGPD)</h2>
-            <div className="space-y-3 text-slate-700">
+          <div className="bg-ink-50 rounded-lg p-8 mb-8">
+            <h2 className="text-2xl font-bold text-ink-900 mb-6">IV. COLLECTE ET TRAITEMENT DES DONNÉES PERSONNELLES (RGPD)</h2>
+            <div className="space-y-3 text-ink-700">
               <p><strong>Finalité du traitement :</strong></p>
               <p>
                 Les informations recueillies via le formulaire de contact sont utilisées pour répondre à vos demandes (devis, contact, informations).
@@ -99,28 +99,28 @@ const LegalMentions = () => {
               </p>
             </div>
           </div>
-          <div className="bg-slate-50 rounded-lg p-8 mb-8">
-            <h2 className="text-2xl font-bold text-slate-800 mb-6">V. COOKIES</h2>
-            <div className="space-y-3 text-slate-700">
+          <div className="bg-ink-50 rounded-lg p-8 mb-8">
+            <h2 className="text-2xl font-bold text-ink-900 mb-6">V. COOKIES</h2>
+            <div className="space-y-3 text-ink-700">
               <p>
                 Ce site n'utilise aucun cookie de traçage, de publicité ou de profilage, et aucun cookie n'est déposé à des fins statistiques. Seuls des cookies strictement techniques, nécessaires au bon fonctionnement du site, peuvent être utilisés.
               </p>
               <p>
-                La fréquentation du site est mesurée avec <strong>Umami</strong>, une solution d'analyse d'audience auto-hébergée sur nos propres serveurs en France. Elle ne dépose aucun cookie, ne suit pas les visiteurs d'un site à l'autre et ne collecte aucune donnée permettant de vous identifier. Aucun bandeau de consentement n'est donc requis. Le détail figure dans notre <a href="/politique-confidentialite" className="text-blue-600 hover:underline">politique de confidentialité</a>.
+                La fréquentation du site est mesurée avec <strong>Umami</strong>, une solution d'analyse d'audience auto-hébergée sur nos propres serveurs en France. Elle ne dépose aucun cookie, ne suit pas les visiteurs d'un site à l'autre et ne collecte aucune donnée permettant de vous identifier. Aucun bandeau de consentement n'est donc requis. Le détail figure dans notre <a href="/politique-confidentialite" className="text-brand-600 hover:underline">politique de confidentialité</a>.
               </p>
             </div>
           </div>
-          <div className="bg-slate-50 rounded-lg p-8 mb-8">
-            <h2 className="text-2xl font-bold text-slate-800 mb-6">VI. LIMITATION DE RESPONSABILITÉ</h2>
-            <div className="space-y-3 text-slate-700">
+          <div className="bg-ink-50 rounded-lg p-8 mb-8">
+            <h2 className="text-2xl font-bold text-ink-900 mb-6">VI. LIMITATION DE RESPONSABILITÉ</h2>
+            <div className="space-y-3 text-ink-700">
               <p>
                 Le Prestataire s'efforce d'assurer l'exactitude des informations diffusées sur le site. Si vous constatez une lacune ou une erreur, merci de bien vouloir la signaler par e-mail à contact@zenixweb.fr, en décrivant le problème de la manière la plus précise possible.
               </p>
             </div>
           </div>
-          <div className="bg-slate-50 rounded-lg p-8">
-            <h2 className="text-2xl font-bold text-slate-800 mb-6">VII. DROIT APPLICABLE ET JURIDICTION</h2>
-            <div className="space-y-3 text-slate-700">
+          <div className="bg-ink-50 rounded-lg p-8">
+            <h2 className="text-2xl font-bold text-ink-900 mb-6">VII. DROIT APPLICABLE ET JURIDICTION</h2>
+            <div className="space-y-3 text-ink-700">
               <p>
                 Tout litige en relation avec l'utilisation du site zenixweb.fr est soumis au droit français.
               </p>
@@ -135,7 +135,7 @@ const LegalMentions = () => {
                 À défaut de résolution amiable, les juridictions compétentes sont déterminées selon les règles
                 de droit commun. Les relations contractuelles avec les clients professionnels sont régies par
                 les{' '}
-                <a href="/conditions-vente" className="text-blue-600 hover:underline">conditions générales de vente</a>,
+                <a href="/conditions-vente" className="text-brand-600 hover:underline">conditions générales de vente</a>,
                 qui prévalent sur le présent document pour tout ce qui concerne l'exécution des prestations.
               </p>
             </div>
@@ -144,7 +144,7 @@ const LegalMentions = () => {
         <div className="text-center mt-12">
           <button 
             onClick={() => navigate(-1)}
-            className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-8 rounded-full transition-all shadow-lg hover:shadow-blue-500/20 active:scale-95"
+            className="bg-brand-600 hover:bg-brand-700 text-white font-semibold py-3 px-8 rounded-full transition-all shadow-lg hover:shadow-brand-500/20 active:scale-95"
           >
             Retour
           </button>

@@ -63,16 +63,6 @@ spec:
               key: admin-email
         - name: ALLOWED_ORIGINS
           value: {{ .Values.backend.env.ALLOWED_ORIGINS | quote }}
-        - name: GOTIFY_URL
-          valueFrom:
-            secretKeyRef:
-              name: {{ .Values.backend.secretName }}
-              key: gotify-url
-        - name: GOTIFY_TOKEN
-          valueFrom:
-            secretKeyRef:
-              name: {{ .Values.backend.secretName }}
-              key: gotify-token
         resources:
           {{- toYaml .Values.backend.resources | nindent 10 }}
         livenessProbe:

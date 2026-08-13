@@ -10,7 +10,7 @@ import { trackEvent } from './utils/analytics';
 const Hero = lazy(() => import('./components/Hero'));
 const AboutMe = lazy(() => import('./components/AboutMe'));
 const Portfolio = lazy(() => import('./components/Portfolio'));
-const CompanyInfo = lazy(() => import('./components/CompanyInfo'));
+const HomeCta = lazy(() => import('./components/HomeCta'));
 const LandingExplanation = lazy(() => import('./components/LandingExplanation'));
 const PreDevisQuestions = lazy(() => import('./components/PreDevisQuestions'));
 const ContactPageComponent = lazy(() => import('./components/ContactPage'));
@@ -36,12 +36,24 @@ const NotFound = lazy(() => import('./components/NotFound'));
  * table qui fait le lien entre les deux.
  */
 const PAGE_CONTENT: Record<string, ReactNode> = {
+  // Enchaînement de la page d'accueil : la promesse (Hero) → la PREUVE
+  // (Portfolio) → qui la tient (AboutMe) → l'action (HomeCta).
+  //
+  // Le portfolio est remonté juste après le hero. Il arrivait en quatrième
+  // position, après deux sections de texte : un visiteur qui veut savoir si on
+  // sait faire regarde d'abord des sites existants, il ne lit pas trois écrans
+  // d'explications pour y arriver. Des réalisations en ligne convainquent plus
+  // vite qu'un argumentaire.
+  //
+  // La section « Approach » (six différenciants détaillés) a été retirée d'ici :
+  // trop de texte pour une page d'accueil. Le composant est conservé pour une
+  // future page « FAQ » ou « Notre approche ».
   '/': (
     <>
       <Hero />
-      <AboutMe />
       <Portfolio />
-      <CompanyInfo />
+      <AboutMe />
+      <HomeCta />
     </>
   ),
   '/nos-services': <TypesDeSites />,
@@ -127,7 +139,7 @@ function App() {
         <Suspense
           fallback={
             <div className="h-screen flex items-center justify-center">
-              <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-600"></div>
+              <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-brand-600"></div>
             </div>
           }
         >

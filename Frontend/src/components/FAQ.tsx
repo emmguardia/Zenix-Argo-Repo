@@ -21,14 +21,14 @@ const FaqCategory = ({ icon, title, items, id }: FaqCategoryProps) => {
   return (
     <section className="bg-white rounded-2xl shadow-lg p-6 md:p-8" aria-labelledby={`faq-${id}`}>
       <div className="flex items-center gap-3 mb-6">
-        <div className="bg-blue-100 p-2.5 rounded-lg">{icon}</div>
-        <h2 id={`faq-${id}`} className="text-2xl font-bold text-slate-800">{title}</h2>
+        <div className="bg-brand-100 p-2.5 rounded-lg">{icon}</div>
+        <h2 id={`faq-${id}`} className="text-2xl font-bold text-ink-900">{title}</h2>
       </div>
       <div className="space-y-2">
         {items.map((item, index) => {
           const isOpen = openIndex === index;
           return (
-            <div key={index} className="border-b border-slate-100 last:border-0">
+            <div key={index} className="border-b border-ink-100 last:border-0">
               <button
                 onClick={() => {
                   setOpenIndex(isOpen ? null : index);
@@ -36,19 +36,19 @@ const FaqCategory = ({ icon, title, items, id }: FaqCategoryProps) => {
                     trackEvent('faq_question_open', { category: id, question: item.q });
                   }
                 }}
-                className="w-full flex items-start justify-between gap-4 py-4 text-left hover:text-blue-600 transition-colors"
+                className="w-full flex items-start justify-between gap-4 py-4 text-left hover:text-brand-600 transition-colors"
                 aria-expanded={isOpen}
               >
-                <span className="text-base font-semibold text-slate-800 group-hover:text-blue-600">
+                <span className="text-base font-semibold text-ink-900 group-hover:text-brand-600">
                   {item.q}
                 </span>
                 <ChevronDown
-                  className={`w-5 h-5 text-slate-500 flex-shrink-0 mt-1 transition-transform ${isOpen ? 'rotate-180' : ''}`}
+                  className={`w-5 h-5 text-ink-500 flex-shrink-0 mt-1 transition-transform ${isOpen ? 'rotate-180' : ''}`}
                   aria-hidden="true"
                 />
               </button>
               {isOpen && (
-                <div className="pb-4 text-slate-600 leading-relaxed">
+                <div className="pb-4 text-ink-600 leading-relaxed">
                   {item.a}
                 </div>
               )}
@@ -88,7 +88,7 @@ const FAQ = () => {
   const general: QAItem[] = [
     {
       q: "Qui se cache derrière Zenix ?",
-      a: "Zenix est portée par Enzo Monnet Mata, développeur web indépendant établi en Beaujolais, étudiant en cybersécurité à Guardia. Vous traitez directement avec moi, pas un commercial intermédiaire.",
+      a: "Zenix est portée par Enzo Monnet-Mata, développeur web et administrateur d'infrastructure, établi en Beaujolais. Je conçois le site, je l'héberge sur mes propres serveurs et j'en assure la maintenance : vous traitez directement avec moi, pas avec un commercial intermédiaire.",
     },
     {
       q: "Où êtes-vous basé ?",
@@ -173,7 +173,7 @@ const FAQ = () => {
   const securite: QAItem[] = [
     {
       q: "Comment mon site est-il protégé contre les attaques ?",
-      a: "WAF Cloudflare, protection anti-DDoS, headers de sécurité stricts (CSP, HSTS, X-Frame-Options), HTTPS obligatoire, validation et nettoyage des entrées, isolation par conteneurs. Aucun panneau d'admin n'est exposé publiquement sans authentification forte.",
+      a: "Filtrage du trafic malveillant par Cloudflare en amont du serveur, y compris les attaques par saturation, headers de sécurité stricts (CSP, HSTS, X-Frame-Options), HTTPS obligatoire, validation et nettoyage des entrées, isolation par conteneurs. Aucun panneau d'admin n'est exposé publiquement sans authentification forte.",
     },
     {
       q: "Mes sauvegardes sont-elles à jour ?",
@@ -236,15 +236,15 @@ const FAQ = () => {
   ];
 
   return (
-    <section className="py-20 bg-gradient-to-br from-slate-50 to-blue-50 pt-32" ref={sectionRef}>
+    <section className="py-20 bg-ink-50 pt-32" ref={sectionRef}>
       <div className="container mx-auto px-6">
         <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-slate-800 mb-4">Foire aux questions</h1>
-          <div className="h-1 w-20 bg-blue-600 mx-auto mb-6"></div>
-          <p className="text-lg text-slate-600 max-w-3xl mx-auto">
+          <h1 className="text-4xl font-bold text-ink-900 mb-4">Foire aux questions</h1>
+          <div className="h-1 w-20 bg-brand-600 mx-auto mb-6"></div>
+          <p className="text-lg text-ink-600 max-w-3xl mx-auto">
             Toutes les questions fréquentes sur Zenix : création de sites, hébergement, sécurité, tarifs et programme partenaires.
             Une question manquante ?{' '}
-            <Link to="/contact" className="text-blue-600 hover:underline font-medium">contactez-moi</Link>.
+            <Link to="/contact" className="text-brand-600 hover:underline font-medium">contactez-moi</Link>.
           </p>
         </div>
 
@@ -252,37 +252,37 @@ const FAQ = () => {
           <FaqCategory
             id="general"
             title="Général"
-            icon={<Globe className="w-5 h-5 text-blue-600" aria-hidden="true" />}
+            icon={<Globe className="w-5 h-5 text-brand-600" aria-hidden="true" />}
             items={general}
           />
           <FaqCategory
             id="sites"
             title="Création de sites"
-            icon={<Code2 className="w-5 h-5 text-blue-600" aria-hidden="true" />}
+            icon={<Code2 className="w-5 h-5 text-brand-600" aria-hidden="true" />}
             items={sites}
           />
           <FaqCategory
             id="hebergement"
             title="Hébergement & maintenance"
-            icon={<Server className="w-5 h-5 text-blue-600" aria-hidden="true" />}
+            icon={<Server className="w-5 h-5 text-brand-600" aria-hidden="true" />}
             items={hebergement}
           />
           <FaqCategory
             id="securite"
             title="Sécurité & RGPD"
-            icon={<Shield className="w-5 h-5 text-blue-600" aria-hidden="true" />}
+            icon={<Shield className="w-5 h-5 text-brand-600" aria-hidden="true" />}
             items={securite}
           />
           <FaqCategory
             id="tarifs"
             title="Tarifs & facturation"
-            icon={<CreditCard className="w-5 h-5 text-blue-600" aria-hidden="true" />}
+            icon={<CreditCard className="w-5 h-5 text-brand-600" aria-hidden="true" />}
             items={tarifs}
           />
           <FaqCategory
             id="dev"
             title="Pour les développeurs"
-            icon={<Wrench className="w-5 h-5 text-blue-600" aria-hidden="true" />}
+            icon={<Wrench className="w-5 h-5 text-brand-600" aria-hidden="true" />}
             items={dev}
           />
         </div>
@@ -291,7 +291,7 @@ const FAQ = () => {
           <Link
             to="/contact"
             onClick={() => trackEvent('contact_click', { source: 'faq', cta: 'pose_question' })}
-            className="inline-flex items-center bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-8 rounded-full transition-all shadow-lg active:scale-95"
+            className="inline-flex items-center bg-brand-600 hover:bg-brand-700 text-white font-semibold py-3 px-8 rounded-full transition-all shadow-lg active:scale-95"
           >
             Poser une autre question
             <ArrowRight className="w-5 h-5 ml-2" aria-hidden="true" />

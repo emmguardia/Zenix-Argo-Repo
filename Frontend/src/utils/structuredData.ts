@@ -101,15 +101,13 @@ export const personSchema = {
   "@type": "Person",
   "@id": `${SITE_URL}/#enzo-monnet-mata`,
   "name": "Enzo Monnet-Mata",
-  "jobTitle": "Développeur web indépendant",
-  "description": "Développeur web indépendant basé dans le Rhône, étudiant en cybersécurité à Guardia. Création de sites vitrine, e-commerce et landing pages, avec hébergement managé en France.",
-  // `affiliation` et non `alumniOf` : Enzo est étudiant en cours de cursus,
-  // `alumniOf` désigne un établissement déjà quitté.
-  "affiliation": {
-    "@type": "EducationalOrganization",
-    "name": "Guardia Cybersecurity School",
-    "url": "https://www.guardia.school/"
-  },
+  "jobTitle": "Développeur web et administrateur d'infrastructure",
+  "description": "Développeur web indépendant établi en Beaujolais. Création de sites vitrine, e-commerce et landing pages, hébergés et maintenus sur une infrastructure opérée en propre, en France.",
+  // Le parcours de formation en cybersécurité (`affiliation` vers l'école) a été
+  // retiré ici comme sur le reste du site : l'offre repose sur un abonnement
+  // d'hébergement, et signaler « étudiant » comme trait d'identité de l'entité
+  // travaille contre cet engagement de durée. La compétence reste déclarée dans
+  // `knowsAbout`, où elle décrit ce qui est maîtrisé plutôt qu'un statut.
   "worksFor": { "@id": `${SITE_URL}/#organization` },
   "address": BUSINESS_ADDRESS,
   "image": `${SITE_URL}/images/profile-photo.webp`,
@@ -364,7 +362,7 @@ export const faqPageSchema = {
       "name": "Qui se cache derrière Zenix ?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Zenix est portée par Enzo Monnet Mata, développeur web indépendant établi en Beaujolais, étudiant en cybersécurité à Guardia. Vous traitez directement avec moi, pas un commercial intermédiaire."
+        "text": "Zenix est portée par Enzo Monnet-Mata, développeur web et administrateur d'infrastructure, établi en Beaujolais. Je conçois le site, je l'héberge sur mes propres serveurs et j'en assure la maintenance : vous traitez directement avec moi, pas avec un commercial intermédiaire."
       }
     },
     {
@@ -437,10 +435,11 @@ export const ecommerceServiceSchema = {
   "@context": "https://schema.org",
   "@type": "Service",
   "name": "Création de Site E-commerce Sécurisé",
-  // « Conformité PCI-DSS » a été retiré : c'est une certification, et elle est
-  // portée par le prestataire de paiement (Stripe), pas par nous. Se l'attribuer
-  // revient à revendiquer une qualification qu'on ne détient pas.
-  "description": "Boutiques en ligne sécurisées avec paiement intégré via un prestataire certifié PCI-DSS, gestion produits et SEO e-commerce optimisé.",
+  // Formulation à ne pas retoucher sans y regarder à deux fois : la
+  // certification PCI DSS est détenue par Stripe, pas par Zenix. Écrire
+  // « conformité PCI-DSS » sans préciser qui la détient revient à revendiquer
+  // une qualification qu'on n'a pas.
+  "description": "Boutiques en ligne avec paiement par carte traité par Stripe, certifié PCI DSS niveau 1, gestion des produits et référencement optimisé.",
   "provider": { "@id": `${SITE_URL}/#organization` },
   "serviceType": "Développement E-commerce",
   "areaServed": AREA_SERVED,

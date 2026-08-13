@@ -3,14 +3,14 @@ import { Link } from 'react-router-dom';
 import { trackEvent } from '../utils/analytics';
 const Footer = () => {
   return (
-    <footer className="bg-slate-900 text-white py-12">
+    <footer className="bg-ink-950 text-white py-12">
       <div className="container mx-auto px-6">
         <div className="grid md:grid-cols-3 gap-8">
           <div>
             <div className="flex items-center mb-6">
               <img src="/images/Logo.webp" alt="Zenix Logo" width={320} height={128} loading="lazy" className="h-32 w-auto" />
             </div>
-            <p className="text-slate-400 mb-4">
+            <p className="text-ink-400 mb-4">
               Développeur web freelance spécialisé dans la création de sites web modernes et performants.
             </p>
             <div className="flex space-x-4">
@@ -19,7 +19,7 @@ const Footer = () => {
                 target="_blank" 
                 rel="noopener noreferrer"
                 aria-label="Profil LinkedIn d'Enzo Monnet Mata"
-                className="text-slate-400 hover:text-white transition-colors"
+                className="text-ink-400 hover:text-white transition-colors"
                 onClick={() => trackEvent('social_click', { platform: 'linkedin', location: 'footer' })}
               >
                 <Linkedin className="w-5 h-5" aria-hidden="true" />
@@ -29,7 +29,7 @@ const Footer = () => {
                 target="_blank" 
                 rel="noopener noreferrer"
                 aria-label="Profil Instagram Zenix Web"
-                className="text-slate-400 hover:text-white transition-colors"
+                className="text-ink-400 hover:text-white transition-colors"
                 onClick={() => trackEvent('social_click', { platform: 'instagram', location: 'footer' })}
               >
                 <Instagram className="w-5 h-5" aria-hidden="true" />
@@ -39,13 +39,13 @@ const Footer = () => {
           <div>
             <h3 className="text-xl font-bold mb-4">Contact</h3>
             <div className="space-y-3">
-              <p className="flex items-center text-slate-400">
+              <p className="flex items-center text-ink-400">
                 <Mail className="w-5 h-5 mr-2" />
-                <a href="mailto:contact@zenixweb.fr" className="text-slate-400 hover:text-white transition-colors" onClick={() => trackEvent('contact_click', { source: 'footer', method: 'email' })}>
+                <a href="mailto:contact@zenixweb.fr" className="text-ink-400 hover:text-white transition-colors" onClick={() => trackEvent('contact_click', { source: 'footer', method: 'email' })}>
                   contact@zenixweb.fr
                 </a>
               </p>
-              <p className="flex items-center text-slate-400">
+              <p className="flex items-center text-ink-400">
                 <MapPin className="w-5 h-5 mr-2" />
                 {/* Doit rester identique à l'adresse déclarée dans le JSON-LD
                     (structuredData.ts) et dans les mentions légales : le footer
@@ -58,7 +58,7 @@ const Footer = () => {
           </div>
           <div>
             <h3 className="text-xl font-bold mb-4">Services</h3>
-            <ul className="space-y-2 text-slate-400">
+            <ul className="space-y-2 text-ink-400">
               <li><Link to="/nos-services" className="hover:text-white transition-colors" onClick={() => trackEvent('footer_link_click', { destination: '/nos-services', page: 'nos_services' })}>Nos Services</Link></li>
               <li><Link to="/site-vitrine" className="hover:text-white transition-colors" onClick={() => trackEvent('footer_link_click', { destination: '/site-vitrine', page: 'site_vitrine' })}>Site Vitrine</Link></li>
               <li><Link to="/site-ecommerce" className="hover:text-white transition-colors" onClick={() => trackEvent('footer_link_click', { destination: '/site-ecommerce', page: 'site_ecommerce' })}>Site E-commerce</Link></li>
@@ -68,8 +68,8 @@ const Footer = () => {
             </ul>
           </div>
         </div>
-        <div className="border-t border-slate-800 mt-8 pt-8">
-          <div className="flex flex-col md:flex-row justify-between items-center text-slate-400">
+        <div className="border-t border-ink-900 mt-8 pt-8">
+          <div className="flex flex-col md:flex-row justify-between items-center text-ink-400">
             <p>&copy; {new Date().getFullYear()} Zenix. Tous droits réservés.</p>
             <div className="flex flex-wrap justify-center md:justify-end gap-x-6 gap-y-2 mt-4 md:mt-0">
               <Link to="/mentions-legales" className="hover:text-white transition-colors text-sm">
@@ -81,9 +81,12 @@ const Footer = () => {
               <Link to="/conditions-vente" className="hover:text-white transition-colors text-sm">
                 Conditions de Vente
               </Link>
+              {/* Lien volontairement discret, mais lisible : en ink-600 sur le
+                  fond sombre du pied de page il ne donnait que 2,67:1, sous le
+                  minimum WCAG. ink-400 le garde en retrait à 6,81:1. */}
               <Link
                 to="/partenaires"
-                className="text-slate-600 hover:text-slate-400 transition-colors text-xs"
+                className="text-ink-400 hover:text-white transition-colors text-xs"
                 onClick={() => trackEvent('footer_link_click', { destination: '/partenaires', page: 'partenaires' })}
               >
                 Partenaires

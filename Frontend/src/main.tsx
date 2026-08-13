@@ -10,6 +10,11 @@ import { createRoot } from 'react-dom/client';
 // feuille est traitée par Vite avec sa propre base, les URLs sont réécrites
 // et les woff2 sont émis et empreintés.
 import '@fontsource-variable/inter';
+// Space Grotesk : uniquement les titres et les sur-titres. Ses formes plus
+// larges et ses terminaisons droites tranchent nettement avec Inter à la
+// lecture, ce qui donne une hiérarchie visible sans avoir à empiler les tailles
+// et les graisses.
+import '@fontsource-variable/space-grotesk';
 import App from './App.tsx';
 import './index.css';
 createRoot(document.getElementById('root')!).render(

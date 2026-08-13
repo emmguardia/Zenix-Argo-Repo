@@ -129,14 +129,14 @@ const Portfolio = () => {
   return (
     <section
       id="portfolio"
-      className="py-12 md:py-16 bg-slate-50 pt-20 md:pt-24 section-compact"
+      className="py-20 md:py-24 bg-white section-compact"
       ref={sectionRef}
     >
       <div className="container mx-auto px-6">
         <div className="text-center mb-8 md:mb-12">
-          <h2 className="text-2xl md:text-3xl font-bold text-slate-800 mb-4">Mes réalisations</h2>
-          <div className="h-1 w-20 bg-blue-600 mx-auto mb-4"></div>
-          <p className="text-base md:text-lg text-slate-600 max-w-2xl mx-auto">
+          <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-ink-950 mb-4">Mes réalisations</h2>
+          <span className="rule mx-auto mb-5" aria-hidden="true" />
+          <p className="text-lg text-ink-600 max-w-2xl mx-auto">
             Des sites en ligne, utilisés au quotidien par leurs propriétaires. Tous sont hébergés
             et maintenus par Zenix.
           </p>
@@ -146,11 +146,11 @@ const Portfolio = () => {
           {projects.map((project) => (
             <article
               key={project.url}
-              className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 flex flex-col"
+              className="bg-white rounded-2xl border border-ink-200 overflow-hidden transition-colors duration-200 hover:border-brand-300 flex flex-col"
             >
               <button
                 type="button"
-                className="h-52 bg-gradient-to-br from-blue-100 to-violet-100 overflow-hidden relative cursor-zoom-in block w-full"
+                className="h-52 bg-ink-100 overflow-hidden relative cursor-zoom-in block w-full"
                 onClick={() => setSelectedImage(project.image)}
                 aria-label={`Agrandir l'aperçu de ${project.title}`}
               >
@@ -168,35 +168,35 @@ const Portfolio = () => {
                   }}
                 />
                 <div className="absolute inset-0 hidden items-center justify-center flex-col">
-                  <Code2 className="w-12 h-12 text-blue-600 mb-2" aria-hidden="true" />
-                  <p className="text-slate-600 text-sm">Aperçu indisponible</p>
+                  <Code2 className="w-12 h-12 text-brand-600 mb-2" aria-hidden="true" />
+                  <p className="text-ink-500 text-sm">Aperçu indisponible</p>
                 </div>
               </button>
 
               <div className="p-6 flex flex-col flex-grow">
                 <div className="flex items-center justify-between mb-3 gap-3">
-                  <span className="text-xs font-semibold text-blue-600 bg-blue-50 px-2.5 py-1 rounded-full">
+                  <span className="text-xs font-semibold text-brand-700 bg-brand-50 px-2.5 py-1 rounded-full">
                     {project.category}
                   </span>
                   <button
                     type="button"
                     onClick={() => setSelectedImage(project.image)}
-                    className="p-1 text-slate-400 hover:text-blue-600 transition-colors"
+                    className="p-1 text-ink-400 hover:text-brand-600 transition-colors"
                     aria-label={`Voir l'aperçu de ${project.title} en grand`}
                   >
                     <Eye className="w-4 h-4" aria-hidden="true" />
                   </button>
                 </div>
 
-                <h3 className="text-xl font-bold text-slate-800">{project.title}</h3>
-                <p className="text-sm text-slate-500 mb-3">{project.client}</p>
-                <p className="text-slate-600 mb-4 text-sm flex-grow">{project.description}</p>
+                <h3 className="text-xl font-bold text-ink-950">{project.title}</h3>
+                <p className="text-sm text-ink-500 mb-3">{project.client}</p>
+                <p className="text-ink-600 mb-4 text-sm flex-grow">{project.description}</p>
 
                 <ul className="flex flex-wrap gap-2 mb-5">
                   {project.capabilities.map((capability) => (
                     <li
                       key={capability}
-                      className="text-xs bg-slate-100 text-slate-700 px-2.5 py-1 rounded-full"
+                      className="text-xs bg-ink-100 text-ink-700 px-2.5 py-1 rounded-full"
                     >
                       {capability}
                     </li>
@@ -210,7 +210,7 @@ const Portfolio = () => {
                   target="_blank"
                   rel="noopener noreferrer"
                   onClick={() => trackEvent('portfolio_project_click', { title: project.title })}
-                  className="inline-flex items-center justify-center text-blue-600 hover:text-blue-700 font-semibold text-sm mt-auto"
+                  className="inline-flex items-center justify-center text-brand-600 hover:text-brand-700 font-semibold text-sm mt-auto"
                 >
                   Voir le site en ligne
                   <ExternalLink className="w-4 h-4 ml-1.5" aria-hidden="true" />
@@ -233,7 +233,7 @@ const Portfolio = () => {
             <button
               type="button"
               onClick={() => setSelectedImage(null)}
-              className="absolute -top-10 right-0 text-white hover:text-slate-300 transition-colors"
+              className="absolute -top-10 right-0 text-white hover:text-ink-300 transition-colors"
               aria-label="Fermer l'aperçu"
             >
               <X className="w-8 h-8" aria-hidden="true" />

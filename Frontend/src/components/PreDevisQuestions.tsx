@@ -42,12 +42,12 @@ const PreDevisQuestions = () => {
     }
   ];
   return (
-    <section className="py-20 bg-slate-50 pt-32">
+    <section className="py-20 bg-ink-50 pt-32">
       <div className="container mx-auto px-6">
         <div className="text-center mb-16">
-          <h2 className="text-3xl font-bold text-slate-800 mb-4">Questions à préparer avant le devis</h2>
-          <div className="h-1 w-20 bg-blue-600 mx-auto mb-6"></div>
-          <p className="text-lg text-slate-600 max-w-3xl mx-auto">
+          <h2 className="text-3xl font-bold text-ink-900 mb-4">Questions à préparer avant le devis</h2>
+          <div className="h-1 w-20 bg-brand-600 mx-auto mb-6"></div>
+          <p className="text-lg text-ink-600 max-w-3xl mx-auto">
             Pour vous proposer le devis le plus précis possible, voici les questions que nous aborderons ensemble. 
             Plus vous aurez de réponses, plus notre échange sera efficace !
           </p>
@@ -55,32 +55,32 @@ const PreDevisQuestions = () => {
         <div className="grid md:grid-cols-2 gap-8 max-w-6xl mx-auto">
           {questions.map((section, sectionIndex) => (
             <div key={sectionIndex} className="bg-white rounded-xl shadow-lg p-6">
-              <h3 className="text-xl font-bold text-slate-800 mb-4 flex items-center">
-                <div className="bg-blue-100 p-2 rounded-lg mr-3">
-                  <CheckCircle className="w-5 h-5 text-blue-600" />
+              <h3 className="text-xl font-bold text-ink-900 mb-4 flex items-center">
+                <div className="bg-brand-100 p-2 rounded-lg mr-3">
+                  <CheckCircle className="w-5 h-5 text-brand-600" />
                 </div>
                 {section.category}
               </h3>
               <ul className="space-y-3">
                 {section.questions.map((question, questionIndex) => (
                   <li key={questionIndex} className="flex items-start">
-                    <div className="w-2 h-2 bg-blue-600 rounded-full mt-2 mr-3 flex-shrink-0"></div>
-                    <span className="text-slate-600">{question}</span>
+                    <div className="w-2 h-2 bg-brand-600 rounded-full mt-2 mr-3 flex-shrink-0"></div>
+                    <span className="text-ink-600">{question}</span>
                   </li>
                 ))}
               </ul>
             </div>
           ))}
         </div>
-        <div className="mt-12 bg-gradient-to-r from-blue-600 to-violet-600 rounded-2xl p-8 text-white text-center">
+        <div className="mt-12 bg-brand-600 rounded-2xl p-8 text-white text-center">
           <h3 className="text-2xl font-bold mb-4">Prêt à démarrer votre projet ?</h3>
-          <p className="text-blue-100 mb-6 max-w-2xl mx-auto">
+          <p className="text-white/90 mb-6 max-w-2xl mx-auto">
             Même si vous n'avez pas toutes les réponses, n'hésitez pas à me contacter. 
             Je vous accompagnerai pour définir ensemble les meilleures solutions pour votre projet.
           </p>
           <button 
             onClick={() => { trackEvent('contact_click', { source: 'landing', cta: 'devis_questions' }); navigate('/contact'); }}
-            className="bg-white text-blue-600 hover:bg-blue-50 font-semibold py-3 px-8 rounded-full transition-all shadow-lg hover:shadow-white/20 active:scale-95 inline-flex items-center"
+            className="bg-white text-brand-600 hover:bg-brand-50 font-semibold py-3 px-8 rounded-full transition-all shadow-lg hover:shadow-white/20 active:scale-95 inline-flex items-center"
           >
             Demander un devis gratuit
             <ArrowRight className="w-5 h-5 ml-2" />

@@ -44,9 +44,11 @@ Zenix Web étant un projet à mainteneur unique, **seule la version courante en 
 
 #### Exceptions d'audit en cours
 
-| Advisory | Paquet | Pourquoi elle est ignorée |
-|---|---|---|
-| [GHSA-qwww-vcr4-c8h2](https://github.com/advisories/GHSA-qwww-vcr4-c8h2) | `react-router` | Contournement CSRF **du mode RSC** (React Server Components). Le site est une SPA purement cliente (`BrowserRouter`), sans RSC ni server actions : le code vulnérable n'est jamais atteint. Le correctif n'existe qu'en v8, où `react-router-dom` disparaît au profit d'imports directs — une migration à mener à froid, pas en correctif de sécurité. À réévaluer si le site passe un jour en rendu serveur. |
+**Aucune.** `pnpm.auditConfig.ignoreGhsas` est vide dans les deux `package.json`.
+
+L'exception qui figurait ici — [GHSA-qwww-vcr4-c8h2](https://github.com/advisories/GHSA-qwww-vcr4-c8h2) sur `react-router` — a été retirée : elle était justifiée par « le correctif n'existe qu'en v8 », ce qui n'est plus vrai depuis la publication de la **7.18.2**. Le paquet est maintenant à jour et l'audit passe sans suppression.
+
+C'est le risque propre à ce mécanisme : une exception écrite de bonne foi devient silencieusement fausse quand l'écosystème bouge, et continue de masquer un advisory devenu corrigeable. Toute entrée ajoutée ici doit donc être réexaminée à chaque exécution du workflow « Corriger les CVE et redéployer », pas seulement au moment où on l'écrit.
 
 ### Runtime (production)
 

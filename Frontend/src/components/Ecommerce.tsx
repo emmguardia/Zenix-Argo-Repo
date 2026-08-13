@@ -35,7 +35,7 @@ const Ecommerce = () => {
     {
       icon: <CreditCard className="w-6 h-6" />,
       title: 'Paiement Sécurisé',
-      description: 'Intégration de solutions de paiement sécurisées (Stripe, PayPal) avec conformité PCI-DSS et cryptage des données.'
+      description: 'Paiement par carte traité par Stripe, certifié PCI DSS niveau 1. Les données bancaires ne transitent jamais par votre site ni par mes serveurs.'
     },
     {
       icon: <Shield className="w-6 h-6" />,
@@ -49,13 +49,13 @@ const Ecommerce = () => {
     },
     {
       icon: <BarChart className="w-6 h-6" />,
-      title: 'Analytics & Tracking',
-      description: 'Suivi des conversions, Google Analytics E-commerce, tracking des ventes et analyse du comportement des clients.'
+      title: 'Mesure d’audience',
+      description: 'Mesure d’audience sans cookie ni bandeau de consentement : pages vues, provenance des visiteurs, produits consultés.'
     },
     {
       icon: <Package className="w-6 h-6" />,
       title: 'Gestion Commandes',
-      description: 'Système complet de gestion des commandes, suivi des livraisons, facturation automatique et notifications clients.'
+      description: 'Suivi des commandes depuis l’administration, changements de statut et notifications automatiques aux clients.'
     }
   ];
 
@@ -63,9 +63,8 @@ const Ecommerce = () => {
     'Catalogue produits illimité avec gestion des stocks',
     'Panier d\'achat et processus de commande optimisé',
     'Intégration paiement sécurisé (Stripe, PayPal)',
-    'Gestion des commandes et suivi des livraisons',
+    'Gestion des commandes depuis l’administration',
     'Compte client avec historique des commandes',
-    'Système de facturation automatique',
     'Gestion des codes promo et réductions',
     'Interface d\'administration complète',
     'Optimisation SEO produits et catégories',
@@ -73,23 +72,22 @@ const Ecommerce = () => {
   ];
 
   const securityFeatures = [
-    'Conformité PCI-DSS pour les paiements',
+    'Paiement délégué à Stripe, certifié PCI DSS niveau 1',
     'Chiffrement SSL/TLS pour toutes les transactions',
     'Protection CSRF et XSS renforcée',
     'Validation stricte des données de paiement',
     'Sauvegarde quotidienne des données clients',
-    'Protection contre les attaques DDoS',
     'Headers de sécurité renforcés',
-    'Audit de sécurité régulier'
+    'Mises à jour de sécurité suivies'
   ];
 
   return (
-    <section className="py-20 bg-gradient-to-br from-slate-50 to-violet-50 pt-32" ref={sectionRef}>
+    <section className="py-20 bg-ink-50 pt-32" ref={sectionRef}>
       <div className="container mx-auto px-6">
         <div className="text-center mb-16">
-          <h1 className="text-4xl font-bold text-slate-800 mb-4">Création de Site E-commerce Professionnel</h1>
-          <div className="h-1 w-20 bg-blue-600 mx-auto mb-6"></div>
-          <p className="text-lg text-slate-600 max-w-3xl mx-auto">
+          <h1 className="text-4xl font-bold text-ink-900 mb-4">Création de Site E-commerce Professionnel</h1>
+          <div className="h-1 w-20 bg-brand-600 mx-auto mb-6"></div>
+          <p className="text-lg text-ink-600 max-w-3xl mx-auto">
             Boutiques en ligne sécurisées et optimisées pour convertir. Vendez vos produits en ligne avec 
             une solution e-commerce complète, sécurisée et performante.
           </p>
@@ -98,41 +96,41 @@ const Ecommerce = () => {
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
           {features.map((feature, index) => (
             <div key={index} className="bg-white rounded-xl p-6 shadow-lg hover:shadow-xl transition-all duration-300">
-              <div className="bg-violet-600 text-white p-3 rounded-lg inline-flex mb-4">
+              <div className="bg-brand-600 text-white p-3 rounded-lg inline-flex mb-4">
                 {feature.icon}
               </div>
-              <h3 className="text-xl font-semibold text-slate-800 mb-2">{feature.title}</h3>
-              <p className="text-slate-600">{feature.description}</p>
+              <h3 className="text-xl font-semibold text-ink-900 mb-2">{feature.title}</h3>
+              <p className="text-ink-600">{feature.description}</p>
             </div>
           ))}
         </div>
 
         <div className="grid md:grid-cols-2 gap-12 mb-16">
-          <div className="bg-gradient-to-br from-violet-50 to-blue-50 rounded-2xl p-8">
-            <h2 className="text-3xl font-bold text-slate-800 mb-6">Fonctionnalités incluses</h2>
+          <div className="bg-brand-50 rounded-2xl p-8">
+            <h2 className="text-3xl font-bold text-ink-900 mb-6">Fonctionnalités incluses</h2>
             <ul className="space-y-4">
               {services.map((service, index) => (
                 <li key={index} className="flex items-start">
-                  <Check className="w-5 h-5 text-green-600 mr-3 mt-0.5 flex-shrink-0" />
-                  <span className="text-slate-700">{service}</span>
+                  <Check className="w-5 h-5 text-brand-600 mr-3 mt-0.5 flex-shrink-0" />
+                  <span className="text-ink-700">{service}</span>
                 </li>
               ))}
             </ul>
           </div>
 
-          <div className="bg-white rounded-2xl shadow-lg p-8 border border-slate-200">
-            <h2 className="text-3xl font-bold text-slate-800 mb-6 flex items-center">
-              <Lock className="w-8 h-8 text-green-600 mr-3" />
+          <div className="bg-white rounded-2xl shadow-lg p-8 border border-ink-200">
+            <h2 className="text-3xl font-bold text-ink-900 mb-6 flex items-center">
+              <Lock className="w-8 h-8 text-brand-600 mr-3" />
               Sécurité E-commerce
             </h2>
-            <p className="text-slate-600 mb-6">
+            <p className="text-ink-600 mb-6">
               La sécurité est primordiale pour un site e-commerce. Toutes nos solutions intègrent les meilleures pratiques de sécurité.
             </p>
             <ul className="space-y-3">
               {securityFeatures.map((feature, index) => (
                 <li key={index} className="flex items-start">
-                  <Shield className="w-5 h-5 text-green-600 mr-3 mt-0.5 flex-shrink-0" />
-                  <span className="text-slate-700">{feature}</span>
+                  <Shield className="w-5 h-5 text-brand-600 mr-3 mt-0.5 flex-shrink-0" />
+                  <span className="text-ink-700">{feature}</span>
                 </li>
               ))}
             </ul>
@@ -140,14 +138,14 @@ const Ecommerce = () => {
         </div>
 
         <div className="bg-white rounded-2xl shadow-lg p-8 md:p-12 mb-16">
-          <h2 className="text-3xl font-bold text-slate-800 mb-8 text-center">Optimisations SEO E-commerce</h2>
+          <h2 className="text-3xl font-bold text-ink-900 mb-8 text-center">Optimisations SEO E-commerce</h2>
           <div className="grid md:grid-cols-2 gap-8">
             <div>
-              <h3 className="text-xl font-semibold text-slate-800 mb-4 flex items-center">
-                <Search className="w-6 h-6 text-blue-600 mr-2" />
+              <h3 className="text-xl font-semibold text-ink-900 mb-4 flex items-center">
+                <Search className="w-6 h-6 text-brand-600 mr-2" />
                 Référencement Produits
               </h3>
-              <ul className="space-y-2 text-slate-600">
+              <ul className="space-y-2 text-ink-600">
                 <li>• URLs optimisées par produit</li>
                 <li>• Meta descriptions dynamiques</li>
                 <li>• Optimisation des images produits</li>
@@ -156,11 +154,11 @@ const Ecommerce = () => {
               </ul>
             </div>
             <div>
-              <h3 className="text-xl font-semibold text-slate-800 mb-4 flex items-center">
-                <TrendingUp className="w-6 h-6 text-green-600 mr-2" />
+              <h3 className="text-xl font-semibold text-ink-900 mb-4 flex items-center">
+                <TrendingUp className="w-6 h-6 text-brand-600 mr-2" />
                 Performance & Conversion
               </h3>
-              <ul className="space-y-2 text-slate-600">
+              <ul className="space-y-2 text-ink-600">
                 <li>• Optimisation Core Web Vitals</li>
                 <li>• Lazy loading des images</li>
                 <li>• Code splitting pour performance</li>
@@ -172,9 +170,9 @@ const Ecommerce = () => {
           </div>
         </div>
 
-        <div className="bg-gradient-to-r from-violet-600 to-blue-600 rounded-2xl p-8 md:p-12 text-white text-center mb-16">
+        <div className="bg-brand-600 rounded-2xl p-8 md:p-12 text-white text-center mb-16">
           <h2 className="text-3xl font-bold mb-4">Lancez votre boutique en ligne</h2>
-          <p className="text-violet-100 mb-8 max-w-2xl mx-auto">
+          <p className="text-white/90 mb-8 max-w-2xl mx-auto">
             Obtenez un devis personnalisé pour votre projet e-commerce. Solutions sécurisées et optimisées pour vos ventes en ligne.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -183,7 +181,7 @@ const Ecommerce = () => {
                 trackEvent('contact_click', { source: 'ecommerce', cta: 'me_contacter' });
                 navigate('/contact');
               }}
-              className="bg-white text-violet-600 hover:bg-violet-50 font-semibold py-3 px-8 rounded-full transition-all shadow-lg hover:shadow-white/20 active:scale-95 inline-flex items-center justify-center"
+              className="bg-white text-brand-600 hover:bg-brand-50 font-semibold py-3 px-8 rounded-full transition-all shadow-lg hover:shadow-white/20 active:scale-95 inline-flex items-center justify-center"
             >
               Demander un devis gratuit
               <ArrowRight className="w-5 h-5 ml-2" />
@@ -200,43 +198,43 @@ const Ecommerce = () => {
           </div>
         </div>
 
-        <div className="bg-slate-50 rounded-2xl p-8 md:p-12">
-          <h2 className="text-3xl font-bold text-slate-800 mb-8 text-center">Processus de création</h2>
+        <div className="bg-ink-50 rounded-2xl p-8 md:p-12">
+          <h2 className="text-3xl font-bold text-ink-900 mb-8 text-center">Processus de création</h2>
           <div className="grid md:grid-cols-5 gap-6">
             <div className="text-center">
-              <div className="bg-violet-600 text-white rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-4 text-xl font-bold">
+              <div className="bg-brand-600 text-white rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-4 text-xl font-bold">
                 1
               </div>
-              <h3 className="font-semibold text-slate-800 mb-2">Analyse</h3>
-              <p className="text-slate-600 text-sm">Étude de vos produits et besoins</p>
+              <h3 className="font-semibold text-ink-900 mb-2">Analyse</h3>
+              <p className="text-ink-600 text-sm">Étude de vos produits et besoins</p>
             </div>
             <div className="text-center">
-              <div className="bg-violet-600 text-white rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-4 text-xl font-bold">
+              <div className="bg-brand-600 text-white rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-4 text-xl font-bold">
                 2
               </div>
-              <h3 className="font-semibold text-slate-800 mb-2">Design</h3>
-              <p className="text-slate-600 text-sm">Maquettes et UX optimisée</p>
+              <h3 className="font-semibold text-ink-900 mb-2">Design</h3>
+              <p className="text-ink-600 text-sm">Maquettes et UX optimisée</p>
             </div>
             <div className="text-center">
-              <div className="bg-violet-600 text-white rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-4 text-xl font-bold">
+              <div className="bg-brand-600 text-white rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-4 text-xl font-bold">
                 3
               </div>
-              <h3 className="font-semibold text-slate-800 mb-2">Développement</h3>
-              <p className="text-slate-600 text-sm">Création et sécurisation</p>
+              <h3 className="font-semibold text-ink-900 mb-2">Développement</h3>
+              <p className="text-ink-600 text-sm">Création et sécurisation</p>
             </div>
             <div className="text-center">
-              <div className="bg-violet-600 text-white rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-4 text-xl font-bold">
+              <div className="bg-brand-600 text-white rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-4 text-xl font-bold">
                 4
               </div>
-              <h3 className="font-semibold text-slate-800 mb-2">Tests</h3>
-              <p className="text-slate-600 text-sm">Validation et sécurité</p>
+              <h3 className="font-semibold text-ink-900 mb-2">Tests</h3>
+              <p className="text-ink-600 text-sm">Validation et sécurité</p>
             </div>
             <div className="text-center">
-              <div className="bg-violet-600 text-white rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-4 text-xl font-bold">
+              <div className="bg-brand-600 text-white rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-4 text-xl font-bold">
                 5
               </div>
-              <h3 className="font-semibold text-slate-800 mb-2">Lancement</h3>
-              <p className="text-slate-600 text-sm">Mise en ligne et formation</p>
+              <h3 className="font-semibold text-ink-900 mb-2">Lancement</h3>
+              <p className="text-ink-600 text-sm">Mise en ligne et formation</p>
             </div>
           </div>
         </div>
