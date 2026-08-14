@@ -14,7 +14,32 @@
 #   - les deux clés recherchées (vite-recaptcha-site-key, vite-backend-url)
 #     n'existaient pas dans le secret, la récupération échouait donc en silence
 #     et VITE_BACKEND_URL retombait systématiquement sur sa valeur par défaut.
-# Le secret GitHub KUBE_CONFIG_DATA peut être révoqué et supprimé.
+# Vérifié : plus aucun secret déclaré sur le repo, KUBE_CONFIG_DATA est bien parti.
+#
+# ── CORRECTIONS APPORTÉES ────────────────────────────────────────────────────
+#
+# 1. L'IMAGE SCANNÉE EST DÉSORMAIS L'IMAGE POUSSÉE.
+#    Avant, le scan portait sur `scan-backend:latest` et l'étape de push
+#    relançait un `docker build`. Deux builds distincts : rien ne garantissait
+#    que l'image publiée soit celle que Trivy avait validée (TOCTOU). On builde
+#    maintenant une seule fois avec `load: true`, on scanne, puis on `docker tag`
+#    + `docker push` exactement ce binaire-là.
+#
+# 2. LE PIN DE DIGEST EST VÉRIFIÉ.
+#    Les `sed` n'étaient jamais contrôlés. Si l'indentation de values.yaml
+#    changeait, le sed ne matchait rien, `git diff --staged --quiet` renvoyait
+#    vrai, et le job affichait « already up to date » en vert — sans avoir rien
+#    déployé. Échec silencieux. On vérifie maintenant avant ET après.
+#
+# 3. cancel-in-progress: false.
+#    Ce job pousse des images et commite. Le tuer entre le push GHCR et le
+#    commit du digest laisse le repo désynchronisé du registre.
+#
+# 4. Push git avec retry et rebase propre (abort en cas de conflit) au lieu
+#    d'un `git pull --rebase` sec qui pouvait laisser un rebase en cours.
+#
+# 5. Permissions `attestations: write` et `id-token: write` retirées : elles
+#    étaient déclarées mais aucune étape ne générait d'attestation.
 
 name: Build and push to GHCR
 
@@ -48,12 +73,13 @@ env:
 permissions:
   contents: read
   packages: write
-  attestations: write
-  id-token: write
 
+# false et non true : ce job pousse des images sur GHCR puis commite le digest.
+# Une annulation en plein milieu laisse une image publiée que values.yaml ne
+# référence pas.
 concurrency:
   group: build-and-push-${{ github.ref_name }}
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   test:
@@ -66,7 +92,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
@@ -74,7 +100,7 @@ jobs:
           version: ${{ env.PNPM_VERSION }}
 
       - name: Setup Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: 'pnpm'
@@ -90,6 +116,12 @@ jobs:
       # en prod fait échouer le build. Les exceptions justifiées se déclarent
       # dans pnpm.auditConfig.ignoreGhsas du package.json, pas en ignorant
       # l'ensemble du résultat.
+      #
+      # Le `--prod` n'est pas cosmétique : sans lui, une CVE dans vitest ou
+      # eslint bloque le pipeline alors que ces paquets ne partent jamais en
+      # prod. C'est exactement ce qui a mis Domaine-des-reves-bleus en deadlock
+      # (aucune PR de correctif ne pouvait passer tant que TOUTES les CVE, y
+      # compris devDeps, n'étaient pas corrigées en même temps).
       - name: Backend – audit (prod, high+)
         working-directory: Backend
         run: pnpm audit --prod --audit-level high
@@ -132,7 +164,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 
@@ -142,7 +174,7 @@ jobs:
           version: ${{ env.PNPM_VERSION }}
 
       - name: Setup Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: 'pnpm'
@@ -153,12 +185,13 @@ jobs:
       - name: Bump version (prod)
         id: tag
         run: |
+          set -euo pipefail
           CONTENT=$(cat version.txt | tr -d '\r\n ')
           MAJOR=$(echo "$CONTENT" | cut -d. -f1)
           MINOR=$(echo "$CONTENT" | cut -d. -f2)
           PATCH=$(echo "$CONTENT" | cut -d. -f3)
           if ! [[ "$MAJOR" =~ ^[0-9]+$ ]] || ! [[ "$MINOR" =~ ^[0-9]+$ ]] || ! [[ "$PATCH" =~ ^[0-9]+$ ]]; then
-            echo "version.txt invalide: $CONTENT (attendu X.Y.Z)"
+            echo "::error::version.txt invalide: $CONTENT (attendu X.Y.Z)"
             exit 1
           fi
           if [ "$PATCH" -lt 9 ]; then
@@ -170,19 +203,18 @@ jobs:
           NEW_VERSION="${MAJOR}.${MINOR}.${PATCH}"
           echo "$NEW_VERSION" > version.txt
           TAG="v${NEW_VERSION}"
-          echo "IMAGE_TAG=$TAG" >> $GITHUB_ENV
-          echo "tag=$TAG" >> $GITHUB_OUTPUT
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
           echo "Version: $CONTENT → $NEW_VERSION (tag: $TAG)"
 
       - name: Log in to GHCR
-        uses: docker/login-action@v3
+        uses: docker/login-action@v4
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
+        uses: docker/setup-buildx-action@v4
 
       # ── Backend ──────────────────────────────────────────────────────────────
       - name: Extract metadata (backend)
@@ -193,36 +225,45 @@ jobs:
           tags: |
             type=raw,value=${{ steps.tag.outputs.tag }}
 
-      # Étape 1 : build local pour le scan Trivy (pas de push)
-      - name: Build backend (local — pour scan Trivy)
+      # Build UNIQUE, chargé dans le démon Docker local. Aucun push ici.
+      # C'est ce binaire précis qui sera scanné puis publié.
+      - name: Build backend (local)
         uses: docker/build-push-action@v7
         with:
           context: ./Backend
           load: true
           push: false
-          tags: scan-backend:latest
+          tags: zenix-backend:candidate
+          labels: ${{ steps.meta-backend.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
           pull: true
 
-      # Étape 2 : scan AVANT push — image vulnérable ne part JAMAIS dans GHCR
       - name: Trivy scan backend (avant push)
         run: |
           docker run --rm -v /var/run/docker.sock:/var/run/docker.sock \
             ${{ env.TRIVY_IMAGE }} image --exit-code 1 --severity CRITICAL,HIGH --ignore-unfixed --format table \
-            scan-backend:latest
+            zenix-backend:candidate
 
-      # Étape 3 : push uniquement si le scan est clean
+      # `docker tag` + `docker push` de l'image déjà scannée, et non un second
+      # `docker build` : l'octet publié est l'octet validé par Trivy.
       - name: Push backend
-        id: build-backend
-        uses: docker/build-push-action@v7
-        with:
-          context: ./Backend
-          push: true
-          tags: ${{ steps.meta-backend.outputs.tags }}
-          labels: ${{ steps.meta-backend.outputs.labels }}
-          cache-from: type=gha
-          pull: true
+        id: push-backend
+        env:
+          META_TAGS: ${{ steps.meta-backend.outputs.tags }}
+        run: |
+          set -euo pipefail
+          TARGET=$(printf '%s\n' "$META_TAGS" | head -1)
+          docker tag zenix-backend:candidate "$TARGET"
+          PUSH_OUT=$(docker push "$TARGET" | tee /dev/stderr)
+
+          DIGEST=$(docker buildx imagetools inspect "$TARGET" --format '{{.Manifest.Digest}}' 2>/dev/null || true)
+          if [ -z "$DIGEST" ]; then
+            DIGEST=$(printf '%s\n' "$PUSH_OUT" | grep -oE 'sha256:[0-9a-f]{64}' | tail -1 || true)
+          fi
+          echo "digest=$DIGEST" >> "$GITHUB_OUTPUT"
+          echo "image=$TARGET" >> "$GITHUB_OUTPUT"
+          echo "Backend publié : $TARGET (digest: ${DIGEST:-introuvable})"
 
       # ── Frontend ─────────────────────────────────────────────────────────────
       - name: Frontend – install & build (dist/ requis par Dockerfile)
@@ -243,13 +284,14 @@ jobs:
           tags: |
             type=raw,value=${{ steps.tag.outputs.tag }}
 
-      - name: Build frontend (local — pour scan Trivy)
+      - name: Build frontend (local)
         uses: docker/build-push-action@v7
         with:
           context: ./Frontend
           load: true
           push: false
-          tags: scan-frontend:latest
+          tags: zenix-front:candidate
+          labels: ${{ steps.meta-frontend.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
           pull: true
@@ -258,53 +300,110 @@ jobs:
         run: |
           docker run --rm -v /var/run/docker.sock:/var/run/docker.sock \
             ${{ env.TRIVY_IMAGE }} image --exit-code 1 --severity CRITICAL,HIGH --ignore-unfixed --format table \
-            scan-frontend:latest
+            zenix-front:candidate
 
       - name: Push frontend
-        id: build-frontend
-        uses: docker/build-push-action@v7
-        with:
-          context: ./Frontend
-          push: true
-          tags: ${{ steps.meta-frontend.outputs.tags }}
-          labels: ${{ steps.meta-frontend.outputs.labels }}
-          cache-from: type=gha
-          pull: true
+        id: push-frontend
+        env:
+          META_TAGS: ${{ steps.meta-frontend.outputs.tags }}
+        run: |
+          set -euo pipefail
+          TARGET=$(printf '%s\n' "$META_TAGS" | head -1)
+          docker tag zenix-front:candidate "$TARGET"
+          PUSH_OUT=$(docker push "$TARGET" | tee /dev/stderr)
+
+          DIGEST=$(docker buildx imagetools inspect "$TARGET" --format '{{.Manifest.Digest}}' 2>/dev/null || true)
+          if [ -z "$DIGEST" ]; then
+            DIGEST=$(printf '%s\n' "$PUSH_OUT" | grep -oE 'sha256:[0-9a-f]{64}' | tail -1 || true)
+          fi
+          echo "digest=$DIGEST" >> "$GITHUB_OUTPUT"
+          echo "image=$TARGET" >> "$GITHUB_OUTPUT"
+          echo "Frontend publié : $TARGET (digest: ${DIGEST:-introuvable})"
 
       # ── Pin digest dans values.yaml → ArgoCD sync automatique ────────────────
       - name: Pin Helm values to image digest
+        env:
+          TAG: ${{ steps.tag.outputs.tag }}
+          BRANCH: ${{ github.ref_name }}
+          DIGEST_BACKEND: ${{ steps.push-backend.outputs.digest }}
+          DIGEST_FRONTEND: ${{ steps.push-frontend.outputs.digest }}
+          OWNER: ${{ github.repository_owner }}
+          REG: ${{ env.REGISTRY }}
         run: |
-          TAG="${{ steps.tag.outputs.tag }}"
-          DIGEST_BACKEND="${{ steps.build-backend.outputs.digest }}"
-          DIGEST_FRONTEND="${{ steps.build-frontend.outputs.digest }}"
-          OWNER="${{ github.repository_owner }}"
-          REG="${{ env.REGISTRY }}"
+          set -euo pipefail
+          VALUES_PATH="charts/zenix/values.yaml"
 
-          if [ -n "$DIGEST_BACKEND" ]; then
+          # Remplace la ligne `image:` d'un composant, en échouant bruyamment si
+          # elle est introuvable ou si le remplacement n'a pas pris. C'est le
+          # garde-fou contre le déploiement fantôme : un sed muet passait au vert
+          # sans rien changer.
+          update_image() {
+            local key="$1" newref="$2"
+            if ! grep -qE "^[[:space:]]+image:[[:space:]]*ghcr\.io/.*${key}[@:]" "$VALUES_PATH"; then
+              echo "::error::Aucune ligne 'image:' pour ${key} dans ${VALUES_PATH}. Le pin de digest aurait échoué en silence."
+              exit 1
+            fi
+            sed -i -E "s|^([[:space:]]+)image:[[:space:]]*ghcr\.io/.*${key}[@:].*|\1image: ${newref}|" "$VALUES_PATH"
+            if ! grep -qF "image: ${newref}" "$VALUES_PATH"; then
+              echo "::error::Le remplacement de ${key} n'a pas pris dans ${VALUES_PATH}."
+              exit 1
+            fi
+            echo "  ${key} → ${newref}"
+          }
+
+          if [ -n "${DIGEST_BACKEND:-}" ]; then
             BACKEND_IMAGE="${REG}/${OWNER}/zenix-backend@${DIGEST_BACKEND}"
           else
             BACKEND_IMAGE="${REG}/${OWNER}/zenix-backend:${TAG}"
+            echo "::warning::Digest backend introuvable, pin sur le tag ${TAG} (déploiement OK mais non immuable)."
           fi
-          if [ -n "$DIGEST_FRONTEND" ]; then
+          if [ -n "${DIGEST_FRONTEND:-}" ]; then
             FRONTEND_IMAGE="${REG}/${OWNER}/zenix-front@${DIGEST_FRONTEND}"
           else
             FRONTEND_IMAGE="${REG}/${OWNER}/zenix-front:${TAG}"
+            echo "::warning::Digest frontend introuvable, pin sur le tag ${TAG} (déploiement OK mais non immuable)."
           fi
 
-          VALUES_PATH="charts/zenix/values.yaml"
-
-          sed -i "s|  image: ghcr.io/.*zenix-backend.*|  image: ${BACKEND_IMAGE}|" "$VALUES_PATH"
-          sed -i "s|  image: ghcr.io/.*zenix-front.*|  image: ${FRONTEND_IMAGE}|" "$VALUES_PATH"
+          update_image "zenix-backend" "$BACKEND_IMAGE"
+          update_image "zenix-front"   "$FRONTEND_IMAGE"
 
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-
           git add version.txt "$VALUES_PATH"
 
           if git diff --staged --quiet; then
-            echo "Helm values already up to date, skip commit"
+            echo "::warning::Rien à commiter alors que le pin a réussi — values.yaml pointait déjà sur ce digest."
           else
-            git commit -m "chore(helm): pin images to digest $TAG [skip ci]"
-            git pull --rebase origin ${{ github.ref_name }}
-            git push origin ${{ github.ref_name }}
+            git commit -m "chore(helm): pin images to digest ${TAG} [skip ci]"
+
+            # Retry : un autre workflow peut avoir poussé entre-temps. En cas de
+            # conflit de rebase on abort proprement plutôt que de laisser le
+            # dépôt dans un état intermédiaire.
+            pushed=false
+            for attempt in 1 2 3; do
+              if git push origin "HEAD:${BRANCH}"; then
+                pushed=true
+                break
+              fi
+              echo "::warning::Push refusé (tentative ${attempt}/3), rebase sur origin/${BRANCH}…"
+              git fetch origin "$BRANCH"
+              if ! git rebase "origin/${BRANCH}"; then
+                git rebase --abort || true
+                echo "::error::Conflit de rebase sur ${BRANCH}, intervention manuelle requise."
+                exit 1
+              fi
+              sleep $((attempt * 3))
+            done
+            if [ "$pushed" != "true" ]; then
+              echo "::error::Impossible de pousser le pin de digest après 3 tentatives."
+              exit 1
+            fi
           fi
+
+          {
+            echo "### Déploiement ${TAG}"
+            echo "- Backend : \`${BACKEND_IMAGE}\`"
+            echo "- Frontend : \`${FRONTEND_IMAGE}\`"
+            echo ""
+            echo "Images scannées par Trivy avant publication. ArgoCD synchronise le cluster dans les minutes qui suivent."
+          } >> "$GITHUB_STEP_SUMMARY"
