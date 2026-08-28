@@ -1,0 +1,28 @@
+# Application ArgoCD pour l'environnement Prod
+# À appliquer : kubectl apply -f argocd/zenix.yaml -n argocd
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: zenix
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/emmguardia/Zenix-Argo-Repo.git
+    targetRevision: main
+    path: charts/zenix
+    helm:
+      valueFiles:
+        - values.yaml
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: zenix
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true
