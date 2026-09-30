@@ -41,7 +41,7 @@ backend:
 frontend:
   image: ghcr.io/emmguardia/zenix-front@sha256:423f81ae53fe178b0bd61f6be5fbf227fbb4d8fe192e49b0ba7cb8bac0d7982b
   imagePullPolicy: Always
-  replicas: 1
+  replicas: 2
   serviceType: NodePort
   # Port exposé par le Service (inchangé : l'IngressRoute pointe dessus).
   port: 80
@@ -56,7 +56,7 @@ frontend:
       cpu: "300m"
       memory: "256Mi"
   hpa:
-    minReplicas: 1
+    minReplicas: 2
     maxReplicas: 4
     cpuTarget: 70
     memoryTarget: 80
