@@ -10,7 +10,7 @@ imagePullSecrets:
 
 # Backend (Node)
 backend:
-  image: ghcr.io/emmguardia/zenix-backend@sha256:cb4dc9645786c09955f63ee5ab4b69bef7a9a062b9d12d3470268d9ca0d970a9
+  image: ghcr.io/emmguardia/zenix-backend@sha256:34ca222a22e39300af8a9d65e722b957afa168ca40b0b7a8cdc9462a2791d2f2
   imagePullPolicy: IfNotPresent
   replicas: 1
   port: 3000
@@ -39,7 +39,7 @@ backend:
 
 # Frontend (nginx)
 frontend:
-  image: ghcr.io/emmguardia/zenix-front@sha256:0d56b407b77ce7f7db9562a0fa56e3fdb689a60bd6976c11256525e36fc898f1
+  image: ghcr.io/emmguardia/zenix-front@sha256:b2d7ed07092122b0d4d5b42b095eceea251984e152fc959f31b714d805752a4c
   imagePullPolicy: Always
   replicas: 2
   serviceType: NodePort
