@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import { Check, Server, Shield, Zap, BarChart, ArrowRight, MapPin, Activity, Database, RotateCcw, GraduationCap } from 'lucide-react';
+import { Check, Server, Shield, Zap, BarChart, ArrowRight, MapPin, Activity, Database, RotateCcw, ScanSearch, Lightbulb } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { trackEvent } from '../utils/analytics';
 
@@ -126,8 +126,9 @@ const Hosting = () => {
       description: 'La base solide pour votre présence en ligne.',
       features: [
         'Infrastructure professionnelle hébergée en France, qui s\'adapte automatiquement au trafic et se répare seule en cas de problème technique',
-        'Protection complète contre les attaques et sauvegarde automatique de votre site tous les jours, répliquée sur deux lieux différents',
-        '2 petites modifications par mois incluses (texte, image, prix, horaires, etc.)',
+        'Protection contre les attaques et sauvegarde quotidienne de votre site, stockée hors de mes serveurs et chiffrée',
+        '2 modifications par mois incluses (texte, image, prix, horaires, etc.)',
+        'Chaque mois, des idées d\'amélioration proposées dans votre espace client : vous acceptez en un clic, je m\'en occupe',
         'Petites modifications supplémentaires : 15€ chacune. Grosses modifications (nouvelle page, fonctionnalité) : sur devis'
       ],
       highlight: false,
@@ -138,8 +139,8 @@ const Hosting = () => {
       price: '69€',
       description: 'Le confort pour faire vivre votre site sans compter.',
       features: [
-        'Tout ce qui est inclus dans Zenix Start (infrastructure, sécurité, sauvegardes)',
-        'Jusqu\'à 6 petites modifications par mois incluses dans le prix',
+        'Tout ce qui est inclus dans Zenix Start (infrastructure, sécurité, sauvegardes, propositions mensuelles)',
+        'Jusqu\'à 6 modifications par mois incluses dans le prix',
         'Tous les 3 mois, vous recevez un rapport simple qui vous montre comment votre site fonctionne et combien de personnes l\'ont visité',
         'Pour les grosses modifications (nouvelle page, fonctionnalité), tarif préférentiel'
       ],
@@ -151,8 +152,8 @@ const Hosting = () => {
       price: '149€',
       description: 'Le pilotage complet de votre site.',
       features: [
-        'Tout ce qui est inclus dans Zenix Relax (infrastructure, sécurité, sauvegardes, rapport)',
-        'Modifications illimitées de votre site (dans la limite de 2 heures de travail par mois)',
+        'Tout ce qui est inclus dans Zenix Relax (infrastructure, sécurité, sauvegardes, propositions mensuelles, rapport)',
+        'Jusqu\'à 2 heures de modifications par mois, petites ou moyennes, sans compter le nombre de demandes',
         'Chaque mois, vous recevez un rapport détaillé avec vos statistiques de visiteurs et la santé technique de votre site',
         'Optimisations techniques SEO continues : performance, balises, Core Web Vitals, données structurées'
       ],
@@ -176,7 +177,7 @@ const Hosting = () => {
         <div className="flex flex-wrap justify-center gap-3 mb-16 max-w-3xl mx-auto">
           <div className="inline-flex items-center gap-2 bg-white px-4 py-2 rounded-full shadow-sm border border-ink-200">
             <MapPin className="w-4 h-4 text-brand-600" aria-hidden="true" />
-            <span className="text-sm font-medium text-ink-700">Hébergé en France &mdash; données souveraines RGPD</span>
+            <span className="text-sm font-medium text-ink-700">Hébergé en France &mdash; conforme RGPD</span>
           </div>
           <div className="inline-flex items-center gap-2 bg-white px-4 py-2 rounded-full shadow-sm border border-ink-200">
             <Activity className="w-4 h-4 text-brand-600" aria-hidden="true" />
@@ -184,7 +185,7 @@ const Hosting = () => {
           </div>
           <div className="inline-flex items-center gap-2 bg-white px-4 py-2 rounded-full shadow-sm border border-ink-200">
             <Shield className="w-4 h-4 text-brand-600" aria-hidden="true" />
-            <span className="text-sm font-medium text-ink-700">Sauvegardes quotidiennes chiffrées</span>
+            <span className="text-sm font-medium text-ink-700">Sauvegardes quotidiennes externalisées et chiffrées</span>
           </div>
         </div>
 
@@ -200,6 +201,27 @@ const Hosting = () => {
               delayValue={plan.delayValue}
             />
           ))}
+        </div>
+
+        <div className="bg-brand-50 border border-brand-100 rounded-2xl p-8 md:p-10 max-w-5xl mx-auto mb-12">
+          <div className="flex flex-col md:flex-row items-start gap-6">
+            <div className="bg-white p-3 rounded-xl shadow-sm flex-shrink-0">
+              <Lightbulb className="w-8 h-8 text-brand-600" aria-hidden="true" />
+            </div>
+            <div>
+              <h2 className="text-2xl font-bold text-ink-900 mb-3">Votre site ne reste jamais figé</h2>
+              <p className="text-ink-700 mb-3">
+                Vous n'avez pas toujours le temps de penser à votre site, et c'est normal. Alors chaque mois, c'est moi qui viens
+                vers vous : j'analyse votre site et je vous propose des améliorations concrètes, expliquées simplement — un visuel
+                plus vendeur, un meilleur référencement sur Google, une page plus rapide, un parcours d'achat plus fluide.
+              </p>
+              <p className="text-ink-700">
+                Les propositions arrivent dans votre espace client, avec un seul email pour vous prévenir. Une idée vous plaît ?
+                Vous l'acceptez en un clic et je m'en occupe : elle utilise simplement une des modifications incluses dans votre
+                formule. Pas convaincu ? Vous la refusez. Pas le temps ? Elle vous attend le mois suivant.
+              </p>
+            </div>
+          </div>
         </div>
 
         <div className="bg-white rounded-2xl shadow-lg p-8 md:p-12 max-w-5xl mx-auto mb-12">
@@ -220,12 +242,12 @@ const Hosting = () => {
             />
             <AddOnRow
               icon={<Database className="w-5 h-5 text-brand-600" aria-hidden="true" />}
-              name="Sauvegardes hors infrastructure Zenix"
-              description="Vos sauvegardes quotidiennes incluses sont déjà répliquées sur mes serveurs, dans deux lieux différents. Cette option ajoute une copie stockée en dehors de mon infrastructure, chez un hébergeur tiers indépendant : même si l'intégralité de mes serveurs devenait inaccessible, votre site reste récupérable."
+              name="Historique long : 12 mois"
+              description="Les sauvegardes incluses gardent jusqu'à 30 jours d'historique. Avec cette option, une sauvegarde complète par mois est conservée pendant 12 mois : idéal pour retrouver un texte supprimé il y a six mois, revenir à une version d'avant refonte, ou garder une trace pour vos obligations de conservation."
               price="+10€/mois"
             />
             <AddOnRow
-              icon={<GraduationCap className="w-5 h-5 text-brand-600" aria-hidden="true" />}
+              icon={<ScanSearch className="w-5 h-5 text-brand-600" aria-hidden="true" />}
               name="Scan de sécurité"
               description="Détection de vulnérabilités, analyse des en-têtes HTTP, scan des dépendances, tests d'intrusion ciblés. Vous recevez un rapport lisible, avec les actions correctives classées par priorité — pas une sortie d'outil brute. En ponctuel pour un état des lieux, ou en mensuel pour un suivi continu."
               price="25€ une fois"
@@ -244,7 +266,7 @@ const Hosting = () => {
               <div>
                 <h3 className="text-xl font-semibold text-ink-900 mb-2">Infrastructure Professionnelle</h3>
                 <p className="text-ink-600">
-                  Votre site est hébergé sur une infrastructure moderne qui s'adapte automatiquement : plus de visiteurs, plus de puissance. Si un problème survient, le système se répare seul. Disponibilité 24/7.
+                  Votre site tourne sur un cluster de trois serveurs en France qui s'adapte automatiquement : plus de visiteurs, plus de puissance. Si un serveur tombe, votre site repart tout seul sur un autre, sans que j'aie à intervenir. Surveillance 24/7.
                 </p>
               </div>
             </div>
@@ -253,7 +275,7 @@ const Hosting = () => {
                 <Shield className="w-6 h-6 text-brand-600" aria-hidden="true" />
               </div>
               <div>
-                <h3 className="text-xl font-semibold text-ink-900 mb-2">Sécurité Maximale</h3>
+                <h3 className="text-xl font-semibold text-ink-900 mb-2">Sécurité Renforcée</h3>
                 <p className="text-ink-600">
                   Protection contre les attaques, les bots et les tentatives de piratage. Votre site est aussi plus rapide grâce à un système qui met en cache vos pages partout dans le monde.
                 </p>
@@ -264,9 +286,9 @@ const Hosting = () => {
                 <Zap className="w-6 h-6 text-brand-600" aria-hidden="true" />
               </div>
               <div>
-                <h3 className="text-xl font-semibold text-ink-900 mb-2">Sauvegarde Quotidienne</h3>
+                <h3 className="text-xl font-semibold text-ink-900 mb-2">Sauvegarde Quotidienne Externalisée</h3>
                 <p className="text-ink-600">
-                  Chaque jour, une copie complète de votre site est sauvegardée automatiquement, puis répliquée sur mes serveurs dans deux lieux différents. En cas de problème, je peux restaurer votre site en quelques minutes.
+                  Chaque nuit, votre site et vos données sont sauvegardés, chiffrés et envoyés hors de mes serveurs, chez un stockage professionnel indépendant : même un incident majeur chez moi ne peut pas toucher vos copies. Les sauvegardes de vos données sont en plus verrouillées 14 jours — impossibles à effacer, même par un pirate. Et la restauration est réellement testée.
                 </p>
               </div>
             </div>
@@ -277,7 +299,7 @@ const Hosting = () => {
               <div>
                 <h3 className="text-xl font-semibold text-ink-900 mb-2">Suivi & Rapports</h3>
                 <p className="text-ink-600">
-                  Vous savez toujours comment va votre site : visiteurs, performances, incidents. Des rapports clairs vous permettent de suivre l'évolution de votre présence en ligne.
+                  Vous savez toujours comment va votre site : visiteurs, performances, incidents. Des rapports clairs et des propositions d'amélioration chaque mois pour faire progresser votre présence en ligne.
                 </p>
               </div>
             </div>
@@ -287,6 +309,12 @@ const Hosting = () => {
         <div className="bg-brand-50 rounded-2xl p-8 md:p-12 max-w-5xl mx-auto mb-12">
           <h2 className="text-2xl font-bold text-ink-900 mb-6 text-center">Questions fréquentes</h2>
           <div className="space-y-6">
+            <div>
+              <h3 className="text-lg font-semibold text-ink-900 mb-2">C'est quoi les propositions d'amélioration ?</h3>
+              <p className="text-ink-600">
+                Chaque mois, je vous propose dans votre espace client des améliorations pour votre site (visuel, référencement, vente), expliquées sans jargon. Vous acceptez celles qui vous plaisent en un clic : chacune utilise une des modifications incluses dans votre formule. Sans réponse, elles restent disponibles le mois suivant.
+              </p>
+            </div>
             <div>
               <h3 className="text-lg font-semibold text-ink-900 mb-2">C'est quoi une "petite modification" ?</h3>
               <p className="text-ink-600">

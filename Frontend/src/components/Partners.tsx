@@ -121,7 +121,7 @@ const Partners = () => {
           <Perk
             icon={<Lock className="w-6 h-6 text-brand-600" aria-hidden="true" />}
             title="Souveraineté & RGPD"
-            description="Datacenters en France. Données et sauvegardes hébergées en UE. Aucune dépendance hyperscaler US."
+            description="Serveurs en France. Sauvegardes externalisées et chiffrées. Aucune dépendance hyperscaler US pour l'hébergement."
           />
           <Perk
             icon={<Layers className="w-6 h-6 text-brand-600" aria-hidden="true" />}
@@ -140,7 +140,7 @@ const Partners = () => {
           <div className="grid md:grid-cols-2 gap-6">
             <ul className="space-y-3">
               <li className="flex items-start"><Check className="w-5 h-5 text-brand-600 mr-3 mt-0.5 flex-shrink-0" aria-hidden="true" /><span className="text-ink-700">Cluster K3s redondant, auto-scaling et auto-healing</span></li>
-              <li className="flex items-start"><Check className="w-5 h-5 text-brand-600 mr-3 mt-0.5 flex-shrink-0" aria-hidden="true" /><span className="text-ink-700">Sauvegardes quotidiennes chiffrées (rétention 30 jours)</span></li>
+              <li className="flex items-start"><Check className="w-5 h-5 text-brand-600 mr-3 mt-0.5 flex-shrink-0" aria-hidden="true" /><span className="text-ink-700">Sauvegardes quotidiennes externalisées et chiffrées (jusqu'à 30 jours)</span></li>
               <li className="flex items-start"><Check className="w-5 h-5 text-brand-600 mr-3 mt-0.5 flex-shrink-0" aria-hidden="true" /><span className="text-ink-700">Certificats TLS automatiques (Let's Encrypt)</span></li>
               <li className="flex items-start"><Check className="w-5 h-5 text-brand-600 mr-3 mt-0.5 flex-shrink-0" aria-hidden="true" /><span className="text-ink-700">Filtrage Cloudflare en amont (trafic malveillant, saturation)</span></li>
             </ul>

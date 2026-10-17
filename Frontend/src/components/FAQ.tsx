@@ -134,11 +134,11 @@ const FAQ = () => {
   const hebergement: QAItem[] = [
     {
       q: "Pourquoi héberger chez Zenix plutôt que chez un gros hébergeur ?",
-      a: "Vous avez un interlocuteur unique, technicien, qui connaît votre site. Pas de hotline, pas de ticket niveau 1. Infrastructure K3s redondante, données en France, sauvegardes off-site, et chaque incident est géré personnellement.",
+      a: "Vous avez un interlocuteur unique, technicien, qui connaît votre site. Pas de hotline, pas de ticket niveau 1. Infrastructure K3s redondante, données en France, sauvegardes externalisées, des idées d'amélioration chaque mois, et chaque incident est géré personnellement.",
     },
     {
       q: "C'est quoi K3s, concrètement ?",
-      a: "C'est un cluster Kubernetes léger. Concrètement : votre site tourne sur plusieurs serveurs en même temps. Si l'un tombe, les autres prennent le relais sans coupure visible. Cela offre une disponibilité bien supérieure à un hébergement mutualisé classique.",
+      a: "C'est un cluster Kubernetes léger. Concrètement : votre site tourne sur un groupe de trois serveurs qui se surveillent entre eux. Si l'un tombe, votre site est relancé automatiquement sur un autre, sans intervention humaine. Cela offre une disponibilité bien supérieure à un hébergement mutualisé classique.",
     },
     {
       q: "C'est quoi une 'petite modification' ?",
@@ -147,6 +147,10 @@ const FAQ = () => {
     {
       q: "C'est quoi une 'grosse modification' ?",
       a: "Ajouter une nouvelle page complète, créer une fonctionnalité (formulaire avancé, espace membre, système de réservation), ou refondre une section du design. Cela nécessite un devis.",
+    },
+    {
+      q: "C'est quoi les propositions d'amélioration mensuelles ?",
+      a: "Chaque mois, j'analyse votre site et je vous propose des améliorations concrètes (visuel, référencement Google, rapidité, parcours d'achat), expliquées sans jargon, directement dans votre espace client. Un seul email vous prévient. Vous acceptez celles qui vous plaisent en un clic et je m'en occupe : chacune utilise une des modifications incluses dans votre formule. Vous refusez les autres, et sans réponse elles restent disponibles le mois suivant.",
     },
     {
       q: "Combien de temps pour appliquer une modification ?",
@@ -177,7 +181,7 @@ const FAQ = () => {
     },
     {
       q: "Mes sauvegardes sont-elles à jour ?",
-      a: "Oui. Sauvegarde complète quotidienne, conservée 30 jours et répliquée sur mes serveurs dans deux lieux différents. Vérification automatique de l'intégrité. En option, une copie supplémentaire peut être stockée en dehors de mon infrastructure, chez un hébergeur tiers.",
+      a: "Oui. Chaque nuit, votre site et vos données sont sauvegardés, chiffrés et envoyés hors de mes serveurs, chez un stockage professionnel indépendant (Cloudflare R2) : un incident chez moi ne peut pas toucher vos copies. Chaque envoi est vérifié automatiquement, les sauvegardes de vos données sont verrouillées 14 jours (impossibles à effacer, même par un pirate) et conservées 30 jours, celles du site complet 15 jours. La restauration est réellement testée. En option, l'historique long garde une sauvegarde par mois pendant 12 mois.",
     },
     {
       q: "Si mon site est piraté, vous le restaurez ?",
@@ -185,7 +189,7 @@ const FAQ = () => {
     },
     {
       q: "Mes données sont-elles bien en Europe ?",
-      a: "Vos données et celles de vos visiteurs sont hébergées sur nos serveurs en France, et les sauvegardes restent dans l'Union européenne. Une seule exception, que nous préférons annoncer : le trafic transite par Cloudflare, société américaine, qui assure la protection anti-DDoS et le pare-feu. Le détail figure dans notre politique de confidentialité.",
+      a: "Vos données et celles de vos visiteurs sont hébergées sur nos serveurs en France. Nous préférons être transparents sur Cloudflare, société américaine, qui intervient à deux endroits : la protection contre les attaques (le trafic transite par son réseau) et le stockage chiffré des sauvegardes, volontairement séparé de nos serveurs pour qu'un incident chez nous ne puisse jamais toucher vos copies. Le détail figure dans notre politique de confidentialité.",
     },
     {
       q: "Vos analytics sont-elles RGPD ?",

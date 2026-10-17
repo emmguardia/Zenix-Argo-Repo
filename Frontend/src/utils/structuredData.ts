@@ -257,7 +257,7 @@ export const hostingServiceSchema = {
         "itemOffered": {
           "@type": "Service",
           "name": "Zenix Start",
-          "description": "Hébergement haute performance avec cluster K3S, auto-scaling, Cloudflare, sauvegarde quotidienne et 2 petites modifications mensuelles. 39€/mois, TVA non applicable."
+          "description": "Hébergement haute performance avec cluster K3S, auto-scaling, Cloudflare, sauvegarde quotidienne externalisée, 2 modifications mensuelles et des propositions d'amélioration chaque mois. 39€/mois, TVA non applicable."
         },
         "price": "39",
         "priceCurrency": "EUR"
@@ -277,7 +277,7 @@ export const hostingServiceSchema = {
         "itemOffered": {
           "@type": "Service",
           "name": "Zenix Pro",
-          "description": "Hébergement avec modifications illimitées (2h/mois), rapport mensuel et optimisations techniques SEO continues. 149€/mois, TVA non applicable."
+          "description": "Hébergement avec jusqu'à 2 heures de modifications par mois, rapport mensuel et optimisations techniques SEO continues. 149€/mois, TVA non applicable."
         },
         "price": "149",
         "priceCurrency": "EUR"
@@ -410,7 +410,7 @@ export const faqPageSchema = {
       "name": "Mes données sont-elles bien en Europe ?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Vos données et celles de vos visiteurs sont hébergées sur nos serveurs en France, et les sauvegardes restent dans l'Union européenne. Une seule exception, que nous préférons annoncer : le trafic transite par Cloudflare, société américaine, qui assure la protection anti-DDoS et le pare-feu. Le détail figure dans notre politique de confidentialité."
+        "text": "Vos données et celles de vos visiteurs sont hébergées sur nos serveurs en France. Nous préférons être transparents sur Cloudflare, société américaine, qui intervient à deux endroits : la protection contre les attaques (le trafic transite par son réseau) et le stockage chiffré des sauvegardes, volontairement séparé de nos serveurs pour qu'un incident chez nous ne puisse jamais toucher vos copies. Le détail figure dans notre politique de confidentialité."
       }
     },
     {
