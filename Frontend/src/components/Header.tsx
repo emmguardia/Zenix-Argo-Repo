@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, memo } from 'react';
 import { Menu, X, LogIn } from 'lucide-react';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { trackEvent } from '../utils/analytics';
 /** URL de l'espace client. Sous-domaine distinct, servi par un autre déploiement. */
 const ESPACE_CLIENT_URL = 'https://app.zenixweb.fr/';
@@ -23,7 +23,8 @@ const ROUTES_HERO_SOMBRE = new Set(['/']);
    visible avant le clic. */
 const NavigationLink = memo(
   ({ link, onNavigate, surSombre }: { link: { name: string; path: string }; onNavigate: (path: string) => void; surSombre: boolean }) => (
-    <button
+    <Link
+      to={link.path}
       onClick={() => onNavigate(link.path)}
       className={`rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
         surSombre
@@ -32,7 +33,7 @@ const NavigationLink = memo(
       }`}
     >
       {link.name}
-    </button>
+    </Link>
   )
 );
 const Header = () => {
@@ -48,17 +49,20 @@ const Header = () => {
   const toggleMenu = useCallback(() => {
     setIsMenuOpen(prev => !prev);
   }, []);
-  const navigate = useNavigate();
   const { pathname } = useLocation();
   /* Transparent uniquement au sommet d'une page à hero sombre. Dès qu'on
      défile, l'en-tête repasse en blanc : le contenu qui passe dessous est
      clair, un texte blanc y deviendrait illisible. */
   const surSombre = ROUTES_HERO_SOMBRE.has(pathname) && !scrolled;
-  const goTo = useCallback((path: string) => {
-    navigate(path);
+  /* Les entrées de navigation sont de vrais <Link> (des <a href>) : Google ne
+     suit pas un <button onClick={navigate}>, et le menu principal était
+     auparavant invisible pour lui — seuls le pied de page et le sitemap
+     reliaient les pages entre elles. Le <Link> fait la navigation ; il ne
+     reste ici que ce qui l'accompagne. */
+  const afterNavigate = useCallback(() => {
     setIsMenuOpen(false);
     window.scrollTo({ top: 0, behavior: 'smooth' });
-  }, [navigate]);
+  }, []);
   const navigation = [
     { name: 'Accueil', path: '/' },
     { name: 'Nos Services', path: '/nos-services' },
@@ -84,7 +88,10 @@ const Header = () => {
         <div className="flex justify-between items-center">
           <div className="flex items-center">
             <Link to="/">
-              <img src="/images/Logo.webp" alt="Zenix Logo" width={200} height={80} className="h-20 w-auto" fetchPriority="high" />
+              {/* Logo-160 : affiché en 80 px, donc 160 px suffisent jusqu'aux écrans 2x
+                (l'original fait 512 px). width/height donnent le vrai ratio,
+                carré : 200x80 annonçait un rectangle au navigateur. */}
+              <img src="/images/Logo-160.webp" alt="Zenix Logo" width={160} height={160} className="h-20 w-auto" fetchPriority="high" />
             </Link>
           </div>
           {}
@@ -94,17 +101,18 @@ const Header = () => {
               sans se toucher visuellement. */}
           <nav className="hidden items-center gap-1 md:flex">
             {navigation.map((link) => (
-              <NavigationLink key={link.path} link={link} surSombre={surSombre} onNavigate={(p: string) => { trackEvent('nav_click', { destination: p, location: 'header' }); goTo(p); }} />
+              <NavigationLink key={link.path} link={link} surSombre={surSombre} onNavigate={(p: string) => { trackEvent('nav_click', { destination: p, location: 'header' }); afterNavigate(); }} />
             ))}
           </nav>
           {}
           <div className="hidden items-center gap-3 md:flex">
-            <button
-              onClick={() => { trackEvent('contact_click', { source: 'header', cta: 'me_contacter' }); goTo('/contact'); }}
+            <Link
+              to="/contact"
+              onClick={() => { trackEvent('contact_click', { source: 'header', cta: 'me_contacter' }); afterNavigate(); }}
               className="whitespace-nowrap rounded-full bg-brand-600 px-5 py-2.5 font-semibold text-white transition-colors hover:bg-brand-700 active:scale-[0.98]"
             >
               Me Contacter
-            </button>
+            </Link>
             {/* Lien externe : vrai <a>, pas un bouton de routeur — la cible est
                 un autre déploiement, sur un sous-domaine distinct.
 
@@ -141,20 +149,22 @@ const Header = () => {
           <div className="md:hidden bg-white absolute top-full left-0 right-0 shadow-lg py-4 px-6 animate-fadeIn">
             <nav className="flex flex-col space-y-4">
               {navigation.map((link) => (
-                <button
+                <Link
                   key={link.path}
-                  onClick={() => { trackEvent('nav_click', { destination: link.path, device: 'mobile' }); goTo(link.path); }}
+                  to={link.path}
+                  onClick={() => { trackEvent('nav_click', { destination: link.path, device: 'mobile' }); afterNavigate(); }}
                   className="rounded-lg px-3 py-3 text-left font-medium text-ink-700 transition-colors hover:bg-ink-100 hover:text-brand-600"
                 >
                   {link.name}
-                </button>
+                </Link>
               ))}
-              <button
-                onClick={() => { trackEvent('contact_click', { source: 'header', cta: 'me_contacter', device: 'mobile' }); goTo('/contact'); }}
-                className="mt-2 rounded-lg bg-brand-600 px-5 py-3 font-semibold text-white transition-colors hover:bg-brand-700 active:scale-[0.98]"
+              <Link
+                to="/contact"
+                onClick={() => { trackEvent('contact_click', { source: 'header', cta: 'me_contacter', device: 'mobile' }); afterNavigate(); }}
+                className="mt-2 rounded-lg text-center bg-brand-600 px-5 py-3 font-semibold text-white transition-colors hover:bg-brand-700 active:scale-[0.98]"
               >
                 Me Contacter
-              </button>
+              </Link>
               {/* Le panneau mobile a toujours un fond blanc : pas de variante
                   sombre à gérer ici. */}
               <a

@@ -12,9 +12,14 @@
 #      L'indexation Google classique n'est PAS affectée (Googlebot n'est pas
 #      dans la liste), seules les réponses génératives le sont.
 #   2. Le fichier servi contient alors DEUX groupes `User-agent: *`, celui de
-#      Cloudflare puis celui-ci. Le comportement face à des groupes dupliqués
-#      n'est pas garanti par la spécification : le `Disallow: /confirmation`
-#      ci-dessous peut être ignoré selon le crawler.
+#      Cloudflare puis celui-ci. La RFC 9309 (§2.2.1) impose de fusionner les
+#      groupes visant le même agent, et Google le fait : le
+#      `Disallow: /confirmation` ci-dessous s'applique bien.
+#   3. La ligne `Content-Signal:` ajoutée par Cloudflare n'est pas une
+#      directive robots.txt standard. Google l'ignore sans conséquence, mais
+#      Lighthouse la signale en « Unknown directive » et retire des points au
+#      score SEO (92 au lieu de 100). Impact réel nul ; le retirer suppose de
+#      désactiver la gestion du robots.txt dans Cloudflare.
 #
 # Le réglage se trouve dans le tableau de bord Cloudflare, pas dans ce dépôt.
 # Vérifier l'état réel avec : curl -s https://zenixweb.fr/robots.txt

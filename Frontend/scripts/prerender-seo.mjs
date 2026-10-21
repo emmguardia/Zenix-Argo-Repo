@@ -15,8 +15,9 @@
  * CE QUE FAIT LE SCRIPT
  * Pour chaque route de src/config/routes.ts, il écrit dist/<route>/index.html,
  * copie de dist/index.html dont les balises sont remplacées par celles de la
- * route. nginx sert ensuite ces fichiers directement (try_files $uri/index.html).
- * React reprend la main normalement au chargement.
+ * route, et dont #root contient le HTML complet de la page, rendu par
+ * src/entry-server.tsx. nginx sert ensuite ces fichiers directement
+ * (try_files $uri/index.html) ; main.tsx hydrate ce HTML au chargement.
  *
  * Il régénère aussi sitemap.xml depuis la même source, ce qui évite qu'il
  * dérive des routes réelles comme c'était le cas.
@@ -39,6 +40,8 @@ const load = (relativePath) => import(pathToFileURL(join(ROOT, relativePath)).hr
 
 const { routes, indexableRoutes, buildBreadcrumb, SITE_URL } = await load('src/config/routes.ts');
 const { breadcrumbSchema } = await load('src/utils/structuredData.ts');
+// Produit par `vite build --ssr src/entry-server.tsx` (cf. package.json).
+const { render } = await load('dist-ssr/entry-server.js');
 
 const OG_IMAGE = `${SITE_URL}/images/og-cover.webp`;
 const OG_IMAGE_WIDTH = '1200';
@@ -106,7 +109,9 @@ function buildHead(route) {
 const START = '<!--SEO:START-->';
 const END = '<!--SEO:END-->';
 
-function inject(template, route) {
+const ROOT_EMPTY = '<div id="root"></div>';
+
+function inject(template, route, body) {
   const start = template.indexOf(START);
   const end = template.indexOf(END);
   if (start === -1 || end === -1) {
@@ -114,24 +119,48 @@ function inject(template, route) {
       `Marqueurs ${START} / ${END} introuvables dans index.html : le pré-rendu SEO ne peut pas s'appliquer.`
     );
   }
-  return (
+  if (!template.includes(ROOT_EMPTY)) {
+    throw new Error(`${ROOT_EMPTY} introuvable dans index.html : le corps de page ne peut pas être pré-rendu.`);
+  }
+  const withHead =
     template.slice(0, start + START.length) +
     '\n' +
     buildHead(route) +
     '\n    ' +
-    template.slice(end)
-  );
+    template.slice(end);
+  // Fonction de remplacement, et non chaîne : un `$&` ou `$'` présent dans le
+  // HTML rendu serait sinon interprété comme motif de remplacement.
+  return withHead.replace(ROOT_EMPTY, () => `<div id="root">${body}</div>`);
 }
 
+/** Rend la page et vérifie qu'on n'a pas figé le spinner du <Suspense>. */
+async function renderBody(url) {
+  const body = await render(url);
+  if (!body.includes('<main') && !body.includes('<h1')) {
+    throw new Error(`Pré-rendu de ${url} vide ou incomplet : ni <main> ni <h1> dans le HTML produit.`);
+  }
+  // Un <script> inline dans le corps serait bloqué par la CSP (pas
+  // d'`unsafe-inline`) ; s'il s'agit du script d'échange des blocs Suspense,
+  // la page resterait masquée. Voir src/entry-server.tsx.
+  if (body.includes('<script')) {
+    throw new Error(`Pré-rendu de ${url} : script inline dans le HTML produit, il serait bloqué par la CSP.`);
+  }
+  return body;
+}
+
+/**
+ * Pas de <lastmod> : il valait auparavant la date du build pour TOUTES les
+ * pages, à chaque déploiement, y compris quand rien n'avait changé. Google
+ * ignore un lastmod qu'il constate systématiquement faux ; mieux vaut ne pas
+ * en publier qu'en publier un non fiable.
+ */
 function buildSitemap() {
-  const today = new Date().toISOString().split('T')[0];
   const urls = indexableRoutes
     .map((route) => {
       const loc = `${SITE_URL}${route.path === '/' ? '/' : route.path}`;
       return [
         '  <url>',
         `    <loc>${loc}</loc>`,
-        `    <lastmod>${today}</lastmod>`,
         `    <changefreq>${route.changefreq ?? 'monthly'}</changefreq>`,
         `    <priority>${route.priority ?? '0.5'}</priority>`,
         '  </url>'
@@ -150,7 +179,7 @@ const template = await readFile(join(DIST, 'index.html'), 'utf8');
 
 let count = 0;
 for (const route of routes) {
-  const html = inject(template, route);
+  const html = inject(template, route, await renderBody(route.path));
   if (route.path === '/') {
     await writeFile(join(DIST, 'index.html'), html, 'utf8');
   } else {
@@ -171,7 +200,7 @@ const notFound = inject(template, {
   structuredData: [],
   breadcrumb: null,
   noindex: true
-});
+}, await renderBody('/404'));
 await writeFile(join(DIST, '404.html'), notFound, 'utf8');
 
 await writeFile(join(DIST, 'sitemap.xml'), buildSitemap(), 'utf8');

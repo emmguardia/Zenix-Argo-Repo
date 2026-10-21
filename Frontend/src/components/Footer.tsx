@@ -8,7 +8,7 @@ const Footer = () => {
         <div className="grid md:grid-cols-3 gap-8">
           <div>
             <div className="flex items-center mb-6">
-              <img src="/images/Logo.webp" alt="Zenix Logo" width={320} height={128} loading="lazy" className="h-32 w-auto" />
+              <img src="/images/Logo-256.webp" alt="Zenix Logo" width={256} height={256} loading="lazy" className="h-32 w-auto" />
             </div>
             <p className="text-ink-400 mb-4">
               Développeur web freelance spécialisé dans la création de sites web modernes et performants.
@@ -37,7 +37,10 @@ const Footer = () => {
             </div>
           </div>
           <div>
-            <h3 className="text-xl font-bold mb-4">Contact</h3>
+            {/* <p> et non <h3> : ces intitulés de pied de page, répétés sur toutes
+                les pages, s'inséraient dans la hiérarchie de titres de chaque
+                page (un « Contact » en h3 sous le h2 de la FAQ, par exemple). */}
+            <p className="text-xl font-bold mb-4">Contact</p>
             <div className="space-y-3">
               <p className="flex items-center text-ink-400">
                 <Mail className="w-5 h-5 mr-2" />
@@ -57,7 +60,7 @@ const Footer = () => {
             </div>
           </div>
           <div>
-            <h3 className="text-xl font-bold mb-4">Services</h3>
+            <p className="text-xl font-bold mb-4">Services</p>
             <ul className="space-y-2 text-ink-400">
               <li><Link to="/nos-services" className="hover:text-white transition-colors" onClick={() => trackEvent('footer_link_click', { destination: '/nos-services', page: 'nos_services' })}>Nos Services</Link></li>
               <li><Link to="/site-vitrine" className="hover:text-white transition-colors" onClick={() => trackEvent('footer_link_click', { destination: '/site-vitrine', page: 'site_vitrine' })}>Site Vitrine</Link></li>
@@ -70,7 +73,9 @@ const Footer = () => {
         </div>
         <div className="border-t border-ink-900 mt-8 pt-8">
           <div className="flex flex-col md:flex-row justify-between items-center text-ink-400">
-            <p>&copy; {new Date().getFullYear()} Zenix. Tous droits réservés.</p>
+            {/* L'année est figée dans le HTML pré-rendu au build : la nuit du
+                Nouvel An, l'hydratation la corrige sans avertissement. */}
+            <p suppressHydrationWarning>&copy; {new Date().getFullYear()} Zenix. Tous droits réservés.</p>
             <div className="flex flex-wrap justify-center md:justify-end gap-x-6 gap-y-2 mt-4 md:mt-0">
               <Link to="/mentions-legales" className="hover:text-white transition-colors text-sm">
                 Mentions Légales

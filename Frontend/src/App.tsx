@@ -1,5 +1,5 @@
 import { Suspense, lazy, useEffect, useMemo, type ReactNode } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
+import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import SEO from './components/SEO';
 import Header from './components/Header';
 import Breadcrumbs from './components/Breadcrumbs';
@@ -131,9 +131,15 @@ const Page = ({ route }: { route: RouteDefinition }) => {
   );
 };
 
+/**
+ * Le routeur n'est PAS posé ici : main.tsx enveloppe l'application dans un
+ * BrowserRouter, entry-server.tsx dans un StaticRouter pour le pré-rendu.
+ * Le même arbre sert donc aux deux, ce qui garantit que le HTML généré au
+ * build et celui produit par l'hydratation coïncident.
+ */
 function App() {
   return (
-    <Router>
+    <>
       <PageViewTracker />
       <div className="min-h-screen bg-white">
         <Suspense
@@ -171,7 +177,7 @@ function App() {
           </Routes>
         </Suspense>
       </div>
-    </Router>
+    </>
   );
 }
 

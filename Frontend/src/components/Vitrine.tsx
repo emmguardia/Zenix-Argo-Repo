@@ -1,12 +1,11 @@
 import { useEffect, useRef } from 'react';
 import { Check, Globe, Search, Shield, Zap, ArrowRight, Code, Palette } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { trackEvent } from '../utils/analytics';
 
 const Vitrine = () => {
 
   const sectionRef = useRef<HTMLElement>(null);
-  const navigate = useNavigate();
 
   useEffect(() => {
     const el = sectionRef.current;
@@ -146,25 +145,23 @@ const Vitrine = () => {
             Obtenez un devis personnalisé pour votre projet. Réponse sous 24h garantie.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <button
+            <Link to="/contact"
               onClick={() => {
                 trackEvent('contact_click', { source: 'vitrine', cta: 'me_contacter' });
-                navigate('/contact');
               }}
               className="bg-white text-brand-600 hover:bg-brand-50 font-semibold py-3 px-8 rounded-full transition-all shadow-lg hover:shadow-white/20 active:scale-95 inline-flex items-center justify-center"
             >
               Demander un devis gratuit
               <ArrowRight className="w-5 h-5 ml-2" />
-            </button>
-            <button
+            </Link>
+            <Link to="/#portfolio"
               onClick={() => {
                 trackEvent('nav_click', { destination: '/', source: 'vitrine', cta: 'portfolio' });
-                navigate('/#portfolio');
               }}
-              className="bg-white/10 backdrop-blur-sm text-white hover:bg-white/20 font-semibold py-3 px-8 rounded-full transition-all border border-white/20 active:scale-95"
+              className="inline-block text-center bg-white/10 backdrop-blur-sm text-white hover:bg-white/20 font-semibold py-3 px-8 rounded-full transition-all border border-white/20 active:scale-95"
             >
               Voir mes réalisations
-            </button>
+            </Link>
           </div>
         </div>
 

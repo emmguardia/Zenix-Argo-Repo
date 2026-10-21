@@ -113,6 +113,12 @@ server {
         return 301 $1;
     }
 
+    # /index.html servait l'accueil en 200 sous une seconde URL. La canonical
+    # limitait les dégâts, une redirection règle la question à la source.
+    location = /index.html {
+        return 301 /;
+    }
+
     # ── Pages ────────────────────────────────────────────────────────────────
     # Le build génère un dossier par route (dist/hebergement/index.html, ...)
     # contenant les balises SEO propres à la page. Ces fichiers tiennent lieu de

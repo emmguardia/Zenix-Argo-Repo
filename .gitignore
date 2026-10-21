@@ -34,6 +34,7 @@ yarn-error.log*
 
 # ── Frontend build (rebuild par la CI à chaque push) ─────────────────────────
 Frontend/dist/
+Frontend/dist-ssr/
 **/dist/
 
 # ── Logs ─────────────────────────────────────────────────────────────────────

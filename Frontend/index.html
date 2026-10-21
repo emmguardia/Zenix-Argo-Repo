@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" type="image/webp" href="/images/Logo.webp" />
-    <link rel="preload" as="image" href="/images/Logo.webp" fetchpriority="high" />
+    <link rel="preload" as="image" href="/images/Logo-160.webp" fetchpriority="high" />
 
     <!--
       Aucun script inline ici — c'est ce qui permet à la CSP de se passer de
@@ -47,7 +47,10 @@
          origine. Plus de preconnect, plus de résolution DNS tierce, plus
          d'adresse IP visiteur transmise hors UE. -->
 
-    <!-- Umami Analytics — auto-hébergé, sans cookie -->
+    <!-- Umami Analytics — auto-hébergé, sans cookie.
+         Le preconnect ouvre la connexion TLS vers le sous-domaine pendant que
+         la page se charge (Lighthouse : ~280 ms gagnés sur le script). -->
+    <link rel="preconnect" href="https://umami.zenixweb.fr">
     <script async defer data-website-id="d7c3ac5d-03ad-4ce3-8f0c-07706489b71d"
             data-host-url="https://umami.zenixweb.fr"
             src="https://umami.zenixweb.fr/script.js">

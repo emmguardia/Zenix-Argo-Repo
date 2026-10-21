@@ -38,6 +38,7 @@ const FaqCategory = ({ icon, title, items, id }: FaqCategoryProps) => {
                 }}
                 className="w-full flex items-start justify-between gap-4 py-4 text-left hover:text-brand-600 transition-colors"
                 aria-expanded={isOpen}
+                aria-controls={`faq-${id}-${index}`}
               >
                 <span className="text-base font-semibold text-ink-900 group-hover:text-brand-600">
                   {item.q}
@@ -47,11 +48,19 @@ const FaqCategory = ({ icon, title, items, id }: FaqCategoryProps) => {
                   aria-hidden="true"
                 />
               </button>
-              {isOpen && (
-                <div className="pb-4 text-ink-600 leading-relaxed">
-                  {item.a}
-                </div>
-              )}
+              {/* La réponse est TOUJOURS dans le DOM, masquée par `hidden` quand
+                  la question est fermée. Elle n'était auparavant montée qu'à
+                  l'ouverture : Google ne clique pas, il ne voyait donc que les
+                  questions (287 mots pour toute la page), et le JSON-LD
+                  FAQPage décrivait des réponses absentes de la page, ce que
+                  ses consignes sur les données structurées interdisent. */}
+              <div
+                id={`faq-${id}-${index}`}
+                hidden={!isOpen}
+                className="pb-4 text-ink-600 leading-relaxed"
+              >
+                {item.a}
+              </div>
             </div>
           );
         })}

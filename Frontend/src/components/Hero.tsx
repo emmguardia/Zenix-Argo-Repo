@@ -1,5 +1,4 @@
-import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { trackEvent } from '../utils/analytics';
 
 /**
@@ -19,14 +18,10 @@ const INCLUS = [
 ];
 
 const Hero = () => {
-  const [fadeIn, setFadeIn] = useState(false);
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    const id = requestAnimationFrame(() => setFadeIn(true));
-    return () => cancelAnimationFrame(id);
-  }, []);
-
+  /* Apparition en CSS pur, et non plus via un état React basculé après le
+     montage. Avec le HTML pré-rendu, l'ancien `opacity-0` initial aurait gardé
+     le H1 — l'élément LCP de la page — invisible jusqu'au chargement et à
+     l'hydratation du JavaScript, annulant le gain du pré-rendu. */
   return (
     <section className="relative flex min-h-screen items-center overflow-hidden bg-ink-950 pt-20 md:min-h-[80vh] lg:min-h-screen hero-compact">
       {/* Un seul halo, bleu, très diffus. Le fond portait auparavant trois
@@ -39,11 +34,7 @@ const Hero = () => {
 
       <div className="container relative z-10 mx-auto px-6 py-16">
         <div className="grid items-center gap-14 lg:grid-cols-[1.05fr_0.95fr]">
-          <div
-            className={`transition-all duration-700 ${
-              fadeIn ? 'translate-y-0 opacity-100' : 'translate-y-6 opacity-0'
-            }`}
-          >
+          <div className="animate-fadeInUp">
             <p className="eyebrow eyebrow--dark mb-5">Villefranche-sur-Saône · Lyon · Partout en France</p>
 
             <h1 className="mb-6 text-4xl font-bold leading-[1.08] tracking-tight text-white sm:text-5xl lg:text-6xl">
@@ -61,24 +52,22 @@ const Hero = () => {
             </p>
 
             <div className="flex flex-col gap-3 sm:flex-row">
-              <button
+              <Link to="/contact"
                 onClick={() => {
                   trackEvent('contact_click', { source: 'hero', cta: 'devis_gratuit' });
-                  navigate('/contact');
                 }}
-                className="rounded-lg bg-brand-600 px-7 py-3.5 font-semibold whitespace-nowrap text-white transition-colors hover:bg-brand-700 active:scale-[0.98]"
+                className="inline-block text-center rounded-lg bg-brand-600 px-7 py-3.5 font-semibold whitespace-nowrap text-white transition-colors hover:bg-brand-700 active:scale-[0.98]"
               >
                 Demander un devis
-              </button>
-              <button
+              </Link>
+              <Link to="/hebergement"
                 onClick={() => {
                   trackEvent('nav_click', { destination: '/hebergement', source: 'hero', cta: 'hebergement' });
-                  navigate('/hebergement');
                 }}
-                className="rounded-lg border border-white/15 bg-white/[0.06] px-7 py-3.5 font-semibold whitespace-nowrap text-white transition-colors hover:bg-white/[0.12] active:scale-[0.98]"
+                className="inline-block text-center rounded-lg border border-white/15 bg-white/[0.06] px-7 py-3.5 font-semibold whitespace-nowrap text-white transition-colors hover:bg-white/[0.12] active:scale-[0.98]"
               >
                 Voir les offres d’hébergement
-              </button>
+              </Link>
             </div>
 
             <p className="mt-5 text-sm text-ink-400">
@@ -90,11 +79,7 @@ const Hero = () => {
               réellement compris. Elle dit quelque chose du service, là où trois
               pastilles rouge/jaune/verte et des blocs gris ne disaient rien —
               et ramenaient trois couleurs de plus. */}
-          <div
-            className={`transition-all delay-150 duration-700 ${
-              fadeIn ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
-            }`}
-          >
+          <div className="animate-fadeInUp [animation-delay:150ms] [animation-fill-mode:both]">
             <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-7 backdrop-blur-sm sm:p-8">
               {/* « Périmètre de la prestation » était du vocabulaire de devis.
                   Le titre dit maintenant la même chose en français courant. */}

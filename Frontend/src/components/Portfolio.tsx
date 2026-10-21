@@ -154,8 +154,16 @@ const Portfolio = () => {
                 onClick={() => setSelectedImage(project.image)}
                 aria-label={`Agrandir l'aperçu de ${project.title}`}
               >
+                {/* Vignettes déclinées en 480/800/1200 px (Public/images/*-<largeur>.webp) :
+                    l'original, près de 2000 px de large, n'est chargé que pour
+                    l'aperçu agrandi. Lighthouse estimait à ~430 Ko le poids
+                    téléchargé pour rien sur mobile. */}
                 <img
-                  src={project.image}
+                  src={project.image.replace('.webp', '-800.webp')}
+                  srcSet={[480, 800, 1200]
+                    .map((w) => `${project.image.replace('.webp', `-${w}.webp`)} ${w}w`)
+                    .join(', ')}
+                  sizes="(min-width: 1152px) 560px, (min-width: 768px) 50vw, 100vw"
                   alt={`Aperçu du site ${project.title}`}
                   width={800}
                   height={456}

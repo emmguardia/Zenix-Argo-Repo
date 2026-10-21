@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { Check, Server, Shield, Zap, BarChart, ArrowRight, MapPin, Activity, Database, RotateCcw, ScanSearch, Lightbulb } from 'lucide-react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { trackEvent } from '../utils/analytics';
 
 interface PricingCardProps {
@@ -13,8 +13,6 @@ interface PricingCardProps {
 }
 
 const PricingCard = ({ name, price, description, features, highlight = false, delayValue }: PricingCardProps) => {
-  const navigate = useNavigate();
-
   return (
     <div
       className={`bg-white rounded-2xl shadow-xl p-8 transition-all hover:shadow-2xl duration-300 flex flex-col ${
@@ -45,12 +43,11 @@ const PricingCard = ({ name, price, description, features, highlight = false, de
           </li>
         ))}
       </ul>
-      <button
+      <Link to="/contact"
         onClick={() => {
           trackEvent('contact_click', { source: 'hosting', cta: 'choisir_plan', plan: name });
-          navigate('/contact');
         }}
-        className={`w-full py-3 px-6 rounded-lg font-semibold transition-all mt-auto ${
+        className={`block w-full text-center py-3 px-6 rounded-lg font-semibold transition-all mt-auto ${
           highlight
             ? 'bg-brand-600 text-white hover:bg-brand-700 active:scale-95'
             : 'bg-ink-100 text-ink-900 hover:bg-ink-200 active:scale-95'
@@ -58,7 +55,7 @@ const PricingCard = ({ name, price, description, features, highlight = false, de
       >
         Choisir {name}
         <ArrowRight className="w-5 h-5 inline-block ml-2" />
-      </button>
+      </Link>
     </div>
   );
 };
@@ -353,15 +350,15 @@ const Hosting = () => {
         </div>
 
         <div className="text-center mt-12">
-          <button
+          <Link
+            to="/contact"
             onClick={() => {
               trackEvent('contact_click', { source: 'hosting', cta: 'me_contacter' });
-              window.location.href = '/contact';
             }}
-            className="bg-brand-600 hover:bg-brand-700 text-white font-semibold py-3 px-8 rounded-full transition-all shadow-lg hover:shadow-brand-500/20 active:scale-95"
+            className="inline-block bg-brand-600 hover:bg-brand-700 text-white font-semibold py-3 px-8 rounded-full transition-all shadow-lg hover:shadow-brand-500/20 active:scale-95"
           >
             Demander un devis personnalisé
-          </button>
+          </Link>
         </div>
       </div>
     </section>

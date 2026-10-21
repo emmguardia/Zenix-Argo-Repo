@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { Check, ArrowRight, Code2, Layers, Lock, TrendingUp, Wallet, Wrench, Eye, Server } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { trackEvent } from '../utils/analytics';
 
 interface TierRowProps {
@@ -35,7 +35,6 @@ const Perk = ({ icon, title, description }: PerkProps) => (
 
 const Partners = () => {
   const sectionRef = useRef<HTMLElement>(null);
-  const navigate = useNavigate();
 
   useEffect(() => {
     const el = sectionRef.current;
@@ -57,7 +56,6 @@ const Partners = () => {
 
   const handleContact = (cta: string) => {
     trackEvent('partners_contact_click', { source: 'partners', cta });
-    navigate('/contact');
   };
 
   return (
@@ -227,13 +225,14 @@ const Partners = () => {
           <p className="text-white/90 mb-8 max-w-xl mx-auto">
             Échangeons 20 minutes. Si l'offre vous convient, votre premier site est offert pour valider la qualité avant que vous engagiez un client.
           </p>
-          <button
+          <Link
+            to="/contact"
             onClick={() => handleContact('devenir_partenaire')}
             className="bg-white text-brand-700 hover:bg-brand-50 font-semibold py-3 px-8 rounded-full transition-all shadow-lg active:scale-95 inline-flex items-center"
           >
             Démarrer la conversation
             <ArrowRight className="w-5 h-5 ml-2" aria-hidden="true" />
-          </button>
+          </Link>
         </div>
       </div>
     </section>

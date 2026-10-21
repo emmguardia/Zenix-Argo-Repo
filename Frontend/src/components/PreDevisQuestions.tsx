@@ -1,8 +1,7 @@
-import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { CheckCircle, ArrowRight } from 'lucide-react';
 import { trackEvent } from '../utils/analytics';
 const PreDevisQuestions = () => {
-  const navigate = useNavigate();
   const questions = [
     {
       category: "Votre entreprise",
@@ -78,13 +77,13 @@ const PreDevisQuestions = () => {
             Même si vous n'avez pas toutes les réponses, n'hésitez pas à me contacter. 
             Je vous accompagnerai pour définir ensemble les meilleures solutions pour votre projet.
           </p>
-          <button 
-            onClick={() => { trackEvent('contact_click', { source: 'landing', cta: 'devis_questions' }); navigate('/contact'); }}
+          <Link to="/contact" 
+            onClick={() => { trackEvent('contact_click', { source: 'landing', cta: 'devis_questions' }); }}
             className="bg-white text-brand-600 hover:bg-brand-50 font-semibold py-3 px-8 rounded-full transition-all shadow-lg hover:shadow-white/20 active:scale-95 inline-flex items-center"
           >
             Demander un devis gratuit
             <ArrowRight className="w-5 h-5 ml-2" />
-          </button>
+          </Link>
         </div>
       </div>
     </section>

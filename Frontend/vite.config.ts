@@ -20,11 +20,17 @@ import react from '@vitejs/plugin-react';
  *      protection anti-XSS de sa substance. Sa suppression, avec celle du script
  *      inline d'index.html, permet enfin de retirer cette directive.
  *
- * Le vrai levier LCP sur ce site reste le pré-rendu du corps de page, pas le
- * chargement du CSS.
+ * Le vrai levier LCP sur ce site était le pré-rendu du corps de page, pas le
+ * chargement du CSS. C'est désormais fait (src/entry-server.tsx) : le point 1
+ * ci-dessus décrit l'état d'avant.
  */
 
-export default defineConfig({
+// Deux builds partagent cette config : le build client habituel, et le build
+// SSR (`vite build --ssr src/entry-server.tsx`) qui sert uniquement au
+// pré-rendu du HTML. Le second ne doit pas reprendre les `manualChunks` :
+// react et react-dom y sont externes (chargés depuis node_modules par Node), et
+// Rollup refuse de ranger un module externe dans un chunk.
+export default defineConfig(({ isSsrBuild }) => ({
   plugins: [react()],
   publicDir: 'Public',
   test: {
@@ -34,7 +40,7 @@ export default defineConfig({
   optimizeDeps: {
     exclude: ['lucide-react'],
   },
-  build: {
+  build: isSsrBuild ? { outDir: 'dist-ssr', emptyOutDir: true } : {
     rollupOptions: {
       output: {
         assetFileNames: 'assets/[name]-[hash][extname]',
@@ -64,4 +70,4 @@ export default defineConfig({
   esbuild: {
     logOverride: { 'this-is-undefined-in-esm': 'silent' },
   },
-});
+}));

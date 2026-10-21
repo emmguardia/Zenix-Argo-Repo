@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { trackEvent } from '../utils/analytics';
 
 /**
@@ -12,7 +12,6 @@ import { trackEvent } from '../utils/analytics';
  * nulle part où cliquer.
  */
 const HomeCta = () => {
-  const navigate = useNavigate();
 
   return (
     <section className="bg-ink-950 py-20 md:py-24">
@@ -28,24 +27,22 @@ const HomeCta = () => {
           </p>
 
           <div className="flex flex-col justify-center gap-3 sm:flex-row">
-            <button
+            <Link to="/contact"
               onClick={() => {
                 trackEvent('contact_click', { source: 'home_cta', cta: 'devis_gratuit' });
-                navigate('/contact');
               }}
-              className="rounded-lg bg-brand-600 px-8 py-3.5 font-semibold whitespace-nowrap text-white transition-colors hover:bg-brand-700 active:scale-[0.98]"
+              className="inline-block text-center rounded-lg bg-brand-600 px-8 py-3.5 font-semibold whitespace-nowrap text-white transition-colors hover:bg-brand-700 active:scale-[0.98]"
             >
               Demander un devis
-            </button>
-            <button
+            </Link>
+            <Link to="/nos-services"
               onClick={() => {
                 trackEvent('nav_click', { destination: '/nos-services', source: 'home_cta' });
-                navigate('/nos-services');
               }}
-              className="rounded-lg border border-white/15 bg-white/[0.06] px-8 py-3.5 font-semibold whitespace-nowrap text-white transition-colors hover:bg-white/[0.12] active:scale-[0.98]"
+              className="inline-block text-center rounded-lg border border-white/15 bg-white/[0.06] px-8 py-3.5 font-semibold whitespace-nowrap text-white transition-colors hover:bg-white/[0.12] active:scale-[0.98]"
             >
               Voir les prestations
-            </button>
+            </Link>
           </div>
 
           <p className="mt-7 text-sm text-ink-400">

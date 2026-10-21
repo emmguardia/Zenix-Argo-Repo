@@ -1,12 +1,11 @@
 import { useEffect, useRef } from 'react';
 import { Check, Target, ShoppingCart, Globe, ArrowRight, Zap, Shield, Search, TrendingUp } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { trackEvent } from '../utils/analytics';
 
 const TypesDeSites = () => {
 
   const sectionRef = useRef<HTMLElement>(null);
-  const navigate = useNavigate();
 
   useEffect(() => {
     const el = sectionRef.current;
@@ -182,16 +181,15 @@ const TypesDeSites = () => {
                     <p className="text-sm text-ink-500 mb-2">Prix indicatif :</p>
                     <p className={`text-xl font-bold ${colors.text}`}>{site.price}</p>
                   </div>
-                  <button
+                  <Link to={site.link}
                     onClick={() => {
                       trackEvent('site_type_click', { type: site.name });
-                      navigate(site.link);
                     }}
                     className={`w-full ${colors.bg} ${colors.hover} text-white font-semibold py-3 px-6 rounded-lg transition-all active:scale-95 inline-flex items-center justify-center`}
                   >
                     En savoir plus
                     <ArrowRight className="w-5 h-5 ml-2" />
-                  </button>
+                  </Link>
                 </div>
               </div>
             );
@@ -263,16 +261,15 @@ const TypesDeSites = () => {
           <p className="text-ink-600 mb-6 max-w-2xl mx-auto">
             Contactez-moi pour discuter de votre projet. Je vous aiderai à choisir la solution qui correspond le mieux à vos objectifs.
           </p>
-          <button
+          <Link to="/contact"
             onClick={() => {
               trackEvent('contact_click', { source: 'types_sites', cta: 'me_contacter' });
-              navigate('/contact');
             }}
             className="bg-brand-600 hover:bg-brand-700 text-white font-semibold py-3 px-8 rounded-full transition-all shadow-lg hover:shadow-brand-500/20 active:scale-95 inline-flex items-center"
           >
             Demander un devis gratuit
             <ArrowRight className="w-5 h-5 ml-2" />
-          </button>
+          </Link>
         </div>
       </div>
     </section>

@@ -1,5 +1,6 @@
 import { StrictMode } from 'react';
-import { createRoot } from 'react-dom/client';
+import { createRoot, hydrateRoot } from 'react-dom/client';
+import { BrowserRouter } from 'react-router-dom';
 // Inter auto-hébergée. L'import se fait ICI et non via un `@import` dans
 // index.css : le plugin PostCSS de Tailwind v4 inline les `@import` avant que
 // Vite ne réécrive les URLs, si bien que les `url(./files/*.woff2)` du paquet
@@ -17,8 +18,21 @@ import '@fontsource-variable/inter';
 import '@fontsource-variable/space-grotesk';
 import App from './App.tsx';
 import './index.css';
-createRoot(document.getElementById('root')!).render(
+const app = (
   <StrictMode>
-    <App />
+    <BrowserRouter>
+      <App />
+    </BrowserRouter>
   </StrictMode>
 );
+
+// En production, #root contient déjà le HTML de la page, pré-rendu au build
+// par scripts/prerender-seo.mjs : React s'y raccroche (hydratation) au lieu de
+// tout reconstruire. En `pnpm dev`, il n'y a pas de pré-rendu et #root est
+// vide : rendu client classique.
+const container = document.getElementById('root')!;
+if (container.hasChildNodes()) {
+  hydrateRoot(container, app);
+} else {
+  createRoot(container).render(app);
+}
