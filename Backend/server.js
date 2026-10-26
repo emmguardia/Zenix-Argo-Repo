@@ -5,6 +5,7 @@ import { readFileSync } from 'fs';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
 import { isValidEmail, getProjectLabel, getTimelineLabel, createRateLimiter, isHoneypotTriggered, getClientIp } from './lib/validation.js';
+import { notifierCerveau } from './lib/cerveau.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -15,6 +16,9 @@ const PORT = process.env.PORT || 3000;
 const JWT_PRIVATE_KEY_PATH = process.env.JWT_PRIVATE_KEY_PATH || (process.env.NODE_ENV === 'production' ? '/app/secrets/jwt_private_key.pem' : join(__dirname, '..', '..', 'Email-Service', 'secrets', 'jwt_private_key.pem'));
 const EMAIL_SERVICE_URL = process.env.EMAIL_SERVICE_URL || 'http://email-service.email-service.svc.cluster.local:8080';
 const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'enzomonnetmata@gmail.com';
+// Copie des demandes dans l'inbox du second cerveau (facultatif : sans ces variables, rien n'est envoyé)
+const CERVEAU_WEBHOOK_URL = process.env.CERVEAU_WEBHOOK_URL || '';
+const CERVEAU_WEBHOOK_SECRET = process.env.CERVEAU_WEBHOOK_SECRET || '';
 
 app.use(cors({
   origin: process.env.ALLOWED_ORIGINS ? process.env.ALLOWED_ORIGINS.split(',') : ['https://zenixweb.fr', 'https://www.zenixweb.fr', 'http://localhost:5173'],
@@ -152,6 +156,12 @@ app.post('/api/send-contact', async (req, res) => {
     await sendEmailToService('contact', from_email, from_name, {
       message: 'Votre demande a bien été reçue.'
     });
+
+    // Sans attendre : un cerveau injoignable ne doit ni ralentir ni faire échouer le formulaire.
+    notifierCerveau(CERVEAU_WEBHOOK_URL, CERVEAU_WEBHOOK_SECRET, {
+      from_name, from_email, phone, company,
+      project: getProjectLabel(project), budget, timeline: getTimelineLabel(timeline), message,
+    }).catch((err) => console.error('Cerveau webhook failed:', err.message));
 
     // Une notification Gotify partait aussi ici. Le service a été arrêté : le
     // code, les variables d'environnement et la mention dans la politique de

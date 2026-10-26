@@ -9,7 +9,7 @@
     "pnpm": ">=10"
   },
   "scripts": {
-    "test": "node --test test/validation.test.js"
+    "test": "node --test test/validation.test.js test/cerveau.test.js"
   },
   "dependencies": {
     "cors": "^2.8.6",

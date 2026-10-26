@@ -63,6 +63,15 @@ spec:
               key: admin-email
         - name: ALLOWED_ORIGINS
           value: {{ .Values.backend.env.ALLOWED_ORIGINS | quote }}
+        # Copie des demandes de contact vers l'inbox du second cerveau (webhook signé HMAC)
+        - name: CERVEAU_WEBHOOK_URL
+          value: {{ .Values.backend.env.CERVEAU_WEBHOOK_URL | default "" | quote }}
+        - name: CERVEAU_WEBHOOK_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.backend.secretName }}
+              key: cerveau-webhook-secret
+              optional: true
         resources:
           {{- toYaml .Values.backend.resources | nindent 10 }}
         livenessProbe:
